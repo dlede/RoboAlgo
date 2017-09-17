@@ -1,126 +1,164 @@
 package jframe_pkg;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
+import static jframe_pkg.utils.MapDescriptor.loadMapFromDisk;
+import jframe_pkg.map.Mapper;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-
 public class MainFrame extends JFrame {
-
+	//TODO: create waypoint click system... input waypoints
+	//TODO: speed orientation input as well, speed of robot
+	
     private static JFrame _appFrame = null;         // application JFrame
 
     private static JPanel _mapCards = null;         // JPanel for map views
     private static JPanel _buttons = null;          // JPanel for buttons
 
-    //private static Robot bot;
+    //private static Robot bot; // TODO: init your robot here
 
-    //private static Map realMap = null;              // real map
-    //private static Map exploredMap = null;          // exploration map
+    private static Mapper r_Mapper = null;   
+    private static Mapper e_Mapper = null;  
+    
+    //private static Mapper realMap = null;              // TODO: real map
+    //private static Mapper exploredMap = null;          // TODO: exploration map
 
-    private static int timeLimit = 3600;            // time limit
-    private static int coverageLimit = 300;         // coverage limit
+    //private static int timeLimit = 3600;            // TODO: time limit
+    //private static int coverageLimit = 300;         // TODO: coverage limit
 
-    //private static final CommMgr comm = CommMgr.getCommMgr();
-    private static final boolean realRun = true;
+    //private static final CommMgr comm = CommMgr.getCommMgr(); // TODO: commsMgr
+    //private static final boolean realRun = false;
+    
+    //private boolean auto_mode = false; //auto mode false = manual, can use keystroke to move
+    //private boolean fast_mode = false; //fast mode false = exploration
 	
 	//private JFrame contentPane;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainFrame frame = new MainFrame();
-					//frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+		e_Mapper = new Mapper(); //argument bot
+		//e_Mapper.gridder.setAllUnexplored();
+		e_Mapper.gridder.setAllExplored();
+        
+		MainFrame frame = new MainFrame();
+		//frame.setVisible(true);
+		
+		//if (!auto_mode)
+		//controller
+		//else
+		//auto explore
+		
+        //if (realRun) comm.openConnection();
 
-	/**
-	 * Create the frame.
-	 */
+        //bot = new Robot(RobotConstants.START_ROW, RobotConstants.START_COL, realRun);
+
+        //if (!realRun) {
+        //    realMap = new Map(bot);
+        //    realMap.setAllUnexplored();
+        //}
+	}
+	
+	//show main frame
 	public MainFrame() {
         // Initialise main frame for display
         _appFrame = new JFrame();
-        _appFrame.setTitle("MDP Group 2 Simulator");
-        _appFrame.setSize(new Dimension(690, 700));
+        _appFrame.setTitle("MDP Group 15 Main Frame");
+        _appFrame.setSize(new Dimension(800, 800));
         _appFrame.setResizable(false);
 
-        JPanel main_layout = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        
-        JPanel test_panel_grid = new JPanel();
-        JPanel test_panel = new JPanel();
-        JButton button1 = new JButton();
-        JButton button2 = new JButton();
-        JButton button3 = new JButton();
-        JButton button4 = new JButton();
-        test_panel.setLayout(new GridLayout(5, 5, 3, 3));
-        test_panel.add(button1);
-        test_panel.add(button2);
-        test_panel.add(button3);
-        //test_panel.add(button4);
-        
-        _appFrame.add(test_panel);
         // Center the main frame in the middle of the screen
         //Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-       // _appFrame.setLocation(dim.width / 2 - _appFrame.getSize().width / 2, dim.height / 2 - _appFrame.getSize().height / 2);
+        //_appFrame.setLocation(dim.width / 2 - _appFrame.getSize().width / 2, dim.height / 2 - _appFrame.getSize().height / 2);
 
         // Create the CardLayout for storing the different maps
-        //_mapCards = new JPanel(new CardLayout());
+        _mapCards = new JPanel(new CardLayout());
 
         // Create the JPanel for the buttons
-        //_buttons = new JPanel();
+        _buttons = new JPanel();
+        
+        //JPanel test_panel = new JPanel();
+        //JToggleButton auto_button = new JToggleButton("Auto");
+
+        //test_panel.setLayout(new GridLayout(9, 9, 5, 5));
+        //test_panel.add(auto_button);
 
         // Add _mapCards & _buttons to the main frame's content pane
-        //Container contentPane = _appFrame.getContentPane();
-        //contentPane.add(_mapCards, BorderLayout.CENTER);
-        //contentPane.add(_buttons, BorderLayout.PAGE_END);
-
+        Container contentPane = _appFrame.getContentPane();
+        contentPane.add(_mapCards, BorderLayout.CENTER);
+        contentPane.add(_buttons, BorderLayout.PAGE_END);
+        
         // Initialize the main map view
-        //initMainLayout();
-
-        // Initialize the buttons
-        //initButtonsLayout();
-
-        // Display the application
+        initMainLayout();
+        
+        //buttons
+        initButtonsLayout();
+        
+        //_appFrame.add(test_panel);
         _appFrame.setVisible(true);
         _appFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 	
     private static void initMainLayout() {
-        /*if (!realRun) {
-            _mapCards.add(realMap, "REAL_MAP");
-        }
-        _mapCards.add(exploredMap, "EXPLORATION");
-         */
+        //if (!realRun) {
+            //_mapCards.add(r_Mapper, "REAL_MAP");
+        //}
+        _mapCards.add(e_Mapper, "EXPLORATION");
+         
         CardLayout cl = ((CardLayout) _mapCards.getLayout());
-        if (!realRun) {
-            cl.show(_mapCards, "REAL_MAP");
-        } else {
+        //if (!realRun) {
+            //cl.show(_mapCards, "REAL_MAP");
+        //} else {
             cl.show(_mapCards, "EXPLORATION");
-        }
+        //}
     }
 
     /**
      * Initialises the JPanel for the buttons.
-     */
+     **/
     private static void initButtonsLayout() {
         _buttons.setLayout(new GridLayout());
-        //addButtons();
+        addButtons();
     }
+    
+    private static void formatButton(JButton btn) {
+        btn.setFont(new Font("Arial", Font.BOLD, 13));
+        btn.setFocusPainted(false);
+    }
+    
+    private static void addButtons() {
+        //if (!realRun) {
+            // Load Map Button
+            JButton btn_LoadMap = new JButton("Load Map");
+            formatButton(btn_LoadMap);
+            btn_LoadMap.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
+                    JDialog loadMapDialog = new JDialog(_appFrame, "Load Map", true);
+                    loadMapDialog.setSize(400, 100);
+                    loadMapDialog.setLayout(new FlowLayout());
+
+                    final JTextField loadTF = new JTextField(15);
+                    JButton loadMapButton = new JButton("Load");
+
+                    loadMapButton.addMouseListener(new MouseAdapter() {
+                        public void mousePressed(MouseEvent e) {
+                            loadMapDialog.setVisible(false);
+                            loadMapFromDisk(r_Mapper, loadTF.getText());
+                            CardLayout cl = ((CardLayout) _mapCards.getLayout());
+                            cl.show(_mapCards, "REAL_MAP");
+                            r_Mapper.repaint();
+                        }
+                    });
+
+                    loadMapDialog.add(new JLabel("File Name: "));
+                    loadMapDialog.add(loadTF);
+                    loadMapDialog.add(loadMapButton);
+                    loadMapDialog.setVisible(true);
+                }
+            });
+            _buttons.add(btn_LoadMap);
+        //}
+    }
+    
 
 }

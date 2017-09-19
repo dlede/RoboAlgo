@@ -2,6 +2,8 @@ package jframe_pkg;
 
 import static jframe_pkg.utils.MapDescriptor.loadMapFromDisk;
 import jframe_pkg.map.Mapper;
+import jframe_pkg.robot.RobotConstants;
+import jframe_pkg.robot.Robot;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,19 +19,19 @@ public class MainFrame extends JFrame {
     private static JPanel _mapCards = null;         // JPanel for map views
     private static JPanel _buttons = null;          // JPanel for buttons
 
-    //private static Robot bot; // TODO: init your robot here
+    private static Robot bot; // TODO: init your robot here
 
     private static Mapper r_Mapper = null;   
     private static Mapper e_Mapper = null;  
     
-    //private static Mapper realMap = null;              // TODO: real map
-    //private static Mapper exploredMap = null;          // TODO: exploration map
+    private static Mapper realMap = null;              // TODO: real map
+    private static Mapper exploredMap = null;          // TODO: exploration map
 
-    //private static int timeLimit = 3600;            // TODO: time limit
-    //private static int coverageLimit = 300;         // TODO: coverage limit
+    private static int timeLimit = 3600;            // TODO: time limit
+    private static int coverageLimit = 300;         // TODO: coverage limit
 
     //private static final CommMgr comm = CommMgr.getCommMgr(); // TODO: commsMgr
-    //private static final boolean realRun = false;
+    private static final boolean realRun = false;
     
     //private boolean auto_mode = false; //auto mode false = manual, can use keystroke to move
     //private boolean fast_mode = false; //fast mode false = exploration
@@ -37,7 +39,9 @@ public class MainFrame extends JFrame {
 	//private JFrame contentPane;
 
 	public static void main(String[] args) {
-		e_Mapper = new Mapper(); //argument bot
+        bot = new Robot(RobotConstants.START_ROW, RobotConstants.START_COL, realRun);
+
+		e_Mapper = new Mapper(bot); //argument bot
 		//e_Mapper.gridder.setAllUnexplored();
 		e_Mapper.gridder.setAllExplored();
         
@@ -51,12 +55,12 @@ public class MainFrame extends JFrame {
 		
         //if (realRun) comm.openConnection();
 
-        //bot = new Robot(RobotConstants.START_ROW, RobotConstants.START_COL, realRun);
+        bot = new Robot(RobotConstants.START_ROW, RobotConstants.START_COL, realRun);
 
-        //if (!realRun) {
-        //    realMap = new Map(bot);
-        //    realMap.setAllUnexplored();
-        //}
+        if (!realRun) {
+            realMap = new Mapper(bot);
+            realMap.gridder.setAllUnexplored();
+        }
 	}
 	
 	//show main frame

@@ -1,8 +1,8 @@
 package jframe_pkg.robot;
 
-import map.Mapper;
-import map.Gridder;
-import robot.RobotConstants.DIRECTION;
+import jframe_pkg.map.Mapper;
+import jframe_pkg.map.Gridder;
+import jframe_pkg.robot.RobotConstants.DIRECTION;
 
 /**
  * Represents a sensor mounted on the robot.

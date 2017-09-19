@@ -8,13 +8,17 @@ import javax.swing.JPanel;
 
 import jframe_pkg.map.Gridder;
 import jframe_pkg.map.MapConstant;
+import jframe_pkg.robot.Robot;
+import jframe_pkg.robot.RobotConstants;
 
 public class Mapper extends JPanel {
+
 	public Gridder gridder = new Gridder();
+	private final Robot bot;
 	
-	public Mapper() //bot, gridder
+	public Mapper(Robot bot) //bot, gridder
 	{
-		//this.bot = bot;
+		this.bot = bot;
 		this.gridder = gridder;
 		//this.repaint();
 	}
@@ -56,16 +60,16 @@ public class Mapper extends JPanel {
             }
         }
 
-        /** Paint the robot on-screen.
-        //g.setColor(GraphicsConstant.C_ROBOT);
-        //int r = bot.getRobotPosRow();
-        //int c = bot.getRobotPosCol();
-        //g.fillOval((c - 1) * GraphicsConstant.CELL_SIZE + GraphicsConstant.ROBOT_X_OFFSET + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - (r * GraphicsConstant.CELL_SIZE + GraphicsConstant.ROBOT_Y_OFFSET), GraphicsConstant.ROBOT_W, GraphicsConstant.ROBOT_H);
-		**/
+        // Paint the robot on-screen.
+        g.setColor(GraphicsConstant.C_ROBOT);
+        int r = bot.getRobotPosRow();
+        int c = bot.getRobotPosCol();
+        g.fillOval((c - 1) * GraphicsConstant.CELL_SIZE + GraphicsConstant.ROBOT_X_OFFSET + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - (r * GraphicsConstant.CELL_SIZE + GraphicsConstant.ROBOT_Y_OFFSET), GraphicsConstant.ROBOT_W, GraphicsConstant.ROBOT_H);
+		
         
-        /** Paint the robot's direction indicator on-screen.
-        //g.setColor(GraphicsConstant.C_ROBOT_DIR);
-        //RobotConstants.DIRECTION d = bot.getRobotCurDir();
+        //Paint the robot's direction indicator on-screen.
+        g.setColor(GraphicsConstant.C_ROBOT_DIR);
+        RobotConstants.DIRECTION d = bot.getRobotCurDir();
         switch (d) {
             case NORTH:
                 g.fillOval(c * GraphicsConstant.CELL_SIZE + 10 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE - 15, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
@@ -79,7 +83,7 @@ public class Mapper extends JPanel {
             case WEST:
                 g.fillOval(c * GraphicsConstant.CELL_SIZE - 15 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 10, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
                 break;
-        }**/
+        }
     }
 
     private class _DisplayCell {

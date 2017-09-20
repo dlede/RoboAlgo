@@ -3,6 +3,7 @@ package jframe_pkg;
 import static jframe_pkg.utils.MapDescriptor.loadMapFromDisk;
 import jframe_pkg.map.Mapper;
 import jframe_pkg.robot.RobotConstants;
+import jframe_pkg.utils.CommMgr;
 import jframe_pkg.robot.Robot;
 
 import javax.swing.*;
@@ -30,7 +31,7 @@ public class MainFrame extends JFrame {
     private static int timeLimit = 3600;            // TODO: time limit
     private static int coverageLimit = 300;         // TODO: coverage limit
 
-    //private static final CommMgr comm = CommMgr.getCommMgr(); // TODO: commsMgr
+    private static final CommMgr comm = CommMgr.getCommMgr(); // TODO: commsMgr
     private static final boolean realRun = false;
     
     //private boolean auto_mode = false; //auto mode false = manual, can use keystroke to move

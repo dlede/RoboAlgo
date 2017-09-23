@@ -72,7 +72,19 @@ public class Mapper extends JPanel {
         RobotConstants.DIRECTION d = bot.getRobotCurDir();
         switch (d) {
             case NORTH:
-                g.fillOval(c * GraphicsConstant.CELL_SIZE + 10 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE - 15, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
+            	//Project Triangle Pointer Rotation
+            	//new int[] {75, (75+3.5), 75}, new int[] {(75+1.75), 75, (75-175)}, 3
+            	//g.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET, //left x
+            	//						(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+4), //
+            	//						c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET}, 
+            	//			new int[] {(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+20), 
+            	//					(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE), 
+	            //						(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-2)}, 
+            	//			3);
+                g.fillOval(c * GraphicsConstant.CELL_SIZE + 10 + GraphicsConstant.MAP_X_OFFSET, 
+                			GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE - 15, 
+                			GraphicsConstant.ROBOT_DIR_W, 
+                			GraphicsConstant.ROBOT_DIR_H);
                 break;
             case EAST:
                 g.fillOval(c * GraphicsConstant.CELL_SIZE + 35 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 10, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);

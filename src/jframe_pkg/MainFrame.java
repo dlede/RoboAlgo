@@ -18,8 +18,9 @@ public class MainFrame extends JFrame {
     private static JFrame _appFrame = null;         // application JFrame
 
     private static JPanel _mapCards = null;         // JPanel for map views
-    private static JPanel _buttons = null;          // JPanel for buttons
-
+    private static JPanel _settings = null;          // JPanel for buttons
+    private static Container _container = null;
+    
     private static Robot bot; // TODO: init your robot here
 
     private static Mapper r_Mapper = null;   
@@ -69,7 +70,7 @@ public class MainFrame extends JFrame {
         // Initialise main frame for display
         _appFrame = new JFrame();
         _appFrame.setTitle("MDP Group 15 Main Frame");
-        _appFrame.setSize(new Dimension(800, 800));
+        _appFrame.setSize(new Dimension(1000, 1000));
         _appFrame.setResizable(false);
 
         // Center the main frame in the middle of the screen
@@ -78,26 +79,21 @@ public class MainFrame extends JFrame {
 
         // Create the CardLayout for storing the different maps
         _mapCards = new JPanel(new CardLayout());
+        _settings = new JPanel();
+        //_mapCards.add(_settings, BorderLayout.WEST);
 
-        // Create the JPanel for the buttons
-        _buttons = new JPanel();
-        
-        //JPanel test_panel = new JPanel();
-        //JToggleButton auto_button = new JToggleButton("Auto");
-
-        //test_panel.setLayout(new GridLayout(9, 9, 5, 5));
-        //test_panel.add(auto_button);
-
-        // Add _mapCards & _buttons to the main frame's content pane
+        // Add _mapCards & _settings to the main frame's content pane
         Container contentPane = _appFrame.getContentPane();
         contentPane.add(_mapCards, BorderLayout.CENTER);
-        contentPane.add(_buttons, BorderLayout.PAGE_END);
+        contentPane.add(_settings, BorderLayout.EAST);
+        //contentPane.add(_monitor, BorderLayout.WEST);
+        //contentPane.add(_toggle, BorderLayout.PAGE_END);
         
         // Initialize the main map view
         initMainLayout();
         
         //buttons
-        initButtonsLayout();
+        initSettingsLayout();
         
         //_appFrame.add(test_panel);
         _appFrame.setVisible(true);
@@ -118,22 +114,30 @@ public class MainFrame extends JFrame {
         //}
     }
 
-    /**
-     * Initialises the JPanel for the buttons.
-     **/
-    private static void initButtonsLayout() {
-        _buttons.setLayout(new GridLayout());
-        addButtons();
+    //Initialises the Right Panel: Settings Panel inclusive of Set Waypoints, Set Speed, Set Map.txt
+    private static void initSettingsLayout() {
+       // _settings.setLayout(new GridLayout(3, 0, 10, 10)); // 3 rows: set waypoint, set speed, set map
+        //_settings.setLayout(new FlowLayout());
+    	
+    	//_settings.setLayout(new BorderLayout());
+    	_settings.setLayout(new BoxLayout(_settings, BoxLayout.Y_AXIS));
+    	addWaypointPanel();
+    	addSpeedPanel();
+    	addLoadMapButton();
     }
     
     private static void formatButton(JButton btn) {
         btn.setFont(new Font("Arial", Font.BOLD, 13));
         btn.setFocusPainted(false);
+        //btn.setPreferredSize(new Dimension(200, 20));
     }
     
-    private static void addButtons() {
+    private static void addLoadMapButton() {
         //if (!realRun) {
             // Load Map Button
+    	//JPanel map_panel = new JPanel(new FlowLayout());
+    	JPanel map_panel = new JPanel(new FlowLayout());
+    	
             JButton btn_LoadMap = new JButton("Load Map");
             formatButton(btn_LoadMap);
             btn_LoadMap.addMouseListener(new MouseAdapter() {
@@ -161,8 +165,71 @@ public class MainFrame extends JFrame {
                     loadMapDialog.setVisible(true);
                 }
             });
-            _buttons.add(btn_LoadMap);
+            map_panel.add(btn_LoadMap);
+            _settings.add(map_panel, BorderLayout.NORTH);
         //}
+    }
+    
+    private static void addWaypointPanel() {
+    	JPanel wp_panel = new JPanel(new FlowLayout());
+    	//new BoxLayout(wp_panel, BoxLayout.PAGE_AXIS)
+    	//wp_panel.setLayout(new BoxLayout(wp_panel, BoxLayout.Y_AXIS));
+    	//wp_panel.add(Box.createRigidArea(new Dimension(0, 500)));
+    	
+    	JPanel wp_input = new JPanel(new FlowLayout());
+    	
+    	JLabel wp_label = new JLabel("Waypoints: ");
+    	
+    	JTextField field_x = new JTextField(5);
+    	JTextField field_y = new JTextField(5);
+    	
+    	JPanel wp_textfield = new JPanel();
+    	field_x.setText("0");
+    	field_y.setText("0");
+    	
+    	wp_textfield.add(field_x);
+    	wp_textfield.add(field_y);
+
+        JButton btn_Waypoints = new JButton("Set Waypoints");
+        formatButton(btn_Waypoints);
+        btn_Waypoints.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	//TODO: set waypoint function on mapper e.g.
+            	System.out.println("(" +"Waypoint: " + field_x.getText() + ", " + field_y.getText()+")");
+            }
+        });
+        wp_input.add(wp_label);
+        wp_input.add(wp_textfield);
+        //wp_panel.add(wp_input);
+        wp_panel.add(btn_Waypoints);
+        _settings.add(wp_input);
+        _settings.add(wp_panel);
+    }
+    
+    private static void addSpeedPanel() {
+    	JPanel spd_panel = new JPanel(new FlowLayout());
+    	JPanel spd_input = new JPanel(new FlowLayout());
+    	
+    	JLabel spd_label = new JLabel("Speed: ");
+    	
+    	JTextField field_spd = new JTextField(20);
+    	
+    	JPanel spd_textfield = new JPanel();
+    	spd_textfield.add(field_spd);
+    	
+        JButton btn_Speed = new JButton("Set Speed");
+        formatButton(btn_Speed);
+        btn_Speed.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	//TODO: set speed function on robot e.g.
+            	System.out.println("Speed: " + field_spd.getText());
+            }
+        });
+        spd_input.add(spd_label);
+        spd_input.add(spd_textfield);
+        spd_panel.add(btn_Speed);
+        _settings.add(spd_input);
+        _settings.add(spd_panel);
     }
     
 

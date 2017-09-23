@@ -5,6 +5,7 @@ import jframe_pkg.map.Gridder;
 import jframe_pkg.map.MapConstant;
 import jframe_pkg.robot.RobotConstants.DIRECTION;
 import jframe_pkg.robot.RobotConstants.MOVEMENT;
+import jframe_pkg.utils.CommMgr;
 //import jframe_pkg.utils.CommMgr;
 import jframe_pkg.utils.MapDescriptor;
 import jframe_pkg.robot.Sensor;
@@ -178,16 +179,18 @@ public class Robot {
      */
     
     // blank out below cause no commMgr
-    /**
+    
     public void moveForwardMultiple(int count) {
         if (count == 1) {
             move(MOVEMENT.FORWARD);
         } else {
             CommMgr comm = CommMgr.getCommMgr();
             if (count == 10) {
-                comm.sendMsg("0", CommMgr.INSTRUCTIONS);
+                //comm.sendMsg("0", CommMgr.INSTRUCTIONS);
+                comm.sendMsg("0" + "" + CommMgr.INSTRUCTIONS);
             } else if (count < 10) {
-                comm.sendMsg(Integer.toString(count), CommMgr.INSTRUCTIONS);
+                //comm.sendMsg(Integer.toString(count), CommMgr.INSTRUCTIONS);
+            	comm.sendMsg(Integer.toString(count) + "" +  CommMgr.INSTRUCTIONS);
             }
 
             switch (robotDir) {
@@ -205,10 +208,11 @@ public class Robot {
                     break;
             }
 
-            comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()), CommMgr.BOT_POS);
+            //comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()), CommMgr.BOT_POS);
+            comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
         }
     }
-    **/
+    
 
     /**
      * Uses the CommMgr to send the next movement to the robot.
@@ -290,7 +294,7 @@ public class Robot {
      *
      * @return [SRFrontLeft, SRFrontCenter, SRFrontRight, SRLeft, SRRight, LRLeft]
      */
-    public int[] sense (Gridder explorationMap, Gridder realMap) {
+    public int[] sense (Mapper explorationMap, Mapper realMap) {
         int[] result = new int[6];
 
         if (!realBot) {

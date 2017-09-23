@@ -15,6 +15,8 @@ public class Mapper extends JPanel {
 
 	public Gridder gridder = new Gridder();
 	private final Robot bot;
+	public static int waypoint_x;
+	public static int waypoint_y;
 	
 	public Mapper(Robot bot) //bot, gridder
 	{
@@ -98,6 +100,12 @@ public class Mapper extends JPanel {
         }
     }
 
+    public void set_waypoint(int x, int y)
+    {
+    	this.waypoint_x = x;
+    	this.waypoint_y = y;
+    }
+    
     private class _DisplayCell {
         public final int cellX;
         public final int cellY;

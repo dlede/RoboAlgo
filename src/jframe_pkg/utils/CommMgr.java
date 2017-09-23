@@ -11,7 +11,13 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class CommMgr {
-
+    public static final String EX_START = "EX_START";       // Android --> PC
+    public static final String FP_START = "FP_START";       // Android --> PC
+    public static final String MAP_STRINGS = "MAP";         // PC --> Android
+    public static final String BOT_POS = "BOT_POS";         // PC --> Android
+    public static final String BOT_START = "BOT_START";     // PC --> Arduino
+    public static final String INSTRUCTIONS = "INSTR";      // PC --> Arduino
+    public static final String SENSOR_DATA = "SDATA";       // Arduino --> PC
 
 	public static final String RPI_IP_ADDRESS = "192.168.15.15"; // MDPGrp 15's IP Address
 	public static final int RPI_PORT = 1515; // Port used for transmitting of data

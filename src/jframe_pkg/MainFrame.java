@@ -4,6 +4,7 @@ import static jframe_pkg.utils.MapDescriptor.loadMapFromDisk;
 import static jframe_pkg.utils.MapDescriptor.generateMapDescriptor;
 
 import jframe_pkg.algorithm.Explorer;
+import jframe_pkg.algorithm.Sprinter;
 import jframe_pkg.map.Mapper;
 import jframe_pkg.robot.RobotConstants;
 import jframe_pkg.utils.CommMgr;
@@ -39,16 +40,16 @@ public class MainFrame extends JFrame {
     private static Mapper e_Mapper = null;  // explored map
     
     private static Explorer explorer = null; // explorer mount init
-    public static boolean map_Load = true; // if map is loaded
+    public static boolean map_Load = false; // if map is loaded
 
     private static int timeLimit = 3600;            // TODO: time limit
     private static int coverageLimit = 300;         // TODO: coverage limit
 
-    private static final CommMgr comm = CommMgr.getCommMgr(); // TODO: commsMgr
+    private static final CommMgr comm = CommMgr.getCommMgr();
     private static final boolean realRun = false;
     
-    //private boolean auto_mode = false; //auto mode false = manual, can use keystroke to move
-    //private boolean fast_mode = false; //fast mode false = exploration
+    private static boolean auto_mode = false; //auto mode false = manual, can use keystroke to move
+    private static boolean fast_mode = false; //fast mode false = exploration
 
 	public static void main(String[] args) {
         bot = new Robot(RobotConstants.START_ROW, RobotConstants.START_COL, realRun);
@@ -76,14 +77,7 @@ public class MainFrame extends JFrame {
 		explorer = new Explorer(e_Mapper, r_Mapper, bot, timeLimit, coverageLimit); //exmap, rmap, robot, coverage, time
         
 		MainFrame frame = new MainFrame();
-        if (map_Load) // TODO: fix is toggle map load is true, run robot
-        {
-    		explorer.runExploration();
-    		generateMapDescriptor(e_Mapper);
-    		//bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
-    		//r_Mapper.repaint();
-            //e_Mapper.repaint();
-        }
+        frame.setVisible(true);
 	}
 	
 	//show main frame
@@ -91,7 +85,7 @@ public class MainFrame extends JFrame {
         // Initialise main frame for display
         _appFrame = new JFrame();
         _appFrame.setTitle("MDP Group 15 Main Frame");
-        _appFrame.setSize(new Dimension(1000, 1000));
+        _appFrame.setSize(new Dimension(1100, 750));
         _appFrame.setResizable(false);
 
         // Create the CardLayout for storing the different maps
@@ -166,45 +160,34 @@ public class MainFrame extends JFrame {
     }
     
     private static void addLoadMapButton() {
-        //if (!realRun) {
-            // Load Map Button
+        if (!realRun) {
+        
     	//JPanel map_panel = new JPanel(new FlowLayout());
-    	JPanel map_panel = new JPanel(new FlowLayout());
+    	JPanel map_panel = new JPanel(new GridLayout(3, 1));
+    	JLabel map_label = new JLabel("Map: ");
+    	JTextField map_field = new JTextField(15);
     	
             JButton btn_LoadMap = new JButton("Load Map");
             formatButton(btn_LoadMap);
             btn_LoadMap.addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
-                    JDialog loadMapDialog = new JDialog(_appFrame, "Load Map", true);
-                    loadMapDialog.setSize(400, 100);
-                    loadMapDialog.setLayout(new FlowLayout());
-
-                    final JTextField loadTF = new JTextField(15);
-                    JButton loadMapButton = new JButton("Load");
-
-                    loadMapButton.addMouseListener(new MouseAdapter() {
-                        public void mousePressed(MouseEvent e) {
-                            loadMapDialog.setVisible(false);
-                            loadMapFromDisk(r_Mapper, loadTF.getText());
-                            CardLayout cl = ((CardLayout) _mapCards.getLayout());
-                            cl.show(_mapCards, "REAL_MAP");
-                            r_Mapper.repaint();
-                        }
-                    });
-
-                    loadMapDialog.add(new JLabel("File Name: "));
-                    loadMapDialog.add(loadTF);
-                    loadMapDialog.add(loadMapButton);
-                    loadMapDialog.setVisible(true);
+                    loadMapFromDisk(r_Mapper, map_field.getText());
+                    CardLayout cl = ((CardLayout) _mapCards.getLayout());
+                    cl.show(_mapCards, "REAL_MAP");
+                    e_Mapper.repaint();
+                    map_Load = true;
+                    System.out.println("Map Loaded: " + map_Load);
                 }
             });
+            map_panel.add(map_label);
+            map_panel.add(map_field);
             map_panel.add(btn_LoadMap);
             map_panel.setBorder(new EmptyBorder(0, 0, 40, 0));
             //Set Padding Size
             map_panel.setMaximumSize(map_panel.getPreferredSize());
             map_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
             _settings.add(map_panel, BorderLayout.NORTH);
-        //}
+        }
     }
     
     private static void addWaypointPanel() {
@@ -377,6 +360,7 @@ public class MainFrame extends JFrame {
     }
 
     private static void addTimerPanel(){
+    	//Timer stopwatch = new Timer();
     	
     	JPanel timer_panel = new JPanel(new FlowLayout());
     	
@@ -477,6 +461,90 @@ public class MainFrame extends JFrame {
     
     private static void addModePanel(){
     	
+        //TODO: Change this portion onwards
+    	
+        // FastestPath Class for Multithreading
+        class FastestPath extends SwingWorker<Integer, String> {
+            protected Integer doInBackground() throws Exception {
+                bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
+                e_Mapper.repaint();
+
+                if (realRun) {
+                    while (true) {
+                        System.out.println("Waiting for FP_START...");
+                        String msg = comm.revMsg();
+                        if (msg.equals(CommMgr.FP_START)) break;
+                    }
+                }
+
+                Sprinter fastestPath;
+                fastestPath = new Sprinter(e_Mapper, bot);
+
+                fastestPath.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+
+                return 222;
+            }
+        }
+        
+        // Exploration Class for Multithreading
+        class Exploration extends SwingWorker<Integer, String> {
+            protected Integer doInBackground() throws Exception {
+                int row, col;
+
+                row = RobotConstants.START_ROW;
+                col = RobotConstants.START_COL;
+
+                bot.setRobotPos(row, col);
+                e_Mapper.repaint();
+
+                Explorer exploration;
+                exploration = new Explorer(e_Mapper, r_Mapper, bot, coverageLimit, timeLimit);
+
+                if (realRun) {
+                    CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
+                }
+
+                exploration.runExploration();
+                generateMapDescriptor(e_Mapper);
+
+                if (realRun) {
+                    new FastestPath().execute();
+                }
+
+                return 111;
+            }
+        }
+        
+        // CoverageExploration Class for Multithreading
+        class CoverageExploration extends SwingWorker<Integer, String> {
+            protected Integer doInBackground() throws Exception {
+                bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
+                e_Mapper.repaint();
+
+                Explorer coverageExplo = new Explorer(e_Mapper, r_Mapper, bot, coverageLimit, timeLimit);
+                coverageExplo.runExploration();
+
+                generateMapDescriptor(e_Mapper);
+
+                return 444;
+            }
+        }
+        
+        // TimeExploration Class for Multithreading
+        class TimeExploration extends SwingWorker<Integer, String> {
+            protected Integer doInBackground() throws Exception {
+                bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
+                e_Mapper.repaint();
+
+                Explorer timeExplo = new Explorer(e_Mapper, r_Mapper, bot, coverageLimit, timeLimit);
+                timeExplo.runExploration();
+
+                generateMapDescriptor(e_Mapper);
+
+                return 333;
+            }
+        }
+    	
     	JPanel mode_panel = new JPanel(new FlowLayout());
 
     	JLabel exp_label = new JLabel("Exploration Mode: ");
@@ -488,10 +556,45 @@ public class MainFrame extends JFrame {
     	        int state = itemEvent.getStateChange();
     	        if (state == ItemEvent.SELECTED) {
     	            System.out.println("On"); // show your message here
+    	            fast_mode = false; // if fast mode off, explore
+    	            if (auto_mode==true && fast_mode == false && map_Load == true)
+    	            {
+    	            	//TODO: explore
+    	        		//explorer.runExploration();
+    	        		//generateMapDescriptor(e_Mapper);
+    	        		//bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
+    	        		//e_Mapper.repaint();
+    	        		//r_Mapper.repaint();
+    	                //e_Mapper.repaint();
+    	        		
+    	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
+    	                cl.show(_mapCards, "EXPLORATION");
+    	                new Exploration().execute();
+    	        		
+    	        		if (auto_mode==false)
+    	        		{
+    	        			System.out.println("Break");
+    	        			//break;
+    	        		}
+    	            }
     	            toggleButton.setText("ON");
     	            
     	        } else {
     	            System.out.println("Off"); // remove your message
+    	            fast_mode = true; // if fast mode on, greedy
+    	            if (auto_mode==true && fast_mode == false && map_Load == true)
+    	            {
+    	            	//TODO: sprint
+    	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
+    	                cl.show(_mapCards, "EXPLORATION");
+    	                new FastestPath().execute();
+    	        		
+    	        		if (auto_mode==false)
+    	        		{
+    	        			System.out.println("Break");
+    	        			//break;
+    	        		}
+    	            }
     	            toggleButton.setText("OFF");
     	            
     	        }
@@ -509,10 +612,12 @@ public class MainFrame extends JFrame {
     	        int state = itemEvent.getStateChange();
     	        if (state == ItemEvent.SELECTED) {
     	            System.out.println("On"); // show your message here
+    	            auto_mode = true; // if auto mode on
     	            autoBtn.setText("ON");
     	            
     	        } else {
     	            System.out.println("Off"); // remove your message
+    	            auto_mode = false; // if auto mode off
     	            autoBtn.setText("OFF");
     	            
     	        }

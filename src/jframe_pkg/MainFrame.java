@@ -10,7 +10,12 @@ import jframe_pkg.utils.CommMgr;
 import jframe_pkg.robot.Robot;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -24,6 +29,8 @@ public class MainFrame extends JFrame {
 
     private static JPanel _mapCards = null;         // JPanel for map views
     private static JPanel _settings = null;          // JPanel for settings - right portion of console
+    private static JPanel _stepsInfo = null;		// JPanel for steps info
+    private static JPanel _modeSettings = null;			//JPanel for end page
     private static Container _container = null;
     
     private static Robot bot; //init robot
@@ -90,11 +97,16 @@ public class MainFrame extends JFrame {
         // Create the CardLayout for storing the different maps
         _mapCards = new JPanel(new CardLayout());
         _settings = new JPanel();
+        _stepsInfo = new JPanel();
+        _modeSettings = new JPanel();
+        //_mapCards.add(_settings, BorderLayout.WEST);
 
         // Add _mapCards & _settings to the main frame's content pane
         Container contentPane = _appFrame.getContentPane();
         contentPane.add(_mapCards, BorderLayout.CENTER);
         contentPane.add(_settings, BorderLayout.EAST);
+        contentPane.add(_stepsInfo, BorderLayout.WEST);
+        contentPane.add(_modeSettings, BorderLayout.SOUTH);
         //contentPane.add(_monitor, BorderLayout.WEST);
         //contentPane.add(_toggle, BorderLayout.PAGE_END);
         
@@ -103,6 +115,12 @@ public class MainFrame extends JFrame {
         
         //buttons
         initSettingsLayout();
+        
+        //steps info
+        initStepsLayout();
+        
+        //mode btns
+        initModeBtnLayout();
         
         _appFrame.setVisible(true);
         _appFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -124,10 +142,21 @@ public class MainFrame extends JFrame {
 
     //Initialises the Right Panel: Settings Panel inclusive of Set Waypoints, Set Speed, Set Map.txt
     private static void initSettingsLayout() {
+       // _settings.setLayout(new GridLayout(3, 0, 10, 10)); // 3 rows: set waypoint, set speed, set map
+        //_settings.setLayout(new FlowLayout());
+    	
+    	//_settings.setLayout(new BorderLayout());
     	_settings.setLayout(new BoxLayout(_settings, BoxLayout.Y_AXIS));
+    	/*Border border = BorderFactory.createLineBorder(Color.BLACK); //create border
+    	_settings.setBorder(BorderFactory.createCompoundBorder(border, 
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+    	*/
+    	_settings.setBorder(new EmptyBorder(30, 10, 10, 20));
     	addWaypointPanel();
     	addSpeedPanel();
     	addLoadMapButton();
+    	addTimerPanel();
+
     }
     
     private static void formatButton(JButton btn) {
@@ -139,50 +168,106 @@ public class MainFrame extends JFrame {
     private static void addLoadMapButton() {
         //if (!realRun) {
             // Load Map Button
+    	//JPanel map_panel = new JPanel(new FlowLayout());
     	JPanel map_panel = new JPanel(new FlowLayout());
-    	JPanel map_input = new JPanel(new FlowLayout());
     	
-    	JLabel map_label = new JLabel("Map: ");
-    	
-        JButton btn_LoadMap = new JButton("Load Map");
-        formatButton(btn_LoadMap);
-        
-        final JTextField loadTF = new JTextField(15);
-        loadTF.setText("map");
-                 
-        btn_LoadMap.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-            	//TODO: load map
-                loadMapFromDisk(r_Mapper, loadTF.getText());
-                map_Load = true; // set load map is true
-                System.out.println("map loaded: " + map_Load);
-            }
-        });
-        
-        CardLayout cl = ((CardLayout) _mapCards.getLayout());
-        cl.show(_mapCards, "REAL_MAP");
-        //r_Mapper.repaint();
-        
-        e_Mapper.repaint();
+            JButton btn_LoadMap = new JButton("Load Map");
+            formatButton(btn_LoadMap);
+            btn_LoadMap.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
+                    JDialog loadMapDialog = new JDialog(_appFrame, "Load Map", true);
+                    loadMapDialog.setSize(400, 100);
+                    loadMapDialog.setLayout(new FlowLayout());
 
-        /**
-        wp_input.add(wp_textfield);
-        wp_panel.add(btn_Waypoints);
-         **/
-        	map_input.add(map_label);
-        	map_input.add(loadTF);
+                    final JTextField loadTF = new JTextField(15);
+                    JButton loadMapButton = new JButton("Load");
+
+                    loadMapButton.addMouseListener(new MouseAdapter() {
+                        public void mousePressed(MouseEvent e) {
+                            loadMapDialog.setVisible(false);
+                            loadMapFromDisk(r_Mapper, loadTF.getText());
+                            CardLayout cl = ((CardLayout) _mapCards.getLayout());
+                            cl.show(_mapCards, "REAL_MAP");
+                            r_Mapper.repaint();
+                        }
+                    });
+
+                    loadMapDialog.add(new JLabel("File Name: "));
+                    loadMapDialog.add(loadTF);
+                    loadMapDialog.add(loadMapButton);
+                    loadMapDialog.setVisible(true);
+                }
+            });
             map_panel.add(btn_LoadMap);
-            _settings.add(map_input);
-            _settings.add(map_panel);
+            map_panel.setBorder(new EmptyBorder(0, 0, 40, 0));
+            //Set Padding Size
+            map_panel.setMaximumSize(map_panel.getPreferredSize());
+            map_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            _settings.add(map_panel, BorderLayout.NORTH);
+        //}
     }
     
     private static void addWaypointPanel() {
-    	JPanel wp_panel = new JPanel(new FlowLayout());
+    	
+    	//create panel
+    	JPanel wp_panel = new JPanel(new GridLayout(3, 1));
+    	//wp_panel.setLayout(new BoxLayout(wp_panel, BoxLayout.Y_AXIS));
+    	
+    	//create label
+    	JLabel wp_label = new JLabel("Waypoints: ");
+    	
+    	//Create field
+    	JPanel wp_textfield = new JPanel();
+    	JTextField field_x = new JTextField(5);
+    	JTextField field_y = new JTextField(5);
+    	
+    	field_x.setText("0");
+    	field_y.setText("0");
+    	
+
+        //Align items
+    	wp_textfield.setAlignmentX(Component.LEFT_ALIGNMENT);
+    	
+    	
+    	wp_textfield.add(field_x);
+    	wp_textfield.add(field_y);
+    	
+
+    	//create btn
+    	JButton btn_Waypoints = new JButton("Set Waypoints");
+    	
+        formatButton(btn_Waypoints);
+        btn_Waypoints.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	//TODO: set waypoint function on mapper e.g.
+            	System.out.println("(" +"Waypoint: " + field_x.getText() + ", " + field_y.getText()+")");
+            }
+        });
+    	
+        //add items to panel
+        wp_panel.add(wp_label);
+        wp_panel.add(wp_textfield);
+        wp_panel.add(btn_Waypoints);
+
+        
+        //Align items
+        wp_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wp_panel.setBorder(new EmptyBorder(0, 0, 40, 0));
+        //Set Padding Size
+        wp_panel.setMaximumSize(wp_panel.getPreferredSize());
+        _settings.add(wp_panel);
+    	
+    	
+    	/*
+    	//JPanel wp_panel = new JPanel(new FlowLayout());
+    	JPanel wp_panel = new JPanel();
+    	wp_panel.setLayout(new BoxLayout(wp_panel, BoxLayout.Y_AXIS));
+    	
     	//new BoxLayout(wp_panel, BoxLayout.PAGE_AXIS)
     	//wp_panel.setLayout(new BoxLayout(wp_panel, BoxLayout.Y_AXIS));
     	//wp_panel.add(Box.createRigidArea(new Dimension(0, 500)));
     	
-    	JPanel wp_input = new JPanel(new FlowLayout());
+    	//JPanel wp_input = new JPanel(new FlowLayout());
     	
     	JLabel wp_label = new JLabel("Waypoints: ");
     	
@@ -193,16 +278,11 @@ public class MainFrame extends JFrame {
     	field_x.setText("0");
     	field_y.setText("0");
     	
-    	String temp_x = field_x.getText(); 
-    	String temp_y = field_y.getText(); 
-    	int temp_ix = Integer.parseInt(temp_x);
-    	int temp_iy = Integer.parseInt(temp_y);
-    	
     	wp_textfield.add(field_x);
     	wp_textfield.add(field_y);
-    	
-    	//e_Mapper.set_waypoint(temp_ix, temp_iy);
 
+    	wp_textfield.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
         JButton btn_Waypoints = new JButton("Set Waypoints");
         formatButton(btn_Waypoints);
         btn_Waypoints.addMouseListener(new MouseAdapter() {
@@ -211,15 +291,58 @@ public class MainFrame extends JFrame {
             	System.out.println("(" +"Waypoint: " + field_x.getText() + ", " + field_y.getText()+")");
             }
         });
-        wp_input.add(wp_label);
-        wp_input.add(wp_textfield);
+        
+        wp_panel.add(wp_label);
+        wp_panel.add(wp_textfield);
         //wp_panel.add(wp_input);
         wp_panel.add(btn_Waypoints);
-        _settings.add(wp_input);
-        _settings.add(wp_panel);
+
+        //Set Padding Size
+        wp_panel.setMaximumSize(wp_panel.getPreferredSize());
+        //wp_input.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wp_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        _settings.add(wp_panel);*/
     }
     
     private static void addSpeedPanel() {
+    	
+    	//create panel
+    	JPanel spd_panel = new JPanel(new GridLayout(3, 1));
+    	//spd_panel.setLayout(new BoxLayout(spd_panel,BoxLayout.Y_AXIS));
+    
+    	
+    	
+    	//create speed label
+    	JLabel spd_label = new JLabel("Speed: ");
+    	
+    	//create speed field
+    	JTextField field_spd = new JTextField(10);
+    	
+    	//create speed btn
+    	JButton btn_Speed = new JButton("Set Speed");
+        formatButton(btn_Speed);
+        btn_Speed.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	//TODO: set speed function on robot e.g.
+            	System.out.println("Speed: " + field_spd.getText());
+            }
+        });
+        
+        //align left
+        spd_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        spd_panel.add(spd_label);
+        spd_panel.add(field_spd);
+        spd_panel.add(btn_Speed);
+
+        spd_panel.setBorder(new EmptyBorder(0, 0, 40, 0));
+        //Set Padding Size
+        spd_panel.setMaximumSize(spd_panel.getPreferredSize());
+        
+        _settings.add(spd_panel);
+        
+    	
+    	/*
     	JPanel spd_panel = new JPanel(new FlowLayout());
     	JPanel spd_input = new JPanel(new FlowLayout());
     	
@@ -241,9 +364,177 @@ public class MainFrame extends JFrame {
         spd_input.add(spd_label);
         spd_input.add(spd_textfield);
         spd_panel.add(btn_Speed);
+        //Set Padding Size
+        spd_input.setMaximumSize(spd_input.getPreferredSize());
+        spd_panel.setMaximumSize(spd_panel.getPreferredSize());
+
+        //align left
+        spd_input.setAlignmentX(Component.LEFT_ALIGNMENT);
+        spd_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
         _settings.add(spd_input);
-        _settings.add(spd_panel);
+        _settings.add(spd_panel);*/
+    }
+
+    private static void addTimerPanel(){
+    	
+    	JPanel timer_panel = new JPanel(new FlowLayout());
+    	
+    	JLabel timer_label = new JLabel("Timer ");
+    	
+    	JTextField field_timer = new JTextField(10);
+    	
+    	timer_panel.add(timer_label);
+    	timer_panel.add(field_timer);
+    	timer_panel.setMaximumSize(timer_panel.getPreferredSize());
+
+        //align left
+    	timer_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    	_settings.add(timer_panel);
+    	
+    	
+    	
     }
     
+    
+    //West Panel    
+    private static void initStepsLayout(){
+
+    	_stepsInfo.setLayout(new BoxLayout(_stepsInfo, BoxLayout.Y_AXIS));
+    	//_stepsInfo.setLayout(new FlowLayout());
+    	_stepsInfo.setBorder(new EmptyBorder(30, 20, 10, 0));
+    	
+    	addConsolePanel();
+    	addNxtStepPanel();
+    	addCurPosPanel();
+    }
+    
+    private static void addConsolePanel(){
+    	
+    	JPanel infoPanel = new JPanel(new BorderLayout());
+        JTextArea info = new JTextArea(25, 20);
+        Border border = BorderFactory.createLineBorder(Color.BLACK); //create border
+        
+        
+        info.setLineWrap(true);
+        info.setEditable(false);
+        info.setWrapStyleWord(true);
+        info.setBorder(BorderFactory.createCompoundBorder(border, 
+                    BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        info.setAutoscrolls(true);
+        infoPanel.add(info);
+        infoPanel.setBorder(new EmptyBorder(0, 0, 40, 0));
+        //Set Padding Size
+        infoPanel.setMaximumSize(infoPanel.getPreferredSize());
+        
+        _stepsInfo.add(infoPanel); 
+        
+    	
+    }
+
+    private static void addNxtStepPanel(){
+    	JPanel ns_panel = new JPanel(new GridLayout(2, 1));
+    	
+    	//JLabel ns_label = new JLabel("Next Step: ");
+    	
+    	//JTextField field_ns = new JTextField(5);
+    	
+    	//ns_panel.add(ns_label);
+    	//ns_panel.add(field_ns);
+    	//ns_panel.setMaximumSize(ns_panel.getPreferredSize());
+        //_stepsInfo.add(ns_panel);
+    	
+    	JButton btn_NxtStep = new JButton("Next Step");
+        formatButton(btn_NxtStep);
+        ns_panel.add(btn_NxtStep);
+        ns_panel.setMaximumSize(ns_panel.getPreferredSize());
+        _stepsInfo.add(ns_panel);
+    	
+    	
+    }
+
+    private static void addCurPosPanel(){
+    	
+    	JPanel cp_panel = new JPanel(new GridLayout(0, 1));
+    	
+    	JLabel cp_label = new JLabel("Current Position: ");
+    	
+    	JTextField field_cp = new JTextField(5);
+    	
+    	cp_panel.add(cp_label);
+    	cp_panel.add(field_cp);
+    	cp_panel.setMaximumSize(cp_panel.getPreferredSize());
+        _stepsInfo.add(cp_panel);
+    }
+
+    //South Panel
+    private static void initModeBtnLayout(){
+    	
+    	_modeSettings.setLayout(new FlowLayout());
+    	addModePanel();
+    	
+    }
+    
+    private static void addModePanel(){
+    	
+    	JPanel mode_panel = new JPanel(new FlowLayout());
+
+    	JLabel exp_label = new JLabel("Exploration Mode: ");
+    	
+    	JToggleButton toggleButton = new JToggleButton("OFF");
+    	ItemListener itemListener = new ItemListener() {
+    		
+    	    public void itemStateChanged(ItemEvent itemEvent) {
+    	        int state = itemEvent.getStateChange();
+    	        if (state == ItemEvent.SELECTED) {
+    	            System.out.println("On"); // show your message here
+    	            toggleButton.setText("ON");
+    	            
+    	        } else {
+    	            System.out.println("Off"); // remove your message
+    	            toggleButton.setText("OFF");
+    	            
+    	        }
+    	    }
+    	};
+    	
+    	toggleButton.addItemListener(itemListener);
+    	
+    	
+    	JLabel auto_label = new JLabel("Auto Mode: ");
+    	JToggleButton autoBtn = new JToggleButton("OFF");
+    	ItemListener autoBtnListener = new ItemListener() {
+    		
+    	    public void itemStateChanged(ItemEvent itemEvent) {
+    	        int state = itemEvent.getStateChange();
+    	        if (state == ItemEvent.SELECTED) {
+    	            System.out.println("On"); // show your message here
+    	            autoBtn.setText("ON");
+    	            
+    	        } else {
+    	            System.out.println("Off"); // remove your message
+    	            autoBtn.setText("OFF");
+    	            
+    	        }
+    	    }
+    	};
+    	
+    	autoBtn.addItemListener(autoBtnListener);
+    	
+    	
+
+    	mode_panel.add(exp_label);
+    	mode_panel.add(toggleButton);
+    	mode_panel.add(auto_label);
+    	mode_panel.add(autoBtn);
+    	
+    	
+    	
+    	
+    	_modeSettings.add(mode_panel);
+    	
+    	
+    	
+    }
 
 }

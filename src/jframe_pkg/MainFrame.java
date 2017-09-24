@@ -9,12 +9,14 @@ import jframe_pkg.map.Mapper;
 import jframe_pkg.robot.RobotConstants;
 import jframe_pkg.utils.CommMgr;
 import jframe_pkg.robot.Robot;
+import jframe_pkg.utils.Stopwatch;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -33,6 +35,11 @@ public class MainFrame extends JFrame {
     private static JPanel _monitor = null;		    // JPanel for monitor
     private static JPanel _toggle = null;			//JPanel for toggle btns
     private static Container _container = null;
+    
+    private static Stopwatch timer = null;
+    private static String minutes;
+    private static String seconds;
+    public static String minsec;
     
     private static Robot bot; //init robot
 
@@ -53,7 +60,8 @@ public class MainFrame extends JFrame {
 
 	public static void main(String[] args) {
         bot = new Robot(RobotConstants.START_ROW, RobotConstants.START_COL, realRun);
-		
+        timer = new Stopwatch();
+        
         if (realRun)
         {
 			try {
@@ -169,8 +177,8 @@ public class MainFrame extends JFrame {
                 	map_panel.setVisible(false);
                     loadMapFromDisk(r_Mapper, map_field.getText());
                     CardLayout cl = ((CardLayout) _mapCards.getLayout());
-                    cl.show(_mapCards, "REAL_MAP");
-                    r_Mapper.repaint();
+                    cl.show(_mapCards, "EXPLORATION_MAP");
+                    e_Mapper.repaint();
                     map_Load = true;
                     System.out.println("Map Loaded: " + map_Load);
                 }
@@ -198,17 +206,16 @@ public class MainFrame extends JFrame {
     	
     	//Create field
     	JPanel wp_textfield = new JPanel();
-    	JTextField field_x = new JTextField(5);
-    	JTextField field_y = new JTextField(5);
+    	final JTextField field_x = new JTextField(5);
+    	final JTextField field_y = new JTextField(5);
     	
+
     	field_x.setText("0");
     	field_y.setText("0");
     	
 
         //Align items
     	wp_textfield.setAlignmentX(Component.LEFT_ALIGNMENT);
-    	
-    	
     	wp_textfield.add(field_x);
     	wp_textfield.add(field_y);
     	
@@ -220,8 +227,16 @@ public class MainFrame extends JFrame {
         btn_Waypoints.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
             	//TODO: set waypoint function on mapper e.g.
-            	System.out.println("(" +"Waypoint: " + field_x.getText() + ", " + field_y.getText()+")");
+            	final String text_x = field_x.getText();
+            	final String text_y = field_y.getText();
+            	if (e_Mapper.gridder.waypoint_validator(Integer.parseInt(text_x),Integer.parseInt(text_y))==true) {
+            	System.out.println("(" +"Waypoint: " + Integer.parseInt(text_x) + ", " +Integer.parseInt(text_y) +")");
+            	e_Mapper.set_waypoint (Integer.parseInt(text_x),Integer.parseInt(text_y));
+                //e_Mapper.repaint();
+                map_Load = true;
+            	}
             }
+            
         });
     	
         //add items to panel
@@ -320,7 +335,6 @@ public class MainFrame extends JFrame {
 
         _settings.add(spd_panel);
         
-    	
     	/*
     	JPanel spd_panel = new JPanel(new FlowLayout());
     	JPanel spd_input = new JPanel(new FlowLayout());
@@ -355,13 +369,38 @@ public class MainFrame extends JFrame {
         _settings.add(spd_panel);*/
     }
 
+    private static void startTime()
+    {
+		// timer test block start
+
+	    EventQueue.invokeLater(new Runnable() {
+	
+	            @Override
+	            public void run() {
+	            	//timer = new Stopwatch();
+	                timer.start();
+	                //minutes = Integer.toString(timer.getMin());
+	                //seconds = Integer.toString(timer.getSec());
+	                //minsec = minutes + ":" + seconds;
+	            }
+	        });
+	    
+		// timer test block end
+    }
+    
     private static void addTimerPanel(){
-    	
+    	//TODO: add timer
     	JPanel timer_panel = new JPanel(new FlowLayout());
     	
     	JLabel timer_label = new JLabel("Timer ");
     	
     	JTextField field_timer = new JTextField(10);
+    	field_timer.setEditable(false);
+
+    	//timer_start=true;
+        field_timer.setText(timer.getMinSec());
+        
+    	startTime(); 
     	
     	timer_panel.add(timer_label);
     	timer_panel.add(field_timer);
@@ -415,6 +454,7 @@ public class MainFrame extends JFrame {
     private static void addNxtStepPanel(){
     	JPanel ns_panel = new JPanel(new GridLayout(2, 1));
     	
+    	//TODO: add array of moves display
     	//JLabel ns_label = new JLabel("Next Step: ");
     	
     	//JTextField field_ns = new JTextField(5);
@@ -443,12 +483,14 @@ public class MainFrame extends JFrame {
     }
 
     private static void addCurPosPanel(){
+    	//TODO: add in the current position of robot
     	
     	JPanel cp_panel = new JPanel(new GridLayout(0, 1));
     	
     	JLabel cp_label = new JLabel("Current Position: ");
     	
     	JTextField field_cp = new JTextField(5);
+    	field_cp.setEditable(false);
     	
     	cp_panel.add(cp_label);
     	cp_panel.add(field_cp);
@@ -469,7 +511,7 @@ public class MainFrame extends JFrame {
     
     private static void addModePanel(){
     	
-        //TODO: Change this portion onwards
+        //TODO: Change this portion onwards, the multithreading portion
     	
         // FastestPath Class for Multithreading
         class FastestPath extends SwingWorker<Integer, String> {
@@ -589,11 +631,11 @@ public class MainFrame extends JFrame {
     	        } else {
     	            System.out.println("Off"); // remove your message
     	            fast_mode = true; // if fast mode on, greedy
-    	            if (auto_mode==true && fast_mode == false && map_Load == true)
+    	            if (auto_mode==true && fast_mode == true && map_Load == true)
     	            {
     	            	//TODO: sprint
     	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
-    	                cl.show(_mapCards, "EXPLORATION");
+    	                cl.show(_mapCards, "REAL_MAP"); //"EXPLORATION"
     	                new FastestPath().execute();
     	        		
     	        		if (auto_mode==false)

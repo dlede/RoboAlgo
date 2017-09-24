@@ -48,6 +48,8 @@ public class Mapper extends JPanel {
                     cellColor = GraphicsConstant.C_START;
                 else if (gridder.in_goal(x, y)) //TODO: fix the goal state paint 3x3
                     cellColor = GraphicsConstant.C_GOAL;
+                else if (gridder.in_waypoint(x, y)) 
+                		cellColor = GraphicsConstant.C_WAYPOINT; 
                 else {
                     if (!gridder.get_Grid()[x][y].getIsExplored())
                         cellColor = GraphicsConstant.C_UNEXPLORED;
@@ -100,10 +102,10 @@ public class Mapper extends JPanel {
         }
     }
 
-    public void set_waypoint(int x, int y) // TODO: put this somewhere else
+    public void set_waypoint(int x, int y) // TODO: put this somewhere else 
     {
-    	this.waypoint_x = x;
-    	this.waypoint_y = y;
+    	waypoint_x = x;
+    	waypoint_y = y; 
     }
     
     private class _DisplayCell {

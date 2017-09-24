@@ -8,13 +8,19 @@ import javax.swing.JPanel;
 
 import jframe_pkg.map.Gridder;
 import jframe_pkg.map.MapConstant;
+import jframe_pkg.robot.Robot;
+import jframe_pkg.robot.RobotConstants;
 
 public class Mapper extends JPanel {
+
 	public Gridder gridder = new Gridder();
+	private final Robot bot;
+	public static int waypoint_x; // TODO: put waypoint somewhere else
+	public static int waypoint_y; // TODO: put waypoint somewhere else
 	
-	public Mapper() //bot, gridder
+	public Mapper(Robot bot) //bot, gridder
 	{
-		//this.bot = bot;
+		this.bot = bot;
 		this.gridder = gridder;
 		//this.repaint();
 	}
@@ -56,19 +62,31 @@ public class Mapper extends JPanel {
             }
         }
 
-        /** Paint the robot on-screen.
-        //g.setColor(GraphicsConstant.C_ROBOT);
-        //int r = bot.getRobotPosRow();
-        //int c = bot.getRobotPosCol();
-        //g.fillOval((c - 1) * GraphicsConstant.CELL_SIZE + GraphicsConstant.ROBOT_X_OFFSET + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - (r * GraphicsConstant.CELL_SIZE + GraphicsConstant.ROBOT_Y_OFFSET), GraphicsConstant.ROBOT_W, GraphicsConstant.ROBOT_H);
-		**/
+        // Paint the robot on-screen.
+        g.setColor(GraphicsConstant.C_ROBOT);
+        int r = bot.getRobotPosRow();
+        int c = bot.getRobotPosCol();
+        g.fillOval((c - 1) * GraphicsConstant.CELL_SIZE + GraphicsConstant.ROBOT_X_OFFSET + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - (r * GraphicsConstant.CELL_SIZE + GraphicsConstant.ROBOT_Y_OFFSET), GraphicsConstant.ROBOT_W, GraphicsConstant.ROBOT_H);
+		
         
-        /** Paint the robot's direction indicator on-screen.
-        //g.setColor(GraphicsConstant.C_ROBOT_DIR);
-        //RobotConstants.DIRECTION d = bot.getRobotCurDir();
+        //Paint the robot's direction indicator on-screen.
+        g.setColor(GraphicsConstant.C_ROBOT_DIR);
+        RobotConstants.DIRECTION d = bot.getRobotCurDir();
         switch (d) {
             case NORTH:
-                g.fillOval(c * GraphicsConstant.CELL_SIZE + 10 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE - 15, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
+            	//Project Triangle Pointer Rotation
+            	//new int[] {75, (75+3.5), 75}, new int[] {(75+1.75), 75, (75-175)}, 3
+            	//g.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET, //left x
+            	//						(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+4), //
+            	//						c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET}, 
+            	//			new int[] {(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+20), 
+            	//					(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE), 
+	            //						(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-2)}, 
+            	//			3);
+                g.fillOval(c * GraphicsConstant.CELL_SIZE + 10 + GraphicsConstant.MAP_X_OFFSET, 
+                			GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE - 15, 
+                			GraphicsConstant.ROBOT_DIR_W, 
+                			GraphicsConstant.ROBOT_DIR_H);
                 break;
             case EAST:
                 g.fillOval(c * GraphicsConstant.CELL_SIZE + 35 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 10, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
@@ -79,9 +97,15 @@ public class Mapper extends JPanel {
             case WEST:
                 g.fillOval(c * GraphicsConstant.CELL_SIZE - 15 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 10, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
                 break;
-        }**/
+        }
     }
 
+    public void set_waypoint(int x, int y) // TODO: put this somewhere else
+    {
+    	this.waypoint_x = x;
+    	this.waypoint_y = y;
+    }
+    
     private class _DisplayCell {
         public final int cellX;
         public final int cellY;

@@ -1,8 +1,8 @@
 package jframe_pkg.robot;
 
-import map.Mapper;
-import map.Gridder;
-import robot.RobotConstants.DIRECTION;
+import jframe_pkg.map.Mapper;
+import jframe_pkg.map.Gridder;
+import jframe_pkg.robot.RobotConstants.DIRECTION;
 
 /**
  * Represents a sensor mounted on the robot.
@@ -36,7 +36,7 @@ public class Sensor {
     /**
      * Returns the number of cells to the nearest detected obstacle or -1 if no obstacle is detected.
      */
-    public int sense(Gridder exploredMap, Gridder realMap) {
+    public int sense(Mapper exploredMap, Mapper realMap) {
         switch (sensorDir) {
             case NORTH:
                 return getSensorVal(exploredMap, realMap, 1, 0);
@@ -54,19 +54,19 @@ public class Sensor {
      * Sets the appropriate obstacle cell in the map and returns the row or column value of the obstacle cell. Returns
      * -1 if no obstacle is detected.
      */
-    private int getSensorVal(Gridder exploredMap, Gridder realMap, int rowInc, int colInc) {
+    private int getSensorVal(Mapper exploredMap, Mapper realMap, int rowInc, int colInc) {
         for (int i = this.lowerRange; i <= this.upperRange; i++) {
             int row = this.sensorPosRow + (rowInc * i);
             int col = this.sensorPosCol + (colInc * i);
 
-            if (!exploredMap.coordinate_validator(row, col)) return i;
+            if (!exploredMap.gridder.coordinate_validator(row, col)) return i;
             
             // hk- Set the cell to be explored
-            exploredMap.getCell(row, col).setIsExplored(true);
+            exploredMap.gridder.getCell(row, col).setIsExplored(true);
 
             // hk- set the obstacles 
-            if (realMap.getCell(row, col).getIsObstacle()) {
-                exploredMap.setObstacleCell(row, col, true);
+            if (realMap.gridder.getCell(row, col).getIsObstacle()) {
+                exploredMap.gridder.setObstacleCell(row, col, true);
                 return i;
             }
         }

@@ -2,6 +2,7 @@ package jframe_pkg.map;
 
 import jframe_pkg.map.Cell;
 import jframe_pkg.map.MapConstant;
+import jframe_pkg.map.Mapper;
 
 import java.awt.*;
 
@@ -10,10 +11,12 @@ import javax.swing.JFrame;
 public class Gridder extends JFrame {
 	//init variables	
 	private final Cell[][] grid;
+
 	//private MapConstant map_constant = new MapConstant();
 	
 	public Gridder()
 	{
+
         grid = new Cell[MapConstant.MAP_X][MapConstant.MAP_Y];
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[0].length; col++) {
@@ -44,7 +47,8 @@ public class Gridder extends JFrame {
 
     public boolean in_goal(int x, int y) 
     {
-        return((x <= MapConstant.MAP_X + 1 && x >= MapConstant.MAP_X - 1) && (y <= MapConstant.MAP_Y + 1 && y >= MapConstant.MAP_Y - 1));
+    	return((x <= MapConstant.MAP_X && x >= MapConstant.MAP_X-3) && (y <= MapConstant.MAP_Y && y >= MapConstant.MAP_Y-3)); // TODO: may not be correct
+        //return((x <= MapConstant.MAP_X + 1 && x >= MapConstant.MAP_X - 1) && (y <= MapConstant.MAP_Y + 1 && y >= MapConstant.MAP_Y - 1));
     }
     
     public Cell getCell(int x, int y) {
@@ -131,6 +135,9 @@ public class Gridder extends JFrame {
             grid[row][col + 1].setVirtualWall(obstacle);            // right cell
         }
     }
+    
+
+
     
     
 }

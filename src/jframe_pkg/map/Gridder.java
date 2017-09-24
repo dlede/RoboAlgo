@@ -47,7 +47,8 @@ public class Gridder extends JFrame {
 
     public boolean in_goal(int x, int y) 
     {
-        return((x <= MapConstant.MAP_X + 1 && x >= MapConstant.MAP_X - 1) && (y <= MapConstant.MAP_Y + 1 && y >= MapConstant.MAP_Y - 1));
+    	return((x <= MapConstant.MAP_X && x >= MapConstant.MAP_X-3) && (y <= MapConstant.MAP_Y && y >= MapConstant.MAP_Y-3)); // TODO: may not be correct
+        //return((x <= MapConstant.MAP_X + 1 && x >= MapConstant.MAP_X - 1) && (y <= MapConstant.MAP_Y + 1 && y >= MapConstant.MAP_Y - 1));
     }
     
     public Cell getCell(int x, int y) {

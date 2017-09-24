@@ -15,8 +15,8 @@ public class Mapper extends JPanel {
 
 	public Gridder gridder = new Gridder();
 	private final Robot bot;
-	public static int waypoint_x;
-	public static int waypoint_y;
+	public static int waypoint_x; // TODO: put waypoint somewhere else
+	public static int waypoint_y; // TODO: put waypoint somewhere else
 	
 	public Mapper(Robot bot) //bot, gridder
 	{
@@ -100,7 +100,7 @@ public class Mapper extends JPanel {
         }
     }
 
-    public void set_waypoint(int x, int y)
+    public void set_waypoint(int x, int y) // TODO: put this somewhere else
     {
     	this.waypoint_x = x;
     	this.waypoint_y = y;

@@ -29,9 +29,9 @@ public class MainFrame extends JFrame {
     private static JFrame _appFrame = null;         // application JFrame
 
     private static JPanel _mapCards = null;         // JPanel for map views
-    private static JPanel _settings = null;          // JPanel for settings - right portion of console
-    private static JPanel _stepsInfo = null;		// JPanel for steps info
-    private static JPanel _modeSettings = null;			//JPanel for end page
+    private static JPanel _settings = null;         // JPanel for settings - right portion of console
+    private static JPanel _monitor = null;		    // JPanel for monitor
+    private static JPanel _toggle = null;			//JPanel for toggle btns
     private static Container _container = null;
     
     private static Robot bot; //init robot
@@ -70,14 +70,12 @@ public class MainFrame extends JFrame {
         if (!realRun) {
             r_Mapper = new Mapper(bot);
             r_Mapper.gridder.setAllUnexplored();
-            //r_Mapper.gridder.setAllExplored();
         }
     	e_Mapper = new Mapper(bot); //argument bot
-		//e_Mapper.gridder.setAllUnexplored();
+		e_Mapper.gridder.setAllUnexplored();
 		explorer = new Explorer(e_Mapper, r_Mapper, bot, timeLimit, coverageLimit); //exmap, rmap, robot, coverage, time
         
 		MainFrame frame = new MainFrame();
-        frame.setVisible(true);
 	}
 	
 	//show main frame
@@ -91,30 +89,27 @@ public class MainFrame extends JFrame {
         // Create the CardLayout for storing the different maps
         _mapCards = new JPanel(new CardLayout());
         _settings = new JPanel();
-        _stepsInfo = new JPanel();
-        _modeSettings = new JPanel();
-        //_mapCards.add(_settings, BorderLayout.WEST);
+        _monitor = new JPanel();
+        _toggle = new JPanel();
 
         // Add _mapCards & _settings to the main frame's content pane
         Container contentPane = _appFrame.getContentPane();
         contentPane.add(_mapCards, BorderLayout.CENTER);
         contentPane.add(_settings, BorderLayout.EAST);
-        contentPane.add(_stepsInfo, BorderLayout.WEST);
-        contentPane.add(_modeSettings, BorderLayout.SOUTH);
-        //contentPane.add(_monitor, BorderLayout.WEST);
-        //contentPane.add(_toggle, BorderLayout.PAGE_END);
+        contentPane.add(_monitor, BorderLayout.WEST);
+        contentPane.add(_toggle, BorderLayout.PAGE_END);
         
         // Initialize the main map view
         initMainLayout();
         
-        //buttons
+        //settings panel
         initSettingsLayout();
         
-        //steps info
-        initStepsLayout();
+        //monitor panel
+        initMonitorLayout();
         
-        //mode btns
-        initModeBtnLayout();
+        //toggle panel
+        initToggleLayout();
         
         _appFrame.setVisible(true);
         _appFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -171,10 +166,11 @@ public class MainFrame extends JFrame {
             formatButton(btn_LoadMap);
             btn_LoadMap.addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
+                	map_panel.setVisible(false);
                     loadMapFromDisk(r_Mapper, map_field.getText());
                     CardLayout cl = ((CardLayout) _mapCards.getLayout());
                     cl.show(_mapCards, "REAL_MAP");
-                    e_Mapper.repaint();
+                    r_Mapper.repaint();
                     map_Load = true;
                     System.out.println("Map Loaded: " + map_Load);
                 }
@@ -183,6 +179,7 @@ public class MainFrame extends JFrame {
             map_panel.add(map_field);
             map_panel.add(btn_LoadMap);
             map_panel.setBorder(new EmptyBorder(0, 0, 40, 0));
+            map_panel.setVisible(true);
             //Set Padding Size
             map_panel.setMaximumSize(map_panel.getPreferredSize());
             map_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -193,8 +190,8 @@ public class MainFrame extends JFrame {
     private static void addWaypointPanel() {
     	
     	//create panel
-    	JPanel wp_panel = new JPanel(new GridLayout(3, 1));
-    	//wp_panel.setLayout(new BoxLayout(wp_panel, BoxLayout.Y_AXIS));
+    	JPanel wp_panel = new JPanel();
+    	wp_panel.setLayout(new BoxLayout(wp_panel, BoxLayout.Y_AXIS));
     	
     	//create label
     	JLabel wp_label = new JLabel("Waypoints: ");
@@ -238,6 +235,7 @@ public class MainFrame extends JFrame {
         wp_panel.setBorder(new EmptyBorder(0, 0, 40, 0));
         //Set Padding Size
         wp_panel.setMaximumSize(wp_panel.getPreferredSize());
+        wp_panel.setOpaque(false);
         _settings.add(wp_panel);
     	
     	
@@ -290,10 +288,8 @@ public class MainFrame extends JFrame {
     private static void addSpeedPanel() {
     	
     	//create panel
-    	JPanel spd_panel = new JPanel(new GridLayout(3, 1));
-    	//spd_panel.setLayout(new BoxLayout(spd_panel,BoxLayout.Y_AXIS));
-    
-    	
+    	JPanel spd_panel = new JPanel();
+    	spd_panel.setLayout(new BoxLayout(spd_panel,BoxLayout.Y_AXIS));
     	
     	//create speed label
     	JLabel spd_label = new JLabel("Speed: ");
@@ -321,7 +317,7 @@ public class MainFrame extends JFrame {
         spd_panel.setBorder(new EmptyBorder(0, 0, 40, 0));
         //Set Padding Size
         spd_panel.setMaximumSize(spd_panel.getPreferredSize());
-        
+
         _settings.add(spd_panel);
         
     	
@@ -360,7 +356,6 @@ public class MainFrame extends JFrame {
     }
 
     private static void addTimerPanel(){
-    	//Timer stopwatch = new Timer();
     	
     	JPanel timer_panel = new JPanel(new FlowLayout());
     	
@@ -382,11 +377,11 @@ public class MainFrame extends JFrame {
     
     
     //West Panel    
-    private static void initStepsLayout(){
+    private static void initMonitorLayout(){
 
-    	_stepsInfo.setLayout(new BoxLayout(_stepsInfo, BoxLayout.Y_AXIS));
-    	//_stepsInfo.setLayout(new FlowLayout());
-    	_stepsInfo.setBorder(new EmptyBorder(30, 20, 10, 0));
+    	_monitor.setLayout(new BoxLayout(_monitor, BoxLayout.Y_AXIS));
+    	_monitor.setBorder(new EmptyBorder(30, 20, 10, 0));
+    	
     	
     	addConsolePanel();
     	addNxtStepPanel();
@@ -411,7 +406,8 @@ public class MainFrame extends JFrame {
         //Set Padding Size
         infoPanel.setMaximumSize(infoPanel.getPreferredSize());
         
-        _stepsInfo.add(infoPanel); 
+
+        _monitor.add(infoPanel); 
         
     	
     }
@@ -430,9 +426,18 @@ public class MainFrame extends JFrame {
     	
     	JButton btn_NxtStep = new JButton("Next Step");
         formatButton(btn_NxtStep);
+        
+        btn_NxtStep.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	//TODO: set waypoint function on mapper e.g.
+            	System.out.println("Next Step Button Clicked!");
+            }
+        });
+        
         ns_panel.add(btn_NxtStep);
         ns_panel.setMaximumSize(ns_panel.getPreferredSize());
-        _stepsInfo.add(ns_panel);
+
+        _monitor.add(ns_panel);
     	
     	
     }
@@ -448,13 +453,16 @@ public class MainFrame extends JFrame {
     	cp_panel.add(cp_label);
     	cp_panel.add(field_cp);
     	cp_panel.setMaximumSize(cp_panel.getPreferredSize());
-        _stepsInfo.add(cp_panel);
+    	cp_panel.setOpaque(false);
+    	_monitor.add(cp_panel);
     }
 
     //South Panel
-    private static void initModeBtnLayout(){
+    private static void initToggleLayout(){
     	
-    	_modeSettings.setLayout(new FlowLayout());
+    	_toggle.setLayout(new FlowLayout());
+    	
+    	
     	addModePanel();
     	
     }
@@ -496,6 +504,7 @@ public class MainFrame extends JFrame {
 
                 bot.setRobotPos(row, col);
                 e_Mapper.repaint();
+                //r_Mapper.repaint();
 
                 Explorer exploration;
                 exploration = new Explorer(e_Mapper, r_Mapper, bot, coverageLimit, timeLimit);
@@ -549,8 +558,8 @@ public class MainFrame extends JFrame {
 
     	JLabel exp_label = new JLabel("Exploration Mode: ");
     	
-    	JToggleButton toggleButton = new JToggleButton("OFF");
-    	ItemListener itemListener = new ItemListener() {
+    	JToggleButton expBtn = new JToggleButton("OFF");
+    	ItemListener expListener = new ItemListener() {
     		
     	    public void itemStateChanged(ItemEvent itemEvent) {
     	        int state = itemEvent.getStateChange();
@@ -564,8 +573,6 @@ public class MainFrame extends JFrame {
     	        		//generateMapDescriptor(e_Mapper);
     	        		//bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
     	        		//e_Mapper.repaint();
-    	        		//r_Mapper.repaint();
-    	                //e_Mapper.repaint();
     	        		
     	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
     	                cl.show(_mapCards, "EXPLORATION");
@@ -577,7 +584,7 @@ public class MainFrame extends JFrame {
     	        			//break;
     	        		}
     	            }
-    	            toggleButton.setText("ON");
+    	            expBtn.setText("Exploration: ON");
     	            
     	        } else {
     	            System.out.println("Off"); // remove your message
@@ -595,13 +602,13 @@ public class MainFrame extends JFrame {
     	        			//break;
     	        		}
     	            }
-    	            toggleButton.setText("OFF");
+    	            expBtn.setText("Exploration: OFF");
     	            
     	        }
     	    }
     	};
     	
-    	toggleButton.addItemListener(itemListener);
+    	expBtn.addItemListener(expListener);
     	
     	
     	JLabel auto_label = new JLabel("Auto Mode: ");
@@ -613,12 +620,12 @@ public class MainFrame extends JFrame {
     	        if (state == ItemEvent.SELECTED) {
     	            System.out.println("On"); // show your message here
     	            auto_mode = true; // if auto mode on
-    	            autoBtn.setText("ON");
+    	            autoBtn.setText("Auto: ON");
     	            
     	        } else {
     	            System.out.println("Off"); // remove your message
     	            auto_mode = false; // if auto mode off
-    	            autoBtn.setText("OFF");
+    	            autoBtn.setText("Auto: OFF");
     	            
     	        }
     	    }
@@ -629,14 +636,13 @@ public class MainFrame extends JFrame {
     	
 
     	mode_panel.add(exp_label);
-    	mode_panel.add(toggleButton);
+    	mode_panel.add(expBtn);
     	mode_panel.add(auto_label);
     	mode_panel.add(autoBtn);
+    	//mode_panel.setVisible(true);
     	
     	
-    	
-    	
-    	_modeSettings.add(mode_panel);
+    	_toggle.add(mode_panel);
     	
     	
     	

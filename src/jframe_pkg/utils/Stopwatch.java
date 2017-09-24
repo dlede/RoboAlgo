@@ -19,27 +19,28 @@ public class Stopwatch extends JFrame {
     private static String str_minsec = "00:00";
     private final ClockListener cl = new ClockListener();
     private final Timer t = new Timer(1000, cl);
-    private final JTextField tf = new JTextField(3);
+    //private final JTextField tf = new JTextField(3);
+    private final JTextField tf;
     public int sec;
     public int min;
     private boolean state = false;
     
-    public Stopwatch() {
+    public Stopwatch(JTextField tf) {
         //t.setInitialDelay(0);
-
-        JPanel panel = new JPanel();
-        tf.setHorizontalAlignment(JTextField.RIGHT);
-        tf.setEditable(false);
-        panel.add(tf);
+    	this.tf = tf;
+        //JPanel panel = new JPanel();
+        //tf.setHorizontalAlignment(JTextField.RIGHT);
+        //tf.setEditable(false);
+        //panel.add(tf);
 
         str_minsec = String.valueOf(min) + ":" + String.valueOf(sec);
         
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.add(panel);
-        this.setTitle("Timer");
-        this.pack();
+        //this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //this.add(panel);
+        //this.setTitle("Timer");
+        //this.pack();
         //this.setLocationRelativeTo(null);
-        this.setVisible(true);
+        //this.setVisible(true);
     }
     
     public void start() {
@@ -47,6 +48,11 @@ public class Stopwatch extends JFrame {
         //update min and sec
         //str_minsec = String.valueOf(min) + ":" + String.valueOf(sec);
     }
+    
+    public void stop(){
+    	t.stop();
+    }
+    
     
     private class ClockListener implements ActionListener {
         @Override

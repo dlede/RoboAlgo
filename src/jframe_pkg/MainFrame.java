@@ -60,7 +60,7 @@ public class MainFrame extends JFrame {
 
 	public static void main(String[] args) {
         bot = new Robot(RobotConstants.START_ROW, RobotConstants.START_COL, realRun);
-        timer = new Stopwatch();
+        
         
         if (realRun)
         {
@@ -369,6 +369,7 @@ public class MainFrame extends JFrame {
         _settings.add(spd_panel);*/
     }
 
+    //i think we dont need this 
     private static void startTime()
     {
 		// timer test block start
@@ -390,20 +391,35 @@ public class MainFrame extends JFrame {
     
     private static void addTimerPanel(){
     	//TODO: add timer
-    	JPanel timer_panel = new JPanel(new FlowLayout());
-    	
+    	JPanel timer_panel = new JPanel();
+    	timer_panel.setLayout(new BoxLayout(timer_panel, BoxLayout.Y_AXIS));     	
     	JLabel timer_label = new JLabel("Timer ");
     	
     	JTextField field_timer = new JTextField(10);
     	field_timer.setEditable(false);
+    	
+    	timer = new Stopwatch(field_timer);
 
     	//timer_start=true;
         field_timer.setText(timer.getMinSec());
         
-    	startTime(); 
+    	//startTime(); 
     	
     	timer_panel.add(timer_label);
     	timer_panel.add(field_timer);
+    	
+    	JButton reset_button = new JButton("Reset");
+     	
+    	reset_button.addMouseListener(new MouseAdapter() {
+             public void mousePressed(MouseEvent e) {
+             	//TODO: set speed function on robot e.g.
+            	 timer.stop();
+            	 System.out.println("Reset Timer");
+             }
+         });
+    	
+    	
+    	timer_panel.add(reset_button);
     	timer_panel.setMaximumSize(timer_panel.getPreferredSize());
 
         //align left
@@ -618,6 +634,7 @@ public class MainFrame extends JFrame {
     	        		
     	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
     	                cl.show(_mapCards, "EXPLORATION");
+    	                timer.start();//start timer
     	                new Exploration().execute();
     	        		
     	        		if (auto_mode==false)

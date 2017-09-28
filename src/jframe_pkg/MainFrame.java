@@ -61,10 +61,10 @@ public class MainFrame extends JFrame {
 	private static JPanel _settings = null; // JPanel for settings - right
 											// portion of console
 
-	private static JLabel map_label, wp_label, spd_label, timer_label;
-	private static JTextField map_field, field_spd, field_timer;
+	private static JLabel map_label, wp_label, spd_label, timer_label, msg_label;
+	private static JTextField map_field, field_spd, field_timer, msg_field;
 	private static JTextField field_x, field_y;
-	private static JButton btn_Waypoints, btn_LoadMap, reset_button;
+	private static JButton btn_Waypoints, btn_LoadMap, reset_button, msg_button;
 
 	private static JPanel _monitor = null; // JPanel for monitor
 
@@ -485,7 +485,7 @@ public class MainFrame extends JFrame {
 		addSpeedPanel();
 		addLoadMapButton();
 		addTimerPanel();
-
+		sendMsgPanel();
 	}
 
 	private static void formatButton(JButton btn) {
@@ -673,6 +673,38 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	private static void sendMsgPanel()
+	{
+		msg_label = new JLabel("Message: ");
+		msg_field = new JTextField(10);
+		msg_button = new JButton("Send Msg");
+		msg_field.setMaximumSize(msg_field.getPreferredSize());
+
+		msg_button.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				//msg_field.getText()
+				comm.sendMsg(msg_field.getText());
+				// TODO: set speed function on robot e.g.
+				//timer = new Stopwatch(field_timer);
+				//field_timer.setText(timer.getMinSec());
+				System.out.println(msg_field.getText());
+			}
+		});
+		
+		_settings.add(msg_label);
+		timer_label.setAlignmentX(Component.LEFT_ALIGNMENT);
+		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		_settings.add(msg_field);
+		field_timer.setAlignmentX(Component.LEFT_ALIGNMENT);
+		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		_settings.add(msg_button);
+		reset_button.setAlignmentX(Component.LEFT_ALIGNMENT);
+		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+	}
+	
 	private static void addTimerPanel() {
 
 		// TODO: add timer

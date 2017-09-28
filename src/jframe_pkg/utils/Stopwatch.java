@@ -53,6 +53,12 @@ public class Stopwatch extends JFrame {
     	t.stop();
     	//tf.setText(String.valueOf(0) + ":" + String.valueOf(0));
     }
+    
+    public void reset()
+    {
+    	resetSec();
+    	resetMin();
+    }
 
     
     private class ClockListener implements ActionListener {
@@ -73,6 +79,17 @@ public class Stopwatch extends JFrame {
     public String getMinSec()
     {
     	return str_minsec;
+    }
+    
+    private void resetMin()
+    {
+    	//min = Integer.toString(String.valueOf(min));//Integer.toString(timer.getMin())
+    	this.min=0;
+    }
+    
+    public void resetSec()
+    {
+    	this.sec=0;
     }
     
     public int getMin()

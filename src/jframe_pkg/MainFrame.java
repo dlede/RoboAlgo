@@ -296,6 +296,9 @@ public class MainFrame extends JFrame {
 			protected Integer doInBackground() throws Exception {
 				bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
 				e_Mapper.repaint();
+				
+				exploration.setMonitorScreen(info);
+				exploration.setTimer(timer);
 
 				if (realRun) {
 					while (true) {
@@ -308,13 +311,16 @@ public class MainFrame extends JFrame {
 					}
 				}
 
-				bot.setRobotPos(e_Mapper.gridder.waypoint_x, e_Mapper.gridder.waypoint_y);
-				bot.setRobotDir(DIRECTION.NORTH);
-				
-				fastestPath = new Sprinter(e_Mapper, bot);
+				Sprinter pathFinder;
+				pathFinder = new Sprinter(e_Mapper, bot);
 				//fastestPath.setMonitorScreen(info);
-
-				fastestPath.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+				//waypoint run
+				//fastestPath.runFastestPath(e_Mapper.gridder.waypoint_x, e_Mapper.gridder.waypoint_y);
+				//bot.setRobotPos(e_Mapper.gridder.waypoint_x, e_Mapper.gridder.waypoint_y);
+				//bot.setRobotDir(DIRECTION.NORTH);
+				
+				//goal run
+				pathFinder.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
 
 				return 222;
 			}
@@ -405,36 +411,30 @@ public class MainFrame extends JFrame {
     	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
     	                cl.show(_mapCards, "EXPLORATION");
     	                
+    	                timer.reset();
     	                timer.start();//start timer
     	                new Exploration().execute();
     	                
-    	        		if (auto_mode==false)
-    	        		{
-    	        			System.out.println("Break");
-    	        			//break;
-    	        		}
     	            }
     	            expBtn.setText("Exploration: ON");
     	            
-    	        } else {
-    	            System.out.println("Off"); // remove your message
+    	        	} 
+    	        else
+    	        {
+    	            System.out.println("Exploration Mode Off"); // remove your message
     	            info.append("Exploration Mode Off\n");
-    	            fast_mode = true; // if fast mode on, greedy
-    	            if (auto_mode==true && fast_mode == true && map_Load == true)
-    	            {
-    	            	//TODO: sprint
-    	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
-    	                cl.show(_mapCards, "REAL_MAP"); //"EXPLORATION"
-    	                new FastestPath().execute();
-    	        		
-    	        		if (auto_mode==false)
-    	        		{
-    	        			System.out.println("Break");
-    	        			//break;
-    	        		}
-    	            }
-    	            expBtn.setText("Exploration: OFF");
+    	            fast_mode = true; // if auto mode off
     	            
+    	        	if (auto_mode==true && fast_mode == true && map_Load == true) 
+    	        	{
+        	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
+        	                cl.show(_mapCards, "EXPLORATION"); //"EXPLORATION"
+        	                
+        	                timer.reset();
+        	                timer.start();//start timer
+        	                new FastestPath().execute();	
+    	        	}
+        	        expBtn.setText("Exploration: OFF");
     	        }
     	    }
     	};
@@ -457,7 +457,7 @@ public class MainFrame extends JFrame {
     	            autoBtn.setText("Auto: ON");
     	            
     	        } else {
-    	            System.out.println("Off"); // remove your message
+    	            System.out.println("Auto Mode Off"); // remove your message
     	            info.append("Auto Mode Off\n");
     	            auto_mode = false; // if auto mode off
     	            autoBtn.setText("Auto: OFF");
@@ -494,52 +494,110 @@ public class MainFrame extends JFrame {
 		// btn.setPreferredSize(new Dimension(200, 20));
 	}
 
-	private static void addWaypointPanel() {
+    private static void addWaypointPanel() {
+    	
+    	//create panel
+    	JPanel wp_panel = new JPanel();
+    	wp_panel.setLayout(new BoxLayout(wp_panel, BoxLayout.Y_AXIS));
+    	
+    	//create label
+    	JLabel wp_label = new JLabel("Waypoints: ");
+    	
+    	//Create field
+    	JPanel wp_textfield = new JPanel();
+    	final JTextField field_x = new JTextField(5);
+    	final JTextField field_y = new JTextField(5);
+    	
 
-		// create label
-		wp_label = new JLabel("Waypoints: ");
+    	field_x.setText("0");
+    	field_y.setText("0");
+    	
 
-		// Create field
-		field_x = new JTextField(5);
-		field_y = new JTextField(5);
+        //Align items
+    	wp_textfield.setAlignmentX(Component.LEFT_ALIGNMENT);
+    	wp_textfield.add(field_x);
+    	wp_textfield.add(field_y);
+    	
 
-		field_x.setText("0");
-		field_y.setText("0");
+    	//create btn
+    	JButton btn_Waypoints = new JButton("Set Waypoints");
+    	
+        formatButton(btn_Waypoints);
+        btn_Waypoints.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	//TODO: set waypoint function on mapper e.g.
+            	final String text_x = field_x.getText();
+            	final String text_y = field_y.getText();
+            	if (e_Mapper.gridder.waypoint_validator(Integer.parseInt(text_x),Integer.parseInt(text_y))==true) {
+            	System.out.println("(" +"Waypoint: " + Integer.parseInt(text_x) + ", " +Integer.parseInt(text_y) +")");
+            	e_Mapper.gridder.set_waypoint (Integer.parseInt(text_x),Integer.parseInt(text_y));
+                //e_Mapper.repaint();
+                map_Load = true;
+            	}
+            }
+            
+        });
+    	
+        //add items to panel
+        wp_panel.add(wp_label);
+        wp_panel.add(wp_textfield);
+        wp_panel.add(btn_Waypoints);
 
-		/*
-		 * //Align items wp_textfield.setAlignmentX(Component.LEFT_ALIGNMENT);
-		 * wp_textfield.add(field_x); wp_textfield.add(field_y);
-		 */
+        
+        //Align items
+        wp_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wp_panel.setBorder(new EmptyBorder(0, 0, 40, 0));
+        //Set Padding Size
+        wp_panel.setMaximumSize(wp_panel.getPreferredSize());
+        wp_panel.setOpaque(false);
+        _settings.add(wp_panel);
+    	
+    	
+    	/*
+    	//JPanel wp_panel = new JPanel(new FlowLayout());
+    	JPanel wp_panel = new JPanel();
+    	wp_panel.setLayout(new BoxLayout(wp_panel, BoxLayout.Y_AXIS));
+    	
+    	//new BoxLayout(wp_panel, BoxLayout.PAGE_AXIS)
+    	//wp_panel.setLayout(new BoxLayout(wp_panel, BoxLayout.Y_AXIS));
+    	//wp_panel.add(Box.createRigidArea(new Dimension(0, 500)));
+    	
+    	//JPanel wp_input = new JPanel(new FlowLayout());
+    	
+    	JLabel wp_label = new JLabel("Waypoints: ");
+    	
+    	JTextField field_x = new JTextField(5);
+    	JTextField field_y = new JTextField(5);
+    	
+    	JPanel wp_textfield = new JPanel();
+    	field_x.setText("0");
+    	field_y.setText("0");
+    	
+    	wp_textfield.add(field_x);
+    	wp_textfield.add(field_y);
 
-		// create btn
-		btn_Waypoints = new JButton("Set Waypoints");
+    	wp_textfield.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JButton btn_Waypoints = new JButton("Set Waypoints");
+        formatButton(btn_Waypoints);
+        btn_Waypoints.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	//TODO: set waypoint function on mapper e.g.
+            	System.out.println("(" +"Waypoint: " + field_x.getText() + ", " + field_y.getText()+")");
+            }
+        });
+        
+        wp_panel.add(wp_label);
+        wp_panel.add(wp_textfield);
+        //wp_panel.add(wp_input);
+        wp_panel.add(btn_Waypoints);
 
-		formatButton(btn_Waypoints);
-		btn_Waypoints.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				// TODO: set waypoint function on mapper e.g.
-				final String text_x = field_x.getText();
-				final String text_y = field_y.getText();
-				if (e_Mapper.gridder.waypoint_validator(Integer.parseInt(text_x), Integer.parseInt(text_y)) == true) {
-					System.out.println(
-							"(" + "Waypoint: " + Integer.parseInt(text_x) + ", " + Integer.parseInt(text_y) + ")");
-					e_Mapper.gridder.set_waypoint(Integer.parseInt(text_x), Integer.parseInt(text_y));
-					// e_Mapper.repaint();
-					map_Load = true;
-				}
-			}
-
-		});
-
-		// add items to panel
-		_settings.add(wp_label);
-		wp_label.setAlignmentX(Component.LEFT_ALIGNMENT);
-		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
-		_settings.add(btn_Waypoints);
-		btn_Waypoints.setAlignmentX(Component.LEFT_ALIGNMENT);
-		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
-
-	}
+        //Set Padding Size
+        wp_panel.setMaximumSize(wp_panel.getPreferredSize());
+        //wp_input.setAlignmentX(Component.LEFT_ALIGNMENT);
+        wp_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        _settings.add(wp_panel);*/
+    }
 
 	private static void addSpeedPanel() {
 
@@ -557,6 +615,7 @@ public class MainFrame extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				// TODO: set speed function on robot e.g.
 				System.out.println("Speed: " + field_spd.getText());
+				bot.setSpeed(Integer.parseInt(field_spd.getText()));
 			}
 		});
 

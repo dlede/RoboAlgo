@@ -10,8 +10,9 @@ import javax.swing.JFrame;
 
 public class Gridder extends JFrame {
 	//init variables	
-	private static Cell[][] grid;
-
+	private Cell[][] grid;
+	public int waypoint_x; // TODO: put waypoint somewhere else
+	public int waypoint_y; // TODO: put waypoint somewhere else
 	//private MapConstant map_constant = new MapConstant();
 	
 	public Gridder()
@@ -30,6 +31,12 @@ public class Gridder extends JFrame {
         }
 	}
 	
+    public void set_waypoint(int x, int y) // TODO: put this somewhere else 
+    {
+    	waypoint_x = x;
+    	waypoint_y = y; 
+    }
+	
 	public Cell[][] get_Grid()
 	{
 		return this.grid;
@@ -40,7 +47,7 @@ public class Gridder extends JFrame {
         return row >= 0 && col >= 0 && row < MapConstant.MAP_X && col < MapConstant.MAP_Y;
     }
     
-    public static boolean waypoint_validator (int row, int col) {
+    public boolean waypoint_validator (int row, int col) {
     	for (int x = row-1; x<row+1; x++ ) {
     		for (int y = col-1; y<col+1; y++) {
     			if (getIsObstacleOrWall(x,y)) {
@@ -64,12 +71,12 @@ public class Gridder extends JFrame {
     
     public boolean in_waypoint(int x, int y) //added 
     {
-    	return((x <= Mapper.waypoint_x+1 && x >= Mapper.waypoint_x-1) && (y <= Mapper.waypoint_y+1 && y >= Mapper.waypoint_y-1)); // TODO: may not be correct
+    	return((x <= waypoint_x+1 && x >= waypoint_x-1) && (y <= waypoint_y+1 && y >= waypoint_y-1)); // TODO: may not be correct
     	
       	
     }
     
-    public static Cell getCell(int x, int y) {
+    public Cell getCell(int x, int y) {
         return grid[x][y];
     }
 
@@ -81,7 +88,7 @@ public class Gridder extends JFrame {
         return grid[x][y].getIsVirtualWall();
     }
     
-    public static boolean getIsObstacleOrWall(int x, int y) {
+    public boolean getIsObstacleOrWall(int x, int y) {
         return !coordinate_validator(x, y) || getCell(x, y).getIsObstacle();
     }
     

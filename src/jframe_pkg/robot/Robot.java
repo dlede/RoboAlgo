@@ -8,9 +8,13 @@ import jframe_pkg.robot.RobotConstants.MOVEMENT;
 import jframe_pkg.utils.CommMgr;
 //import jframe_pkg.utils.CommMgr;
 import jframe_pkg.utils.MapDescriptor;
+import jframe_pkg.utils.Stopwatch;
 import jframe_pkg.robot.Sensor;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 // @formatter:off
 /**
@@ -42,6 +46,8 @@ public class Robot {
     private final Sensor SRRight;            // west-facing left LR
     private boolean touchedGoal;
     private final boolean realBot;
+    private JTextArea monitorScreen; 
+	private JTextField field_cp;
 
     public Robot(int row, int col, boolean realBot) {
         posRow = row;
@@ -163,7 +169,9 @@ public class Robot {
         //if (realBot) sendMovement(m, sendMoveToAndroid);
         //else 
         System.out.println("Move: " + MOVEMENT.print(m));
-
+        //System.out.println(field_cp);
+        field_cp.setText("Row : " + posRow + ", Col: " + posCol);
+        monitorScreen.append("Move: " + MOVEMENT.print(m) + "\n");
         updateTouchedGoal();
     }
 
@@ -335,4 +343,17 @@ public class Robot {
         **/
         return result;
     }
+
+	public void setMonitorScreen(JTextArea info) {		
+		
+		this.monitorScreen = info;
+		
+	}
+	
+	public void setCurPostScreen( JTextField field_cp) {		
+		
+		this.field_cp = field_cp;
+		
+	}
+	
 }

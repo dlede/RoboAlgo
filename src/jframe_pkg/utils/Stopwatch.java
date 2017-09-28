@@ -51,8 +51,9 @@ public class Stopwatch extends JFrame {
     
     public void stop(){
     	t.stop();
+    	//tf.setText(String.valueOf(0) + ":" + String.valueOf(0));
     }
-    
+
     
     private class ClockListener implements ActionListener {
         @Override
@@ -64,6 +65,7 @@ public class Stopwatch extends JFrame {
             sec %= N;
             //str_minsec = String.valueOf(min) + ":" + String.valueOf(sec);
             tf.setText(String.valueOf(min) + ":" + String.valueOf(sec));
+        	str_minsec = String.valueOf(min) + ":" + String.valueOf(sec);
             sec++;
         }
     }

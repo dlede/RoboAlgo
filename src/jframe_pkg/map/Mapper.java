@@ -15,8 +15,6 @@ public class Mapper extends JPanel {
 
 	public Gridder gridder = new Gridder();
 	private final Robot bot;
-	public static int waypoint_x; // TODO: put waypoint somewhere else
-	public static int waypoint_y; // TODO: put waypoint somewhere else
 	
 	public Mapper(Robot bot) //bot, gridder
 	{
@@ -31,7 +29,8 @@ public class Mapper extends JPanel {
      * well as the robot on-screen.
      */
     public void paintComponent(Graphics g) {
-        // Create a two-dimensional array of _DisplayCell objects for rendering.
+    	super.paintComponent(g);
+    	// Create a two-dimensional array of _DisplayCell objects for rendering.
         _DisplayCell[][] _mapCells = new _DisplayCell[MapConstant.MAP_X][MapConstant.MAP_Y];
         for (int x = 0; x < MapConstant.MAP_X; x++) {
             for (int y = 0; y < MapConstant.MAP_Y; y++) {
@@ -100,12 +99,6 @@ public class Mapper extends JPanel {
                 g.fillOval(c * GraphicsConstant.CELL_SIZE - 15 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 10, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
                 break;
         }
-    }
-
-    public void set_waypoint(int x, int y) // TODO: put this somewhere else 
-    {
-    	waypoint_x = x;
-    	waypoint_y = y; 
     }
     
     private class _DisplayCell {

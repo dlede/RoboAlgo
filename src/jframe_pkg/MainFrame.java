@@ -143,7 +143,7 @@ public class MainFrame extends JFrame {
 		// Initialise main frame for display
 		_appFrame = new JFrame();
 		_appFrame.setTitle("MDP Group 15 Main Frame");
-		_appFrame.setSize(new Dimension(1100, 750));
+		_appFrame.setSize(new Dimension(1200, 750));
 		_appFrame.setResizable(false);
 		 _mapCards = new JPanel(new CardLayout());
 		 

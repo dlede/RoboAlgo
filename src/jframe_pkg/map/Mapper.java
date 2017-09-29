@@ -77,27 +77,73 @@ public class Mapper extends JPanel {
             case NORTH:
             	//Project Triangle Pointer Rotation
             	//new int[] {75, (75+3.5), 75}, new int[] {(75+1.75), 75, (75-175)}, 3
-            	//g.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET, //left x
-            	//						(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+4), //
-            	//						c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET}, 
-            	//			new int[] {(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+20), 
-            	//					(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE), 
-	            //						(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-2)}, 
-            	//			3);
+            	//North Pointing Arrow
+            	g.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+6, // West Point x
+            							(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+26), // East Point X
+            							c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+16}, // North Point x
+            				new int[] {(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-15), // West Point y
+            						(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-15),//  East Point y
+	            						(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-25)}, // North Point y
+            				3);
+            	/**
+            	g.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-16, // West Point x
+						(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-16), // East Point X
+						c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-26}, // North Point x
+						new int[] {(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+5), // West Point y
+								(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+25),//  East Point y
+									(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15)}, // North Point y
+						3);
+            	**/
+            	/**
+            	 *          g.fillOval(c * GraphicsConstant.CELL_SIZE + 10 + GraphicsConstant.MAP_X_OFFSET, 
+                			GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE - 15, 
+                			GraphicsConstant.ROBOT_DIR_W, 
+                			GraphicsConstant.ROBOT_DIR_H);
+                **/
+            	/**
                 g.fillOval(c * GraphicsConstant.CELL_SIZE + 10 + GraphicsConstant.MAP_X_OFFSET, 
                 			GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE - 15, 
                 			GraphicsConstant.ROBOT_DIR_W, 
                 			GraphicsConstant.ROBOT_DIR_H);
+                			**/
                 break;
             case EAST:
-                g.fillOval(c * GraphicsConstant.CELL_SIZE + 35 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 10, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
+                //g.fillOval(c * GraphicsConstant.CELL_SIZE + 35 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 10, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
+                
+            	g.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+46, // West Point x
+						(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+46), // East Point X
+						c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+56}, // North Point x
+						new int[] {(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+5), // West Point y
+								(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+25),//  East Point y
+									(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15)}, // North Point y
+						3);
+                
                 break;
             case SOUTH:
-                g.fillOval(c * GraphicsConstant.CELL_SIZE + 10 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 35, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
+                //g.fillOval(c * GraphicsConstant.CELL_SIZE + 10 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 35, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
+                
+            	//South Pointing Arrow
+            	g.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+6, // West Point x
+						(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+26), // East Point X
+						c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+16}, // North Point x
+						new int[] {(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+46), // West Point y
+								(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+46),//  East Point y
+									(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+56)}, // North Point y
+						3);
+                
+                
                 break;
             case WEST:
-                g.fillOval(c * GraphicsConstant.CELL_SIZE - 15 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 10, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
-                break;
+                //g.fillOval(c * GraphicsConstant.CELL_SIZE - 15 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 10, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
+            	g.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-16, // West Point x
+						(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-16), // East Point X
+						c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-26}, // North Point x
+						new int[] {(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+5), // West Point y
+								(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+25),//  East Point y
+									(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15)}, // North Point y
+						3);
+            	
+            	break;
         }
     }
     

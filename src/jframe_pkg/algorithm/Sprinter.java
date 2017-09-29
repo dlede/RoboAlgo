@@ -278,9 +278,12 @@ public class Sprinter {
         ArrayList<MOVEMENT> movements = new ArrayList<>();
         
         Robot tempBot = null;
-        if (goalRow == MapConstant.GOAL_X && goalCol == MapConstant.GOAL_Y) 
+        System.out.println("My debug codes - goalRow: " + goalRow + " goalCol: " + goalCol + "\n");
+        if (goalRow == MapConstant.GOAL_Y && goalCol == MapConstant.GOAL_X) 
+        {
         	//tempBot = new Robot (MapConstant.WAYPOINT_X, MapConstant.WAYPOINT_Y, false);
         	tempBot = new Robot (map.gridder.waypoint_x, map.gridder.waypoint_y, false); // waypoints in mapper, trial
+        }
         else
         	tempBot = new Robot(1, 1, false);
         

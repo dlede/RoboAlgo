@@ -78,7 +78,8 @@ public class MainFrame extends JFrame {
 	private static JLabel exp_label, auto_label;
 	private static JToggleButton expBtn, autoBtn;
 	private static ItemListener expListener, autoBtnListener;
-	private static Sprinter fastestPath;
+	private static Sprinter fastest_wp_Path;
+	private static Sprinter fastest_goal_Path;
 	private static Container _container = null;
 
 	private static Stopwatch timer = null;
@@ -282,6 +283,7 @@ public class MainFrame extends JFrame {
 					// e_Mapper.repaint();
 					map_Load = true;
 				}
+				info.append("Waypoint have been set at " + Integer.parseInt(text_x) + ", " + Integer.parseInt(text_y) + "\n");
 			}
 
 		});
@@ -321,6 +323,7 @@ public class MainFrame extends JFrame {
 				// TODO: set speed function on robot e.g.
 				bot.setSpeed((Integer.parseInt(field_spd.getText()) - 101) * -1);
 				System.out.println("Speed: " + field_spd.getText());
+				info.append("Speed has been set to " + field_spd.getText() + "\n");
 			}
 		});
 
@@ -477,6 +480,9 @@ public class MainFrame extends JFrame {
 		// FastestPath Class for Multithreading
 		class FastestPath extends SwingWorker<Integer, String> {
 			protected Integer doInBackground() throws Exception {
+				final String text_x = field_x.getText();
+				final String text_y = field_y.getText();
+
 				bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
 				e_Mapper.repaint();
 
@@ -492,11 +498,31 @@ public class MainFrame extends JFrame {
 				}
 
 				
-				fastestPath = new Sprinter(e_Mapper, bot);
+				fastest_wp_Path = new Sprinter(e_Mapper, bot);
 				//fastestPath.setMonitorScreen(info);
+				
+				fastest_wp_Path.runFastestPath(Integer.parseInt(text_x), Integer.parseInt(text_y));
+				//fastestPath.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+				
+				//bot.setRobotPos(Integer.parseInt(text_x), Integer.parseInt(text_y));
+				//bot.setRobotDir(RobotConstants.DIRECTION.SOUTH);
+				//fastestPath.runFastestPath(Integer.parseInt(text_x), Integer.parseInt(text_y));
+				System.out.println("\n\nbreaker....");
+				System.out.println("breaker....");
+				System.out.println("breaker.... \n\n");
+				
+				bot.setRobotPos(Integer.parseInt(text_x), Integer.parseInt(text_y));
+				bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
+				e_Mapper.repaint();
+				
+				fastest_goal_Path = new Sprinter(e_Mapper, bot);
+				//e_Mapper.repaint();
+				fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+				
 
-				fastestPath.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
-
+				//private static Sprinter fastest_wp_Path;
+				//private static Sprinter fastest_goal_Path;
+				
 				return 222;
 			}
 		}

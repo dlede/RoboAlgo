@@ -1,8 +1,5 @@
 package jframe_pkg.algorithm;
 
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
 import jframe_pkg.map.Cell;
 import jframe_pkg.map.Mapper;
 import jframe_pkg.map.MapConstant;
@@ -11,7 +8,6 @@ import jframe_pkg.robot.RobotConstants;
 import jframe_pkg.robot.RobotConstants.DIRECTION;
 import jframe_pkg.robot.RobotConstants.MOVEMENT;
 import jframe_pkg.utils.CommMgr;
-import jframe_pkg.utils.Stopwatch;
 
 /**
  * Exploration algorithm for the robot.
@@ -31,8 +27,6 @@ public class Explorer {
     private long endTime;
     private int lastCalibrate;
     private boolean calibrationMode;
-    private JTextArea monitorScreen;  
-	private Stopwatch timer;
 
     public Explorer(Mapper exMap, Mapper realMap, Robot bot, int coverageLimit, int timeLimit) {
         this.exMap = exMap;
@@ -48,7 +42,6 @@ public class Explorer {
     public void runExploration() {
         if (bot.getRealBot()) {
             System.out.println("Starting calibration...");
-            monitorScreen.append("Starting calibration...\n");
 
             CommMgr.getCommMgr().revMsg();
             if (bot.getRealBot()) {
@@ -69,10 +62,6 @@ public class Explorer {
 
             while (true) {
                 System.out.println("Waiting for EX_START...");
-                monitorScreen.append("Waiting for EX_START...\n");
-                
-                
-                //monitorScreen.append("Waiting for EX_START...");
                 String msg = CommMgr.getCommMgr().revMsg();
                 String[] msgArr = msg.split(";");
                 if (msgArr[0].equals(CommMgr.EX_START)) break;
@@ -80,7 +69,6 @@ public class Explorer {
         }
 
         System.out.println("Starting exploration...");
-        monitorScreen.append("Starting exploration...\n");
 
         startTime = System.currentTimeMillis();
         endTime = startTime + (timeLimit * 1000);
@@ -95,12 +83,7 @@ public class Explorer {
         areaExplored = calculateAreaExplored();
         // Here is moved
         System.out.println("Explored Area: " + areaExplored);
-<<<<<<< HEAD
 
-=======
-        monitorScreen.append("Explored Area: " + areaExplored + "\n");
-        
->>>>>>> 3418b885b25d52051395610570403c2177c90971
         explorationLoop(bot.getRobotPosRow(), bot.getRobotPosCol());
     }
 
@@ -115,19 +98,15 @@ public class Explorer {
             nextMove();
             areaExplored = calculateAreaExplored();
             System.out.println("Area explored: " + areaExplored);
-            monitorScreen.append("Area explored: " + areaExplored +"\n");
 
             if (bot.getRobotPosRow() == r && bot.getRobotPosCol() == c) {
                 if (areaExplored >= 100) {
                     break;
                 }
             }
-           
         }
         
         while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
-        monitorScreen.append("Time Taken: " + timer.getMinSec());
-        timer.stop();
         goHome();
     }
 
@@ -243,8 +222,6 @@ public class Explorer {
         if (!bot.getTouchedGoal() && coverageLimit == 300 && timeLimit == 3600) {
         	System.out.println("In goHome() of ExplorationAlgo first loop");
             Sprinter goToGoal = new Sprinter(exMap, bot, realMap);
-            goToGoal.setMonitorScreen(monitorScreen);
-           
             goToGoal.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
         }
         System.out.println("In goHome() of ExplorationAlgo second loop");
@@ -257,11 +234,6 @@ public class Explorer {
         System.out.println(", " + areaExplored + " Cells");
         System.out.println((System.currentTimeMillis() - startTime) / 1000 + " Seconds");
 
-        monitorScreen.append("Exploration complete!\n");
-        monitorScreen.append(", " + areaExplored + " Cells\n");
-        monitorScreen.append((System.currentTimeMillis() - startTime) / 1000 + " Seconds\n");
-        
-        
         if (bot.getRealBot()) {
             turnBotDirection(DIRECTION.WEST);
             moveBot(MOVEMENT.CALIBRATE);
@@ -423,16 +395,4 @@ public class Explorer {
             moveBot(MOVEMENT.RIGHT);
         }
     }
-    
-	public void setMonitorScreen(JTextArea info) {		
-		
-		this.monitorScreen = info;
-		
-	}
-	
-	public void setTimer(Stopwatch timer) {		
-		
-		this.timer = timer;
-		
-	}
 }

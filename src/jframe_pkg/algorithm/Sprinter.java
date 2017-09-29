@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
-import javax.swing.JTextArea;
-
 // @formatter:off
 /**
  * Fastest path algorithm for the robot. Uses a version of the A* algorithm.
@@ -37,7 +35,6 @@ public class Sprinter {
     private final Mapper realMap;
     private int loopCount;
     private boolean explorationMode;
-    private JTextArea monitorScreen; 
 
     public Sprinter(Mapper map, Robot bot) {
         this.realMap = null;
@@ -175,7 +172,7 @@ public class Sprinter {
      */
     public String runFastestPath(int goalRow, int goalCol) {
         System.out.println("Calculating fastest path from (" + current.get_x() + ", " + current.get_y() + ") to goal (" + goalRow + ", " + goalCol + ")...");
-        //System.out.println(monitorScreen);
+
         Stack<Cell> path;
         do {
             loopCount++;
@@ -460,23 +457,13 @@ public class Sprinter {
         System.out.println("\nLooped " + loopCount + " times.");
         System.out.println("The number of steps is: " + (path.size() - 1) + "\n");
 
-        monitorScreen.append("\nLooped " + loopCount + " times.");
-        monitorScreen.append("The number of steps is: " + (path.size() - 1) + "\n");
-
         Stack<Cell> pathForPrint = (Stack<Cell>) path.clone();
         Cell temp;
         System.out.println("Path:");
-        monitorScreen.append("Path:");
         while (!pathForPrint.isEmpty()) {
             temp = pathForPrint.pop();
-            if (!pathForPrint.isEmpty()){
-            	System.out.print("(" + temp.get_x() + ", " + temp.get_y() + ") --> ");
-            	monitorScreen.append("(" + temp.get_x() + ", " + temp.get_y() + ") --> ");
-            }
-            else{
-            	System.out.print("(" + temp.get_x() + ", " + temp.get_y() + ")");
-            	monitorScreen.append("(" + temp.get_x() + ", " + temp.get_y() + ")");
-        	}
+            if (!pathForPrint.isEmpty()) System.out.print("(" + temp.get_x() + ", " + temp.get_y() + ") --> ");
+            else System.out.print("(" + temp.get_x() + ", " + temp.get_y() + ")");
         }
 
         System.out.println("\n");
@@ -494,11 +481,4 @@ public class Sprinter {
             System.out.println("\n");
         }
     }
-    
-	public void setMonitorScreen(JTextArea info) {
-		// TODO Auto-generated method stub
-		
-		monitorScreen = info;
-		
-	}
 }

@@ -30,7 +30,7 @@ public class Mapper extends JPanel {
      */
     public void paintComponent(Graphics g) {
     	super.paintComponent(g);
-    	// Create a two-dimensional array of _DisplayCell objects for rendering.
+        // Create a two-dimensional array of _DisplayCell objects for rendering.
         _DisplayCell[][] _mapCells = new _DisplayCell[MapConstant.MAP_X][MapConstant.MAP_Y];
         for (int x = 0; x < MapConstant.MAP_X; x++) {
             for (int y = 0; y < MapConstant.MAP_Y; y++) {

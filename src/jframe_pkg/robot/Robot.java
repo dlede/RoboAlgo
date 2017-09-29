@@ -8,7 +8,6 @@ import jframe_pkg.robot.RobotConstants.MOVEMENT;
 import jframe_pkg.utils.CommMgr;
 //import jframe_pkg.utils.CommMgr;
 import jframe_pkg.utils.MapDescriptor;
-import jframe_pkg.utils.Stopwatch;
 import jframe_pkg.robot.Sensor;
 
 import java.util.concurrent.TimeUnit;
@@ -170,8 +169,13 @@ public class Robot {
         //else 
         System.out.println("Move: " + MOVEMENT.print(m));
         //System.out.println(field_cp);
-        field_cp.setText("Row : " + posRow + ", Col: " + posCol);
-        monitorScreen.append("Move: " + MOVEMENT.print(m) + "\n");
+        
+        /**
+         * Issue below, if field_cp is used, animation fails
+        **/
+        
+        //field_cp.setText("Row : " + posRow + ", Col: " + posCol);
+        //monitorScreen.append("Move: " + MOVEMENT.print(m) + "\n");
         updateTouchedGoal();
     }
 
@@ -343,7 +347,7 @@ public class Robot {
         **/
         return result;
     }
-
+    
 	public void setMonitorScreen(JTextArea info) {		
 		
 		this.monitorScreen = info;

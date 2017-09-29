@@ -307,7 +307,7 @@ public class MainFrame extends JFrame {
 	private static void addSpeedPanel() {
 
 		// create speed label
-		spd_label = new JLabel("Speed: ");
+		spd_label = new JLabel("Speed: (1 - 100)");
 
 		// create speed field
 		field_spd = new JTextField(10);
@@ -319,7 +319,7 @@ public class MainFrame extends JFrame {
 		btn_Speed.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				// TODO: set speed function on robot e.g.
-				bot.setSpeed(Integer.parseInt(field_spd.getText()));
+				bot.setSpeed((Integer.parseInt(field_spd.getText()) - 101) * -1);
 				System.out.println("Speed: " + field_spd.getText());
 			}
 		});

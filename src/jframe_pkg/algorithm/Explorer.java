@@ -77,11 +77,13 @@ public class Explorer {
             //CommMgr.getCommMgr().sendMsg(null, CommMgr.BOT_START);
         	CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
         }
+        
         senseAndRepaint();
 
         areaExplored = calculateAreaExplored();
+        // Here is moved
         System.out.println("Explored Area: " + areaExplored);
-        
+
         explorationLoop(bot.getRobotPosRow(), bot.getRobotPosCol());
     }
 
@@ -103,6 +105,7 @@ public class Explorer {
                 }
             }
         }
+        
         while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
         goHome();
     }
@@ -217,10 +220,11 @@ public class Explorer {
      */
     private void goHome() {
         if (!bot.getTouchedGoal() && coverageLimit == 300 && timeLimit == 3600) {
+        	System.out.println("In goHome() of ExplorationAlgo first loop");
             Sprinter goToGoal = new Sprinter(exMap, bot, realMap);
             goToGoal.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
         }
-        
+        System.out.println("In goHome() of ExplorationAlgo second loop");
         Sprinter returnToStart = new Sprinter(exMap, bot, realMap);
         returnToStart.runFastestPath(RobotConstants.START_ROW, RobotConstants.START_COL);
 

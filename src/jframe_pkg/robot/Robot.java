@@ -93,7 +93,7 @@ public class Robot {
     //hk check if reached goal
 
     private void updateTouchedGoal() {
-        if (this.getRobotPosRow() == MapConstant.GOAL_X && this.getRobotPosCol() == MapConstant.GOAL_Y)
+        if (this.getRobotPosRow() == MapConstant.GOAL_Y && this.getRobotPosCol() == MapConstant.GOAL_X)
             this.touchedGoal = true;
     }
 

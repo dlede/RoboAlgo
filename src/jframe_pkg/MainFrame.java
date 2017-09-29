@@ -71,7 +71,7 @@ public class MainFrame extends JFrame {
             r_Mapper = new Mapper(bot);
             r_Mapper.gridder.setAllUnexplored();
         }
-    	e_Mapper = new Mapper(bot); //argument bot
+        e_Mapper = new Mapper(bot); //argument bot
 		e_Mapper.gridder.setAllUnexplored();
 		explorer = new Explorer(e_Mapper, r_Mapper, bot, timeLimit, coverageLimit); //exmap, rmap, robot, coverage, time
         
@@ -153,6 +153,8 @@ public class MainFrame extends JFrame {
         btn.setFocusPainted(false);
         //btn.setPreferredSize(new Dimension(200, 20));
     }
+    
+
     
     private static void addLoadMapButton() {
         if (!realRun) {
@@ -475,6 +477,8 @@ public class MainFrame extends JFrame {
         class FastestPath extends SwingWorker<Integer, String> {
             protected Integer doInBackground() throws Exception {
                 bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
+            		//bot.setRobotPos(10,10);
+
                 e_Mapper.repaint();
 
                 if (realRun) {
@@ -564,7 +568,7 @@ public class MainFrame extends JFrame {
     	    public void itemStateChanged(ItemEvent itemEvent) {
     	        int state = itemEvent.getStateChange();
     	        if (state == ItemEvent.SELECTED) {
-    	            System.out.println("On"); // show your message here
+    	            System.out.println("exploration On"); // show your message here
     	            fast_mode = false; // if fast mode off, explore
     	            if (auto_mode==true && fast_mode == false && map_Load == true)
     	            {
@@ -577,21 +581,24 @@ public class MainFrame extends JFrame {
     	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
     	                cl.show(_mapCards, "EXPLORATION");
     	                new Exploration().execute();
+
     	        		
     	        		if (auto_mode==false)
     	        		{
-    	        			System.out.println("Break");
+    	        			System.out.println("explore on but auto off, Break");
     	        			//break;
     	        		}
     	            }
     	            expBtn.setText("Exploration: ON");
     	            
     	        } else {
-    	            System.out.println("Off"); // remove your message
-    	            fast_mode = true; // if fast mode on, greedy
-    	            if (auto_mode==true && fast_mode == false && map_Load == true)
+    	            System.out.println("explore Off now"); // remove your message
+    	            System.out.println("explore Off now");
+    	            fast_mode = true; // if fast mode on
+    	            if (auto_mode==true && fast_mode == true && map_Load == true)
     	            {
     	            	//TODO: sprint
+
     	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
     	                cl.show(_mapCards, "EXPLORATION");
     	                new FastestPath().execute();
@@ -618,12 +625,12 @@ public class MainFrame extends JFrame {
     	    public void itemStateChanged(ItemEvent itemEvent) {
     	        int state = itemEvent.getStateChange();
     	        if (state == ItemEvent.SELECTED) {
-    	            System.out.println("On"); // show your message here
+    	            System.out.println("auto On"); // show your message here
     	            auto_mode = true; // if auto mode on
     	            autoBtn.setText("Auto: ON");
     	            
     	        } else {
-    	            System.out.println("Off"); // remove your message
+    	            System.out.println("auto Off"); // remove your message
     	            auto_mode = false; // if auto mode off
     	            autoBtn.setText("Auto: OFF");
     	            

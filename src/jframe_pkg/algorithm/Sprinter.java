@@ -19,7 +19,6 @@ import java.util.Stack;
  * g(n) = Real Cost from START to n
  * h(n) = Heuristic Cost from n to GOAL
  *
- * @author Suyash Lakhotia
  */
 // @formatter:on
 
@@ -308,6 +307,7 @@ public class Sprinter {
         }
 
         if (!bot.getRealBot() || explorationMode) {
+        	System.out.println("in HK first Loop!");
             for (MOVEMENT x : movements) {
                 if (x == MOVEMENT.FORWARD) {
                     if (!canMoveForward()) {
@@ -315,8 +315,10 @@ public class Sprinter {
                         return "T";
                     }
                 }
-
+                	
                 bot.move(x);
+                //here HK
+                
                 this.map.repaint();
 
                 // During exploration, use sensor data to update map.
@@ -327,6 +329,7 @@ public class Sprinter {
                 }
             }
         } else {
+
             int fCount = 0;
             for (MOVEMENT x : movements) {
                 if (x == MOVEMENT.FORWARD) {

@@ -90,7 +90,7 @@ public class MainFrame extends JFrame {
 	private static Mapper e_Mapper = null; // explored map
 
 	private static Explorer explorer = null; // explorer mount init
-	
+
 	private static Explorer exploration = null;
 	public static boolean map_Load = false; // if map is loaded
 
@@ -137,7 +137,7 @@ public class MainFrame extends JFrame {
 		MainFrame frame = new MainFrame();
 
 	}
-	
+
 	// show main frame
 	public MainFrame() {
 
@@ -146,8 +146,8 @@ public class MainFrame extends JFrame {
 		_appFrame.setTitle("MDP Group 15 Main Frame");
 		_appFrame.setSize(new Dimension(1200, 750));
 		_appFrame.setResizable(false);
-		 _mapCards = new JPanel(new CardLayout());
-		 
+		_mapCards = new JPanel(new CardLayout());
+
 		// Initialize the main map view
 		initMainLayout();
 
@@ -174,7 +174,7 @@ public class MainFrame extends JFrame {
 		_appFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 	}
-	
+
 	private static void initMainLayout() {
 
 		if (!realRun) {
@@ -202,15 +202,14 @@ public class MainFrame extends JFrame {
 		addTimerPanel();
 
 	}
-    
+
 	private static void formatButton(JButton btn) {
 		btn.setFont(new Font("Arial", Font.BOLD, 13));
 		btn.setFocusPainted(false);
 		// btn.setPreferredSize(new Dimension(200, 20));
 	}
-    
 
-    private static void addLoadMapButton() {
+	private static void addLoadMapButton() {
 		if (!realRun) {
 			// JPanel map_panel = new JPanel(new FlowLayout());
 			// map_panel = new JPanel(new GridLayout(3, 1));
@@ -220,36 +219,34 @@ public class MainFrame extends JFrame {
 			btn_LoadMap = new JButton("Load Map");
 			formatButton(btn_LoadMap);
 
-			
-			 btn_LoadMap.addMouseListener(new MouseAdapter() {
-	                public void mousePressed(MouseEvent e) {
-	                	btn_LoadMap.setVisible(false);
-	                    loadMapFromDisk(r_Mapper, map_field.getText());
-	                    CardLayout cl = ((CardLayout) _mapCards.getLayout());
-	                    cl.show(_mapCards, "EXPLORATION_MAP");
-	                    e_Mapper.repaint();
-	                    map_Load = true;
-	                    System.out.println("Map Loaded: " + map_Load);
-	                    info.append("Map Loaded: " + map_Load + "\n");
-	                }
-	            });
-	            
-			 
+			btn_LoadMap.addMouseListener(new MouseAdapter() {
+				public void mousePressed(MouseEvent e) {
+					btn_LoadMap.setVisible(false);
+					loadMapFromDisk(r_Mapper, map_field.getText());
+					CardLayout cl = ((CardLayout) _mapCards.getLayout());
+					cl.show(_mapCards, "EXPLORATION_MAP");
+					e_Mapper.repaint();
+					map_Load = true;
+					System.out.println("Map Loaded: " + map_Load);
+					info.append("Map Loaded: " + map_Load + "\n");
+				}
+			});
+
 			_settings.add(map_label);
 			map_label.setAlignmentX(Component.LEFT_ALIGNMENT);
 			_settings.add(Box.createRigidArea(new Dimension(0, 10)));
-			
+
 			_settings.add(map_field);
 			map_field.setAlignmentX(Component.LEFT_ALIGNMENT);
 			_settings.add(Box.createRigidArea(new Dimension(0, 10)));
-			
+
 			_settings.add(btn_LoadMap);
 			btn_LoadMap.setAlignmentX(Component.LEFT_ALIGNMENT);
 			_settings.add(Box.createRigidArea(new Dimension(0, 10)));
 			_settings.setVisible(true);
-        }
-    }
-    
+		}
+	}
+
 	private static void addWaypointPanel() {
 
 		// create label
@@ -257,14 +254,15 @@ public class MainFrame extends JFrame {
 
 		// Create field
 		field_x = new JTextField(5);
+		field_x.setMaximumSize(field_x.getPreferredSize());
 		field_y = new JTextField(5);
+		field_y.setMaximumSize(field_y.getPreferredSize());
 
-		//field_x.setText("0");
-		//field_y.setText("0");
+		// field_x.setText("0");
+		// field_y.setText("0");
 
-
-		//Align items wp_textfield.setAlignmentX(Component.LEFT_ALIGNMENT);
-		//wp_textfield.add(field_x); wp_textfield.add(field_y);
+		// Align items wp_textfield.setAlignmentX(Component.LEFT_ALIGNMENT);
+		// wp_textfield.add(field_x); wp_textfield.add(field_y);
 
 		// create btn
 		btn_Waypoints = new JButton("Set Waypoints");
@@ -275,7 +273,7 @@ public class MainFrame extends JFrame {
 				// TODO: set waypoint function on mapper e.g.
 				final String text_x = field_x.getText();
 				final String text_y = field_y.getText();
-				
+
 				if (e_Mapper.gridder.waypoint_validator(Integer.parseInt(text_x), Integer.parseInt(text_y)) == true) {
 					System.out.println(
 							"(" + "Waypoint: " + Integer.parseInt(text_x) + ", " + Integer.parseInt(text_y) + ")");
@@ -283,7 +281,8 @@ public class MainFrame extends JFrame {
 					// e_Mapper.repaint();
 					map_Load = true;
 				}
-				info.append("Waypoint have been set at " + Integer.parseInt(text_x) + ", " + Integer.parseInt(text_y) + "\n");
+				info.append("Waypoint have been set at " + Integer.parseInt(text_x) + ", " + Integer.parseInt(text_y)
+						+ "\n");
 			}
 
 		});
@@ -293,19 +292,19 @@ public class MainFrame extends JFrame {
 		wp_label.setAlignmentX(Component.LEFT_ALIGNMENT);
 		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
 		_settings.add(field_x);
-		
-		//TODO: ui alignment for waypoints
-		wp_label.setAlignmentX(Component.LEFT_ALIGNMENT);
-		//_settings.add(Box.createRigidArea(new Dimension(0, 10)));
+
+		// TODO: ui alignment for waypoints
+		field_x.setAlignmentX(Component.LEFT_ALIGNMENT);
+		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
 		_settings.add(field_y);
-		wp_label.setAlignmentX(Component.LEFT_ALIGNMENT);
-		//_settings.add(Box.createRigidArea(new Dimension(0, 10)));
+		field_y.setAlignmentX(Component.LEFT_ALIGNMENT);
+		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
 		_settings.add(btn_Waypoints);
 		btn_Waypoints.setAlignmentX(Component.LEFT_ALIGNMENT);
 		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
 
 	}
-    
+
 	private static void addSpeedPanel() {
 
 		// create speed label
@@ -365,18 +364,17 @@ public class MainFrame extends JFrame {
 		_settings.add(timer_label);
 		timer_label.setAlignmentX(Component.LEFT_ALIGNMENT);
 		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
-		
+
 		_settings.add(field_timer);
 		field_timer.setAlignmentX(Component.LEFT_ALIGNMENT);
 		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
-		
+
 		_settings.add(reset_button);
 		reset_button.setAlignmentX(Component.LEFT_ALIGNMENT);
 		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
 
 	}
-    
-    
+
 	// West Panel
 	private static void initMonitorLayout() {
 
@@ -388,32 +386,31 @@ public class MainFrame extends JFrame {
 		addNxtStepPanel();
 		addCurPosPanel();
 	}
-    
+
 	private static void addConsolePanel() {
 
-		
 		// Monitor Screen
-		
+
 		info = new JTextArea(25, 25);
 
-		//bot.setMonitorScreen(info);
+		bot.setMonitorScreen(info);
 		info.setEditable(false);
 		info.setWrapStyleWord(true);
 		info.setLineWrap(true);
-		//info.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 0, 0, 0)));
+		// info.setBorder(BorderFactory.createCompoundBorder(border,
+		// BorderFactory.createEmptyBorder(0, 0, 0, 0)));
 		info.setAlignmentX(Component.LEFT_ALIGNMENT);
 		info.setMaximumSize(info.getPreferredSize());
 		infoScroll = new JScrollPane(info);
 		infoScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		//infoScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		//info.setCaretPosition(info.getDocument().getLength());
-		//infoScroll.setAutoscrolls(true);
-		
-		 caret = (DefaultCaret)info.getCaret();
-		 caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		
-		
+		// infoScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+		// info.setCaretPosition(info.getDocument().getLength());
+		// infoScroll.setAutoscrolls(true);
+
+		caret = (DefaultCaret) info.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
 		_monitor.add(infoScroll);
 		// padding- width, height
 		_monitor.add(Box.createRigidArea(new Dimension(0, 15)));
@@ -450,7 +447,7 @@ public class MainFrame extends JFrame {
 		cp_label = new JLabel("Current Position: ");
 
 		field_cp = new JTextField(10);
-		//bot.setCurPostScreen(field_cp);
+		bot.setCurPostScreen(field_cp);
 		field_cp.setMaximumSize(field_cp.getPreferredSize());
 		field_cp.setEditable(false);
 		info.setLineWrap(false);
@@ -472,11 +469,11 @@ public class MainFrame extends JFrame {
 		addModePanel();
 
 	}
-    
-    private static void addModePanel(){
-    	
-    	// TODO: Change this portion onwards, the multithreading portion
-    	
+
+	private static void addModePanel() {
+
+		// TODO: Change this portion onwards, the multithreading portion
+
 		// FastestPath Class for Multithreading
 		class FastestPath extends SwingWorker<Integer, String> {
 			protected Integer doInBackground() throws Exception {
@@ -488,7 +485,7 @@ public class MainFrame extends JFrame {
 
 				if (realRun) {
 					while (true) {
-						
+
 						System.out.println("Waiting for FP_START...");
 						info.append("Waiting for FP_START...\n");
 						String msg = comm.revMsg();
@@ -497,36 +494,38 @@ public class MainFrame extends JFrame {
 					}
 				}
 
-				
 				fastest_wp_Path = new Sprinter(e_Mapper, bot);
-				//fastestPath.setMonitorScreen(info);
-				
+
 				fastest_wp_Path.runFastestPath(Integer.parseInt(text_x), Integer.parseInt(text_y));
-				//fastestPath.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
-				
-				//bot.setRobotPos(Integer.parseInt(text_x), Integer.parseInt(text_y));
-				//bot.setRobotDir(RobotConstants.DIRECTION.SOUTH);
-				//fastestPath.runFastestPath(Integer.parseInt(text_x), Integer.parseInt(text_y));
+				// fastestPath.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+
+				// bot.setRobotPos(Integer.parseInt(text_x), Integer.parseInt(text_y));
+				// bot.setRobotDir(RobotConstants.DIRECTION.SOUTH);
+				// fastestPath.runFastestPath(Integer.parseInt(text_x),
+				// Integer.parseInt(text_y));
 				System.out.println("\n\nbreaker....");
 				System.out.println("breaker....");
 				System.out.println("breaker.... \n\n");
-				
+
 				bot.setRobotPos(Integer.parseInt(text_x), Integer.parseInt(text_y));
 				bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
 				e_Mapper.repaint();
-				
-				fastest_goal_Path = new Sprinter(e_Mapper, bot);
-				//e_Mapper.repaint();
-				fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
-				
 
-				//private static Sprinter fastest_wp_Path;
-				//private static Sprinter fastest_goal_Path;
+				fastest_goal_Path = new Sprinter(e_Mapper, bot);
 				
+				// e_Mapper.repaint();
+				
+				fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+				timer.stop();
+				info.append("Time Taken: " + timer.getMinSec() + "\n");
+				
+				// private static Sprinter fastest_wp_Path;
+				// private static Sprinter fastest_goal_Path;
+
 				return 222;
 			}
 		}
-        
+
 		// Exploration Class for Multithreading
 		class Exploration extends SwingWorker<Integer, String> {
 			protected Integer doInBackground() throws Exception {
@@ -536,19 +535,21 @@ public class MainFrame extends JFrame {
 				col = RobotConstants.START_COL;
 
 				bot.setRobotPos(row, col);
-				//e_Mapper.repaint();
-				 r_Mapper.repaint();
-				 
+				// e_Mapper.repaint();
+				r_Mapper.repaint();
+
 				exploration = new Explorer(e_Mapper, r_Mapper, bot, coverageLimit, timeLimit);
-				//exploration.setMonitorScreen(info);
-				//exploration.setTimer(timer);
-				
+				// exploration.setMonitorScreen(info);
+				// exploration.setTimer(timer);
+
 				if (realRun) {
 					CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
 				}
 
 				exploration.runExploration();
 				generateMapDescriptor(e_Mapper);
+				timer.stop();
+				info.append("Time Taken: " + timer.getMinSec() + "\n");
 
 				if (realRun) {
 					new FastestPath().execute();
@@ -557,7 +558,7 @@ public class MainFrame extends JFrame {
 				return 111;
 			}
 		}
-        
+
 		// CoverageExploration Class for Multithreading
 		class CoverageExploration extends SwingWorker<Integer, String> {
 			protected Integer doInBackground() throws Exception {
@@ -587,94 +588,94 @@ public class MainFrame extends JFrame {
 				return 333;
 			}
 		}
-    	
-    	JPanel mode_panel = new JPanel(new FlowLayout());
+
+		JPanel mode_panel = new JPanel(new FlowLayout());
 
 		exp_label = new JLabel("Exploration Mode: ");
 
 		expBtn = new JToggleButton("OFF");
-    	
+
 		expListener = new ItemListener() {
-    		
-    	    public void itemStateChanged(ItemEvent itemEvent) {
-    	        int state = itemEvent.getStateChange();
-    	        if (state == ItemEvent.SELECTED) {
-    	            System.out.println("Exploration Mode On"); // show your message here
-    	            info.append("Exploration Mode On\n");
-    	            fast_mode = false; // if fast mode off, explore
-    	            if (auto_mode==true && fast_mode == false && map_Load == true)
-    	            {
-    	            	//TODO: explore
-    	        		//explorer.runExploration();
-    	        		//generateMapDescriptor(e_Mapper);
-    	        		//bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
-    	        		//e_Mapper.repaint();
-    	        		
-    	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
-    	                cl.show(_mapCards, "EXPLORATION");
-    	                
-    	                timer.start();//start timer
-    	                new Exploration().execute();
-    	                
-    	        		if (auto_mode==false)
-    	        		{
-    	        			System.out.println("Break");
-    	        			//break;
-    	        		}
-    	            }
-    	            expBtn.setText("Exploration: ON");
-    	            
-    	        } else {
-    	            System.out.println("Off"); // remove your message
-    	            info.append("Exploration Mode Off\n");
-    	            fast_mode = true; // if fast mode on, greedy
-    	            if (auto_mode==true && fast_mode == true && map_Load == true)
-    	            {
-    	            	//TODO: sprint
-    	                CardLayout cl = ((CardLayout) _mapCards.getLayout());
-    	                cl.show(_mapCards, "EXPLORATION"); //not "REAL_MAP"
-    	                new FastestPath().execute();
-    	        		
-    	        		if (auto_mode==false)
-    	        		{
-    	        			System.out.println("Break");
-    	        			//break;
-    	        		}
-    	            }
-    	            expBtn.setText("Exploration: OFF");
-    	            
-    	        }
-    	    }
-    	};
-    	
-    	expBtn.addItemListener(expListener);
-    	
-		 
+
+			public void itemStateChanged(ItemEvent itemEvent) {
+				int state = itemEvent.getStateChange();
+				if (state == ItemEvent.SELECTED) {
+					System.out.println("Exploration Mode On"); // show your message here
+					info.append("Exploration Mode On\n");
+					fast_mode = false; // if fast mode off, explore
+					if (auto_mode == true && fast_mode == false && map_Load == true) {
+						// TODO: explore
+						// explorer.runExploration();
+						// generateMapDescriptor(e_Mapper);
+						// bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
+						// e_Mapper.repaint();
+
+						info.append("Starting exploration...\n");
+						CardLayout cl = ((CardLayout) _mapCards.getLayout());
+						cl.show(_mapCards, "EXPLORATION");
+						timer.start();// start timer
+						new Exploration().execute();
+
+						if (auto_mode == false) {
+							System.out.println("Break");
+							// break;
+						}
+					}
+					expBtn.setText("Exploration: ON");
+
+				} else {
+					System.out.println("Off"); // remove your message
+					info.append("Exploration Mode Off\n");
+					fast_mode = true; // if fast mode on, greedy
+					if (auto_mode == true && fast_mode == true && map_Load == true) {
+						// TODO: sprint
+						CardLayout cl = ((CardLayout) _mapCards.getLayout());
+						cl.show(_mapCards, "EXPLORATION"); // not "REAL_MAP"
+
+						info.append("Starting fastest path...\n");
+						// Reset timer
+						timer = new Stopwatch(field_timer);
+						field_timer.setText(timer.getMinSec());
+						timer.start();
+						new FastestPath().execute();
+
+						if (auto_mode == false) {
+							System.out.println("Break");
+							// break;
+						}
+					}
+					expBtn.setText("Exploration: OFF");
+
+				}
+			}
+		};
+
+		expBtn.addItemListener(expListener);
 
 		auto_label = new JLabel("Auto Mode: ");
 		autoBtn = new JToggleButton("OFF");
 
 		autoBtnListener = new ItemListener() {
-    		
-    	    public void itemStateChanged(ItemEvent itemEvent) {
-    	        int state = itemEvent.getStateChange();
-    	        if (state == ItemEvent.SELECTED) {
-    	            System.out.println("Auto Mode On"); // show your message here
-    	            info.append("Auto Mode On\n");
-    	            auto_mode = true; // if auto mode on
-    	            autoBtn.setText("Auto: ON");
-    	            
-    	        } else {
-    	            System.out.println("Off"); // remove your message
-    	            info.append("Auto Mode Off\n");
-    	            auto_mode = false; // if auto mode off
-    	            autoBtn.setText("Auto: OFF");
-    	            
-    	        }
-    	    }
-    	};
-    	
-    	autoBtn.addItemListener(autoBtnListener);
+
+			public void itemStateChanged(ItemEvent itemEvent) {
+				int state = itemEvent.getStateChange();
+				if (state == ItemEvent.SELECTED) {
+					System.out.println("Auto Mode On"); // show your message here
+					info.append("Auto Mode On\n");
+					auto_mode = true; // if auto mode on
+					autoBtn.setText("Auto: ON");
+
+				} else {
+					System.out.println("Off"); // remove your message
+					info.append("Auto Mode Off\n");
+					auto_mode = false; // if auto mode off
+					autoBtn.setText("Auto: OFF");
+
+				}
+			}
+		};
+
+		autoBtn.addItemListener(autoBtnListener);
 
 		_toggle.add(exp_label);
 		_toggle.add(expBtn);

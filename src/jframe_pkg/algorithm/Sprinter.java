@@ -279,13 +279,19 @@ public class Sprinter {
         
         Robot tempBot = null;
         System.out.println("My debug codes - goalRow: " + goalRow + " goalCol: " + goalCol + "\n");
+        
         if (goalRow == MapConstant.GOAL_Y && goalCol == MapConstant.GOAL_X) 
         {
         	//tempBot = new Robot (MapConstant.WAYPOINT_X, MapConstant.WAYPOINT_Y, false);
         	tempBot = new Robot (map.gridder.waypoint_x, map.gridder.waypoint_y, false); // waypoints in mapper, trial
+        
         }
         else
         	tempBot = new Robot(1, 1, false);
+        
+        
+        tempBot.setCurPostScreen(bot.getCurPostScreen());
+    	tempBot.setMonitorScreen(bot.getMonitorScreen());
         
         tempBot.setSpeed(0);
         while ((tempBot.getRobotPosRow() != goalRow) || (tempBot.getRobotPosCol() != goalCol)) {

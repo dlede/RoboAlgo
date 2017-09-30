@@ -173,9 +173,11 @@ public class Robot {
         /**
          * Issue below, if field_cp is used, animation fails
         **/
+
+        //System.out.println(field_cp);
+        field_cp.setText("Row : " + posRow + ", Col: " + posCol);
+        monitorScreen.append("Move: " + MOVEMENT.print(m) + "\n");
         
-        //field_cp.setText("Row : " + posRow + ", Col: " + posCol);
-        //monitorScreen.append("Move: " + MOVEMENT.print(m) + "\n");
         updateTouchedGoal();
     }
 
@@ -358,6 +360,14 @@ public class Robot {
 		
 		this.field_cp = field_cp;
 		
+	}
+	
+	public JTextArea getMonitorScreen() {
+		return this.monitorScreen;
+	}
+	
+	public JTextField getCurPostScreen() {
+		return this.field_cp;
 	}
 	
 }

@@ -69,7 +69,6 @@ public class Explorer {
         }
 
         System.out.println("Starting exploration...");
-
         startTime = System.currentTimeMillis();
         endTime = startTime + (timeLimit * 1000);
 

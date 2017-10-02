@@ -17,6 +17,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
@@ -59,23 +60,17 @@ public class MainFrame extends JFrame {
 	private static JPanel _settings = null; // JPanel for settings - right
 											// portion of console
 
-	private static JLabel map_label, wp_label, spd_label, timer_label;
-	private static JTextField map_field, field_spd, field_timer;
-	private static JTextField field_x, field_y;
-	private static JButton btn_Waypoints, btn_LoadMap, reset_button;
+	private static JLabel map_label, wp_label, spd_label, timer_label, cp_label, exp_label, auto_label, msg_label;
+	private static JTextField map_field, field_spd, field_timer, field_cp, msg_field, field_x, field_y;
+	private static JButton btn_Waypoints, btn_LoadMap, reset_button, btn_Reset, btn_MsgSend, btn_NxtStep; 
 
 	private static JPanel _monitor = null; // JPanel for monitor
 
 	private static JTextArea info;
-	private static JButton btn_NxtStep;
 	private static JScrollPane infoScroll;
-	private static JLabel cp_label;
-	private static JTextField field_cp;
 	private static DefaultCaret caret;
 
 	private static JPanel _toggle = null; // JPanel for toggle btns
-
-	private static JLabel exp_label, auto_label;
 	private static JToggleButton expBtn, autoBtn;
 	private static ItemListener expListener, autoBtnListener;
 	private static Sprinter fastest_wp_Path;
@@ -93,6 +88,7 @@ public class MainFrame extends JFrame {
 
 	private static Explorer exploration = null;
 	public static boolean map_Load = false; // if map is loaded
+	public static boolean map_Clear = false; // TODO: if both explore and sprint is cleared, can do next map
 
 	private static int timeLimit = 3600; // TODO: time limit
 	private static int coverageLimit = 300; // TODO: coverage limit
@@ -105,8 +101,6 @@ public class MainFrame extends JFrame {
 	private static boolean fast_mode = false; // fast mode false = exploration
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 		bot = new Robot(RobotConstants.START_ROW, RobotConstants.START_COL, realRun);
 
 		if (realRun) {
@@ -114,10 +108,10 @@ public class MainFrame extends JFrame {
 				comm.setUpConnection("192.168.2.1", 8088); // ip address and
 															// port on rpi3
 			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
+				// Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				// Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -189,6 +183,20 @@ public class MainFrame extends JFrame {
 			cl.show(_mapCards, "EXPLORATION");
 		}
 	}
+	
+	private static void resetMainLayout()
+	{
+		if (!realRun) {
+			r_Mapper = new Mapper(bot);
+			r_Mapper.gridder.setAllUnexplored();
+		}
+		e_Mapper = new Mapper(bot); // argument bot
+		e_Mapper.gridder.setAllUnexplored();
+		
+		_mapCards.remove(r_Mapper);
+		_mapCards.remove(e_Mapper);
+		initMainLayout();
+	}
 
 	// East Panel
 	private static void initSettingsLayout() {
@@ -200,7 +208,7 @@ public class MainFrame extends JFrame {
 		addSpeedPanel();
 		addLoadMapButton();
 		addTimerPanel();
-
+		addResetButton();
 	}
 
 	private static void formatButton(JButton btn) {
@@ -218,17 +226,32 @@ public class MainFrame extends JFrame {
 			map_field.setMaximumSize(map_field.getPreferredSize());
 			btn_LoadMap = new JButton("Load Map");
 			formatButton(btn_LoadMap);
+			
+			// TODO: Change this in every computer until we find a way to default this
+			String dir = "C:/Users/dlai002/Downloads/gitalgo/RoboAlgo/maps/"; 
 
 			btn_LoadMap.addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
-					btn_LoadMap.setVisible(false);
-					loadMapFromDisk(r_Mapper, map_field.getText());
-					CardLayout cl = ((CardLayout) _mapCards.getLayout());
-					cl.show(_mapCards, "EXPLORATION_MAP");
-					e_Mapper.repaint();
-					map_Load = true;
-					System.out.println("Map Loaded: " + map_Load);
-					info.append("Map Loaded: " + map_Load + "\n");
+					File file = new File(dir + map_field.getText() + ".txt");
+					//System.out.println(file.getPath());
+					if (file.exists())
+					{
+						System.out.println("The Path is: " + file.getPath());
+						btn_LoadMap.setVisible(false);
+						loadMapFromDisk(r_Mapper, map_field.getText());
+						CardLayout cl = ((CardLayout) _mapCards.getLayout());
+						cl.show(_mapCards, "EXPLORATION_MAP");
+						e_Mapper.repaint();
+						map_Load = true;
+						System.out.println("Map Loaded: " + map_Load);
+						info.append("Map Loaded: " + map_Load + "\n");
+					}
+					else
+					{
+						System.out.println("The Path is: " + file.getPath());
+						System.out.println("Map does not exist, try again");
+						map_field.setText("");
+					}
 				}
 			});
 
@@ -246,6 +269,80 @@ public class MainFrame extends JFrame {
 			_settings.setVisible(true);
 		}
 	}
+	
+	private static void addResetButton() {
+		if (!realRun) {
+			btn_Reset = new JButton("Reset Map");
+			formatButton(btn_Reset);
+
+			btn_Reset.addMouseListener(new MouseAdapter() {
+				public void mousePressed(MouseEvent e) {
+					//TODO: set things to true or false, reset all variables
+					System.out.println("Reset Map");
+					if(map_Clear == true)
+					{
+						System.out.println("\n\nSince map is cleared, reset possible");
+						map_Clear = false;
+						map_Load = false;
+						System.out.println("\nmap loaded is reset!");
+						System.out.println("\nmap cleared is reset!");
+						
+						btn_LoadMap.setVisible(true);
+						System.out.println("\nmap can now be loaded!");
+						
+						// TODO: clear map and reset to clean map before getting the new map to be loaded
+						// Note: can append new map but cannot clear previous map
+						
+						//resetMainFrame();
+						resetMainLayout();
+						
+						loadMapFromDisk(r_Mapper, "clean_map");
+						CardLayout cl = ((CardLayout) _mapCards.getLayout());
+						cl.show(_mapCards, "EXPLORATION_MAP");
+						e_Mapper.repaint();
+						
+						System.out.println("\nexplicitly reset the map to null");
+					}
+				}
+			});
+
+			_settings.add(btn_Reset);
+			btn_Reset.setAlignmentX(Component.LEFT_ALIGNMENT);
+			_settings.add(Box.createRigidArea(new Dimension(0, 10)));
+			_settings.setVisible(true);
+		}
+	}
+	
+	private static void addSendMsgButton() {
+		msg_label = new JLabel("Message: ");
+		msg_field = new JTextField(10);
+		msg_field.setMaximumSize(map_field.getPreferredSize());
+		
+		if (!realRun) {
+			btn_MsgSend = new JButton("Reset Map");
+			formatButton(btn_MsgSend);
+
+			btn_MsgSend.addMouseListener(new MouseAdapter() {
+				public void mousePressed(MouseEvent e) {
+					//TODO: send a message button
+					System.out.println("\nSending Message");
+				}
+			});
+
+			_settings.add(msg_label);
+			msg_label.setAlignmentX(Component.LEFT_ALIGNMENT);
+			_settings.add(Box.createRigidArea(new Dimension(0, 10)));
+
+			_settings.add(msg_field);
+			msg_field.setAlignmentX(Component.LEFT_ALIGNMENT);
+			_settings.add(Box.createRigidArea(new Dimension(0, 10)));
+			
+			_settings.add(btn_MsgSend);
+			btn_MsgSend.setAlignmentX(Component.LEFT_ALIGNMENT);
+			_settings.add(Box.createRigidArea(new Dimension(0, 10)));
+			_settings.setVisible(true);
+		}
+	}	
 
 	private static void addWaypointPanel() {
 
@@ -270,7 +367,6 @@ public class MainFrame extends JFrame {
 		formatButton(btn_Waypoints);
 		btn_Waypoints.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				// TODO: set waypoint function on mapper e.g.
 				final String text_x = field_x.getText();
 				final String text_y = field_y.getText();
 
@@ -293,7 +389,6 @@ public class MainFrame extends JFrame {
 		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
 		_settings.add(field_x);
 
-		// TODO: ui alignment for waypoints
 		field_x.setAlignmentX(Component.LEFT_ALIGNMENT);
 		_settings.add(Box.createRigidArea(new Dimension(0, 10)));
 		_settings.add(field_y);
@@ -319,7 +414,6 @@ public class MainFrame extends JFrame {
 		formatButton(btn_Speed);
 		btn_Speed.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				// TODO: set speed function on robot e.g.
 				bot.setSpeed((Integer.parseInt(field_spd.getText()) - 101) * -1);
 				System.out.println("Speed: " + field_spd.getText());
 				info.append("Speed has been set to " + field_spd.getText() + "\n");
@@ -340,7 +434,6 @@ public class MainFrame extends JFrame {
 
 	private static void addTimerPanel() {
 
-		// TODO: add timer
 		timer_label = new JLabel("Timer ");
 		field_timer = new JTextField(10);
 		field_timer.setEditable(false);
@@ -350,11 +443,10 @@ public class MainFrame extends JFrame {
 
 		field_timer.setText(timer.getMinSec());
 
-		reset_button = new JButton("Reset");
+		reset_button = new JButton("Reset Timer");
 
 		reset_button.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				// TODO: set speed function on robot e.g.
 				timer = new Stopwatch(field_timer);
 				field_timer.setText(timer.getMinSec());
 				System.out.println("Reset Timer");
@@ -383,7 +475,7 @@ public class MainFrame extends JFrame {
 		_monitor.setBorder(new EmptyBorder(40, 20, 40, 0));
 
 		addConsolePanel();
-		addNxtStepPanel();
+		//addNxtStepPanel();
 		addCurPosPanel();
 	}
 
@@ -417,14 +509,13 @@ public class MainFrame extends JFrame {
 
 	}
 
-	private static void addNxtStepPanel() {
+	/**private static void addNxtStepPanel() {
 
 		// Next Step Btn
 		btn_NxtStep = new JButton("Next Step");
 
 		btn_NxtStep.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				// TODO: set waypoint function on mapper e.g.
 				System.out.println("Next Step Button Clicked!");
 			}
 		});
@@ -434,16 +525,13 @@ public class MainFrame extends JFrame {
 		// padding- width, height
 		_monitor.add(Box.createRigidArea(new Dimension(0, 10)));
 
-	}
+	}**/
 
 	private static void addCurPosPanel() {
-		// TODO: add in the current position of robot
 
 		JPanel cp_panel = new JPanel(new GridLayout(0, 1));
 
 		// Current Position Info
-		// TODO: add in the current position of robot
-
 		cp_label = new JLabel("Current Position: ");
 
 		field_cp = new JTextField(10);
@@ -510,17 +598,24 @@ public class MainFrame extends JFrame {
 				bot.setRobotPos(Integer.parseInt(text_x), Integer.parseInt(text_y));
 				bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
 				e_Mapper.repaint();
+				
+				System.out.println("Waypoint visited \n\n");
 
 				fastest_goal_Path = new Sprinter(e_Mapper, bot);
 				
-				// e_Mapper.repaint();
+				 e_Mapper.repaint();
 				
 				fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+				//fastest_wp_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
 				timer.stop();
 				info.append("Time Taken: " + timer.getMinSec() + "\n");
 				
-				// private static Sprinter fastest_wp_Path;
-				// private static Sprinter fastest_goal_Path;
+				if(map_Clear == false)
+				{
+					System.out.println("If map is clear, then im here to reverse");
+					map_Clear = true;
+					System.out.println("map cleared is true!");
+				}
 
 				return 222;
 			}
@@ -604,15 +699,10 @@ public class MainFrame extends JFrame {
 					info.append("Exploration Mode On\n");
 					fast_mode = false; // if fast mode off, explore
 					if (auto_mode == true && fast_mode == false && map_Load == true) {
-						// TODO: explore
-						// explorer.runExploration();
-						// generateMapDescriptor(e_Mapper);
-						// bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
-						// e_Mapper.repaint();
-
 						info.append("Starting exploration...\n");
 						CardLayout cl = ((CardLayout) _mapCards.getLayout());
 						cl.show(_mapCards, "EXPLORATION");
+						
 						timer.start();// start timer
 						new Exploration().execute();
 
@@ -628,7 +718,6 @@ public class MainFrame extends JFrame {
 					info.append("Exploration Mode Off\n");
 					fast_mode = true; // if fast mode on, greedy
 					if (auto_mode == true && fast_mode == true && map_Load == true) {
-						// TODO: sprint
 						CardLayout cl = ((CardLayout) _mapCards.getLayout());
 						cl.show(_mapCards, "EXPLORATION"); // not "REAL_MAP"
 
@@ -638,6 +727,8 @@ public class MainFrame extends JFrame {
 						field_timer.setText(timer.getMinSec());
 						timer.start();
 						new FastestPath().execute();
+						//TODO: if sprint, we assume cleared, hence reset console and map
+						//resetMainLayout();
 
 						if (auto_mode == false) {
 							System.out.println("Break");

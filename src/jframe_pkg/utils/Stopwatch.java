@@ -26,7 +26,7 @@ public class Stopwatch extends JFrame {
     private boolean state = false;
     
     public Stopwatch(JTextField tf) {
-        //t.setInitialDelay(0);
+        t.setInitialDelay(0);
     	this.tf = tf;
         //JPanel panel = new JPanel();
         //tf.setHorizontalAlignment(JTextField.RIGHT);

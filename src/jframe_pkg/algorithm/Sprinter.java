@@ -117,7 +117,8 @@ public class Sprinter {
 
         // Heuristic: If b is not in the same row and column, one turn will be needed.
         double turnCost = 0;
-        if (goalCol - b.get_y() != 0 && goalRow - b.get_x() != 0) {
+        //if (goalCol - b.get_y() != 0 && goalRow - b.get_x() != 0) {
+        if (goalCol - b.get_y() != 0 || goalRow - b.get_x() != 0) {
             turnCost = RobotConstants.TURN_COST;
         }
 

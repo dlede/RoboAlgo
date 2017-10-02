@@ -14,7 +14,7 @@ public class GraphicsConstant {
     public static final Color C_WAYPOINT = Color.MAGENTA;
 
     public static final Color C_ROBOT = Color.ORANGE;
-    public static final Color C_ROBOT_DIR = Color.CYAN; //WHITE
+    public static final Color C_ROBOT_DIR = Color.RED; //WHITE
 
     public static final int ROBOT_W = 60; // origin 70
     public static final int ROBOT_H = 60; // origin 70

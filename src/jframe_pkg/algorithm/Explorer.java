@@ -11,9 +11,6 @@ import jframe_pkg.utils.CommMgr;
 
 /**
  * Exploration algorithm for the robot.
- *
- * @author Priyanshu Singh
- * @author Suyash Lakhotia
  */
 
 public class Explorer {
@@ -310,7 +307,6 @@ public class Explorer {
                     }
                 }
             }
-
             calibrationMode = false;
         }
     }

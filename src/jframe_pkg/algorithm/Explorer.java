@@ -105,6 +105,8 @@ public class Explorer {
         while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
         goHome();
     }
+    
+    //TODO: check if the middle part is explored
 
     /**
      * Determines the next move for the robot and executes it accordingly.

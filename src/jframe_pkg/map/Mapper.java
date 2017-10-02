@@ -85,6 +85,11 @@ public class Mapper extends JPanel {
             						(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-15),//  East Point y
 	            						(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-25)}, // North Point y
             				3);
+            	
+            	//TODO: if turning to West, rotate -90, turning counter clockwise
+            	
+            	//TODO: if turning to East, rotate 90, turning clockwise
+            	
             	/**
             	g.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-16, // West Point x
 						(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-16), // East Point X
@@ -118,6 +123,10 @@ public class Mapper extends JPanel {
 									(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15)}, // North Point y
 						3);
                 
+            	//TODO: if turning to North, rotate -90, turning counter clockwise
+            	
+            	//TODO: if turning to South, rotate 90, turning clockwise
+            	
                 break;
             case SOUTH:
                 //g.fillOval(c * GraphicsConstant.CELL_SIZE + 10 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 35, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
@@ -131,6 +140,9 @@ public class Mapper extends JPanel {
 									(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+56)}, // North Point y
 						3);
                 
+            	//TODO: if turning to East, rotate -90, turning counter clockwise
+            	
+            	//TODO: if turning to West, rotate 90, turning clockwise
                 
                 break;
             case WEST:
@@ -142,6 +154,10 @@ public class Mapper extends JPanel {
 								(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+25),//  East Point y
 									(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15)}, // North Point y
 						3);
+            	
+            	//TODO: if turning to South, rotate -90, turning counter clockwise
+            	
+            	//TODO: if turning to North, rotate 90, turning clockwise
             	
             	break;
         }

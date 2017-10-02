@@ -125,6 +125,8 @@ public class Sprinter {
         return movementCost + turnCost;
     }
 
+    //TODO: add another 4 states of direction as fastest path. NE, NW, SW, SE
+    
     /**
      * Returns the target direction of the bot from [botR, botC] to target Cell.
      */

@@ -47,13 +47,15 @@ public class Robot {
     private final boolean realBot;
     private JTextArea monitorScreen; 
 	private JTextField field_cp;
+	private double rotation; 
 
     public Robot(int row, int col, boolean realBot) {
         posRow = row;
         posCol = col;
         robotDir = RobotConstants.START_DIR;
         speed = RobotConstants.SPEED;
-
+        rotation = 0.0; // for rotation animation
+        
         this.realBot = realBot;
 
         SRFrontLeft = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol - 1, this.robotDir, "SRFL");
@@ -168,13 +170,7 @@ public class Robot {
         //if (realBot) sendMovement(m, sendMoveToAndroid);
         //else 
         System.out.println("Move: " + MOVEMENT.print(m));
-        //System.out.println(field_cp);
-        
-        /**
-         * Issue below, if field_cp is used, animation fails
-        **/
 
-        //System.out.println(field_cp);
         field_cp.setText("Row : " + posRow + ", Col: " + posCol);
         monitorScreen.append("Move: " + MOVEMENT.print(m) + "\n");
         

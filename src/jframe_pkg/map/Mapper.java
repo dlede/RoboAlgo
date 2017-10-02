@@ -3,18 +3,25 @@ package jframe_pkg.map;
 //import javax.swing.*;
 import java.awt.*;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import jframe_pkg.map.Gridder;
 import jframe_pkg.map.MapConstant;
 import jframe_pkg.robot.Robot;
 import jframe_pkg.robot.RobotConstants;
+import jframe_pkg.robot.RobotConstants.DIRECTION;
+
+import static java.lang.Math.PI;
 
 public class Mapper extends JPanel {
 
 	public Gridder gridder = new Gridder();
 	private final Robot bot;
+	private float angle = 0;
 	
 	public Mapper(Robot bot) //bot, gridder
 	{
@@ -30,6 +37,14 @@ public class Mapper extends JPanel {
      */
     public void paintComponent(Graphics g) {
     	super.paintComponent(g);
+    	
+        // Just use the transform that's already in the graphics.
+        Graphics2D g2 = (Graphics2D) g;
+        //g2.setToIdentity();
+        // The code for your other transforms is garbled in my browser. Fill in here.
+        //g2.rotate(angle);
+        //g2.drawImage(arm, t, null);
+    	
         // Create a two-dimensional array of _DisplayCell objects for rendering.
         _DisplayCell[][] _mapCells = new _DisplayCell[MapConstant.MAP_X][MapConstant.MAP_Y];
         for (int x = 0; x < MapConstant.MAP_X; x++) {
@@ -75,9 +90,13 @@ public class Mapper extends JPanel {
         RobotConstants.DIRECTION d = bot.getRobotCurDir();
         switch (d) {
             case NORTH:
-            	//Project Triangle Pointer Rotation
-            	//new int[] {75, (75+3.5), 75}, new int[] {(75+1.75), 75, (75-175)}, 3
-            	//North Pointing Arrow
+            	//TODO: Project Polygon Rotation
+            	//targetted_angle = 0
+            	// bot angle can only be -90 (West), or 90 (East)
+            	//if bot.angle >= targetted_angle, North to East, Clockwise, turnRight()
+            	//if bot.angle <= targetted_angle, North to West, Counter Clockwise, turnLeft()
+            	// DIRECTION.getPrevious(robotDir);
+            	
             	g.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+6, // West Point x
             							(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+26), // East Point X
             							c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+16}, // North Point x
@@ -86,7 +105,19 @@ public class Mapper extends JPanel {
 	            						(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-25)}, // North Point y
             				3);
             	
+            	//turnRight();
+            	
+            	//Note: get the previous direction, if direction is West to North, clockwise else East to North is Counter Clockwise
             	//TODO: if turning to West, rotate -90, turning counter clockwise
+            	/**
+            	g2.rotate(angle);
+            	g2.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+6, // West Point x
+						(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+26), // East Point X
+						c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+16}, // North Point x
+			new int[] {(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-15), // West Point y
+					(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-15),//  East Point y
+						(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-25)}, // North Point y
+			3);**/
             	
             	//TODO: if turning to East, rotate 90, turning clockwise
             	
@@ -163,6 +194,10 @@ public class Mapper extends JPanel {
         }
     }
     
+    
+    
+    
+    
     private class _DisplayCell {
         public final int cellX;
         public final int cellY;
@@ -174,5 +209,31 @@ public class Mapper extends JPanel {
             this.cellSize = borderSize - (GraphicsConstant.CELL_LINE_WEIGHT * 2);
         }
     }
+    
+    public void turnRight()
+    {
+    	//TODO: turn right function, turn clockwise
+        //angle += Math.toRadians(5); // 5 degrees per 100 ms = 50 degrees/second
+        //while (angle > 2 * Math.PI) 
+         //   angle -= 2 * Math.PI;  // keep angle in reasonable range.
+        Timer timer = new Timer(40, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                angle += 0.5f;
+                repaint();
+            }
+        });
+        timer.start();
+        
+    }
+    
+    public void turnLeft()
+    {
+    	//TODO: turn left function, turn counter-clockwise
+    	
+    }
+    
+
 
 }

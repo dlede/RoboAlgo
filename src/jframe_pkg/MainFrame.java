@@ -209,6 +209,7 @@ public class MainFrame extends JFrame {
 		addLoadMapButton();
 		addTimerPanel();
 		addResetButton();
+		addSendMsgButton();
 	}
 
 	private static void formatButton(JButton btn) {
@@ -227,8 +228,7 @@ public class MainFrame extends JFrame {
 			btn_LoadMap = new JButton("Load Map");
 			formatButton(btn_LoadMap);
 			
-			// TODO: Change this in every computer until we find a way to default this
-			String dir = "C:/Users/dlai002/Downloads/gitalgo/RoboAlgo/maps/"; 
+			String dir = System.getProperty("user.dir") + "/maps/"; 
 
 			btn_LoadMap.addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
@@ -277,7 +277,6 @@ public class MainFrame extends JFrame {
 
 			btn_Reset.addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
-					//TODO: set things to true or false, reset all variables
 					System.out.println("Reset Map");
 					if(map_Clear == true)
 					{
@@ -290,10 +289,6 @@ public class MainFrame extends JFrame {
 						btn_LoadMap.setVisible(true);
 						System.out.println("\nmap can now be loaded!");
 						
-						// TODO: clear map and reset to clean map before getting the new map to be loaded
-						// Note: can append new map but cannot clear previous map
-						
-						//resetMainFrame();
 						resetMainLayout();
 						
 						loadMapFromDisk(r_Mapper, "clean_map");
@@ -318,14 +313,36 @@ public class MainFrame extends JFrame {
 		msg_field = new JTextField(10);
 		msg_field.setMaximumSize(map_field.getPreferredSize());
 		
+		
+		//&& comm.isConnected()
 		if (!realRun) {
-			btn_MsgSend = new JButton("Reset Map");
+			btn_MsgSend = new JButton("Send Message");
 			formatButton(btn_MsgSend);
 
+			//System.out.println("\nComms Status: " + comm.isConnected());
+			
 			btn_MsgSend.addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
-					//TODO: send a message button
-					System.out.println("\nSending Message");
+					//TODO: send a message button, not yet tested
+					//try {
+					
+					
+						if (comm.isConnected())
+						{
+							comm.sendMsg(msg_field.getText());
+							System.out.println("\nSending Message");
+						}
+						else
+						{
+							System.out.println("\nNo Communication Setup");
+						}
+					//} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						//System.out.println("\nNo Communication Setup");
+						//System.out.println("Comms Error: ");
+						//e1.printStackTrace();
+						//System.out.println("\n\n");
+					//}
 				}
 			});
 
@@ -727,8 +744,6 @@ public class MainFrame extends JFrame {
 						field_timer.setText(timer.getMinSec());
 						timer.start();
 						new FastestPath().execute();
-						//TODO: if sprint, we assume cleared, hence reset console and map
-						//resetMainLayout();
 
 						if (auto_mode == false) {
 							System.out.println("Break");

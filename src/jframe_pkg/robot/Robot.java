@@ -47,14 +47,14 @@ public class Robot {
     private final boolean realBot;
     private JTextArea monitorScreen; 
 	private JTextField field_cp;
-	private double rotation; 
+	private double angle; 
 
     public Robot(int row, int col, boolean realBot) {
         posRow = row;
         posCol = col;
         robotDir = RobotConstants.START_DIR;
         speed = RobotConstants.SPEED;
-        rotation = 0.0; // for rotation animation
+        //angle = 0.0; // for rotation animation
         
         this.realBot = realBot;
 

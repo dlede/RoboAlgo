@@ -13,7 +13,6 @@ public class Gridder extends JFrame {
 	private final Cell[][] grid;
 	public int waypoint_x; // TODO: put waypoint somewhere else
 	public int waypoint_y; // TODO: put waypoint somewhere else
-	//private MapConstant map_constant = new MapConstant();
 	
 	public Gridder()
 	{

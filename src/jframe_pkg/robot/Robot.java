@@ -84,6 +84,10 @@ public class Robot {
     public void setRobotDir(DIRECTION dir) {
         robotDir = dir;
     }
+    
+    public DIRECTION getRobotDir() {
+        return robotDir;
+    } 
 
     public void setSpeed(int speed) {
         this.speed = speed;

@@ -62,8 +62,12 @@ public class Sensor {
             if (!exploredMap.gridder.coordinate_validator(row, col)) return i;
             
             // hk- Set the cell to be explored
-            exploredMap.gridder.getCell(row, col).setIsExplored(true);
-
+            //if(exploredMap.gridder.getCell(row, col).getIsObstacle()) // 
+            //{
+            	//break;
+            	exploredMap.gridder.getCell(row, col).setIsExplored(true); //to explore, to make the grid white, black...
+            //}
+            
             // hk- set the obstacles 
             if (realMap.gridder.getCell(row, col).getIsObstacle()) {
                 exploredMap.gridder.setObstacleCell(row, col, true);

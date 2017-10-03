@@ -96,9 +96,15 @@ public class Explorer {
             System.out.println("Area explored: " + areaExplored);
 
             if (bot.getRobotPosRow() == r && bot.getRobotPosCol() == c) {
-                if (areaExplored >= 100) {
+                if (areaExplored >= 100) { // if fully 100% coverage
                     break;
                 }
+                //else
+                //{
+                	
+                //}
+                //else
+                //explore middle portion of the map
             }
         }
         
@@ -107,6 +113,15 @@ public class Explorer {
     }
     
     //TODO: check if the middle part is explored
+    private void midSpiral()
+    {
+    	//TODO: 
+    }
+    
+    private void quadrant()
+    {
+    	//TODO: 0, 0
+    }
 
     /**
      * Determines the next move for the robot and executes it accordingly.

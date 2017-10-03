@@ -11,8 +11,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -37,8 +35,6 @@ import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultCaret;
 
 import jframe_pkg.algorithm.Explorer;
@@ -49,6 +45,7 @@ import jframe_pkg.robot.RobotConstants;
 import jframe_pkg.utils.CommMgr;
 import jframe_pkg.utils.Stopwatch;
 
+@SuppressWarnings("serial")
 public class MainFrame extends JFrame {
 	private static JFrame _appFrame = null; // application JFrame
 
@@ -62,7 +59,7 @@ public class MainFrame extends JFrame {
 
 	private static JLabel map_label, wp_label, spd_label, timer_label, cp_label, exp_label, auto_label, msg_label;
 	private static JTextField map_field, field_spd, field_timer, field_cp, msg_field, field_x, field_y;
-	private static JButton btn_Waypoints, btn_LoadMap, reset_button, btn_Reset, btn_MsgSend, btn_NxtStep; 
+	private static JButton btn_Waypoints, btn_LoadMap, reset_button, btn_Reset, btn_MsgSend; //btn_NxtStep
 
 	private static JPanel _monitor = null; // JPanel for monitor
 
@@ -88,7 +85,7 @@ public class MainFrame extends JFrame {
 
 	private static Explorer exploration = null;
 	public static boolean map_Load = false; // if map is loaded
-	public static boolean map_Clear = false; // TODO: if both explore and sprint is cleared, can do next map
+	public static boolean map_Clear = false; // if both explore and sprint is cleared, can do next map
 
 	private static int timeLimit = 3600; // TODO: time limit
 	private static int coverageLimit = 300; // TODO: coverage limit
@@ -155,7 +152,7 @@ public class MainFrame extends JFrame {
 		initToggleLayout();
 
 		// Add _mapCards & _settings to the main frame's content pane
-		Container contentPane = _appFrame.getContentPane();
+		//Container contentPane = _appFrame.getContentPane();
 
 		_appFrame.setLayout(new BorderLayout());
 
@@ -546,7 +543,7 @@ public class MainFrame extends JFrame {
 
 	private static void addCurPosPanel() {
 
-		JPanel cp_panel = new JPanel(new GridLayout(0, 1));
+		//JPanel cp_panel = new JPanel(new GridLayout(0, 1));
 
 		// Current Position Info
 		cp_label = new JLabel("Current Position: ");
@@ -671,6 +668,7 @@ public class MainFrame extends JFrame {
 			}
 		}
 
+		/**
 		// CoverageExploration Class for Multithreading
 		class CoverageExploration extends SwingWorker<Integer, String> {
 			protected Integer doInBackground() throws Exception {
@@ -700,8 +698,9 @@ public class MainFrame extends JFrame {
 				return 333;
 			}
 		}
+		**/
 
-		JPanel mode_panel = new JPanel(new FlowLayout());
+		//JPanel mode_panel = new JPanel(new FlowLayout());
 
 		exp_label = new JLabel("Exploration Mode: ");
 

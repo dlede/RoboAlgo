@@ -317,10 +317,9 @@ public class Robot {
 
         } 
         // commMgr not needed now, sensereal is for real, sense if for simulation only
-        /**
         else {
             CommMgr comm = CommMgr.getCommMgr();
-            String msg = comm.recvMsg();
+            String msg = comm.revMsg();
             String[] msgArr = msg.split(";");
 
             if (msgArr[0].equals(CommMgr.SENSOR_DATA)) {
@@ -332,17 +331,17 @@ public class Robot {
                 result[5] = Integer.parseInt(msgArr[6].split("_")[1]);
             }
 
-            SRFrontLeft.senseReal(explorationMap, result[0]);
-            SRFrontCenter.senseReal(explorationMap, result[1]);
-            SRFrontRight.senseReal(explorationMap, result[2]);
-            SRLeft.senseReal(explorationMap, result[3]);
-            SRLeft2.senseReal(explorationMap, result[4]);
-            LRRight.senseReal(explorationMap, result[5]);
+            SRFrontLeft.senseReal(explorationMap.gridder, result[0]);
+            SRFrontCenter.senseReal(explorationMap.gridder, result[1]);
+            SRFrontRight.senseReal(explorationMap.gridder, result[2]);
+            LRLeft.senseReal(explorationMap.gridder, result[3]);
+            SRRight.senseReal(explorationMap.gridder, result[4]);
+            SRRight2.senseReal(explorationMap.gridder, result[5]);
 
             String[] mapStrings = MapDescriptor.generateMapDescriptor(explorationMap);
-            comm.sendMsg(mapStrings[0] + " " + mapStrings[1], CommMgr.MAP_STRINGS);
+            comm.sendMsg(mapStrings[0] + " " + mapStrings[1] + " " + CommMgr.MAP_STRINGS);
         }
-        **/
+        
         return result;
     }
     

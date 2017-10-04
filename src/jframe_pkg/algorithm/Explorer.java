@@ -24,6 +24,7 @@ public class Explorer {
     private long endTime;
     private int lastCalibrate;
     private boolean calibrationMode;
+    private int counter;
 
     public Explorer(Mapper exMap, Mapper realMap, Robot bot, int coverageLimit, int timeLimit) {
         this.exMap = exMap;
@@ -98,22 +99,17 @@ public class Explorer {
             System.out.println("Area explored: " + areaExplored);
 
             if (bot.getRobotPosRow() == r && bot.getRobotPosCol() == c) { 
-                if (areaExplored >= 300) { // if fully 300 cells coverage
+                if (areaExplored >= 100) { // if fully 300 cells coverage
+                	//goHome();
                     break;
                 }
-                else //else explore middle portion of the map
+                /**else
                 {
-                	//fastest to next starting point
-                	System.out.println("~in inner loop~");
+                	counter++;
                 	
-                	//repaint the fastest path to next starting point
-                	senseAndRepaint();
-                	
-                	Sprinter goToNextStart = new Sprinter(exMap, bot, realMap);
-                	goToNextStart.runFastestPath(6, 6);
-                	//reduce the grids, or avoid the grids - reduce weightage of the explored area
-                	explorationLoop(bot.getRobotPosRow(), bot.getRobotPosCol());
-                }
+                	System.out.println("Counter: " +counter);
+                	explorationLoop(r+3, c+3);
+                }**/
             }
         }
         
@@ -121,16 +117,13 @@ public class Explorer {
         goHome();
     }
     
+  //TODO: check if the middle part is explored
     private void explorationInnerLoop()
     {
     	
     }
     
-    //TODO: check if the middle part is explored
-    private void midSpiral()
-    {
-    	//TODO: 
-    }
+    
     
     private void quadrant()
     {
@@ -246,11 +239,12 @@ public class Explorer {
      * Returns the robot to START after exploration and points the bot northwards.
      */
     private void goHome() {
-        if (!bot.getTouchedGoal() && coverageLimit == 300 && timeLimit == 3600) {
+        if (!bot.getTouchedGoal() && (coverageLimit == 300 || timeLimit == 3600)) {
         	System.out.println("In goHome() of ExplorationAlgo first loop");
             Sprinter goToGoal = new Sprinter(exMap, bot, realMap);
             goToGoal.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
         }
+        
         System.out.println("In goHome() of ExplorationAlgo second loop");
         Sprinter returnToStart = new Sprinter(exMap, bot, realMap);
         returnToStart.runFastestPath(RobotConstants.START_ROW, RobotConstants.START_COL);

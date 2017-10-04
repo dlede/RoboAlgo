@@ -49,8 +49,7 @@ import jframe_pkg.utils.Stopwatch;
 public class MainFrame extends JFrame {
 	private static JFrame _appFrame = null; // application JFrame
 
-	static Border border = BorderFactory.createLineBorder(Color.BLACK); // create
-																		// border
+	static Border border = BorderFactory.createLineBorder(Color.BLACK); // create border
 
 	// Sub - Sections
 	private static JPanel _mapCards = null; // JPanel for map views
@@ -617,7 +616,7 @@ public class MainFrame extends JFrame {
 
 				fastest_goal_Path = new Sprinter(e_Mapper, bot);
 				
-				 e_Mapper.repaint();
+				e_Mapper.repaint();
 				
 				fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
 				//fastest_wp_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);

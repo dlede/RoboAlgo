@@ -32,6 +32,17 @@ public class Cell {
             }
         }
     }
+    
+    //set a new boundary 
+    public void setInnerVirtualWall(boolean val) {
+        if (val) {
+            this.is_boundary = true;
+        } else {
+            if (x != 0 && x != MapConstant.MAP_X - 3 && y != 0 && y != MapConstant.MAP_Y - 3) {
+                this.is_boundary = false;
+            }
+        }
+    }
 
     public boolean getIsVirtualWall() {
         return this.is_boundary;

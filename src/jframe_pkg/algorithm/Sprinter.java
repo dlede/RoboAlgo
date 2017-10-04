@@ -319,7 +319,7 @@ public class Sprinter {
         }
 
         if (!bot.getRealBot() || explorationMode) {
-        	System.out.println("in HK first Loop!");
+        	//System.out.println("in HK first Loop!");
             for (MOVEMENT x : movements) {
                 if (x == MOVEMENT.FORWARD) {
                     if (!canMoveForward()) {

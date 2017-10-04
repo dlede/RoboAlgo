@@ -110,8 +110,8 @@ public class Mapper extends JPanel {
             	//if bot.angle >= targetted_angle, North to East, Clockwise, turnRight()
             	//if bot.angle <= targetted_angle, North to West, Counter Clockwise, turnLeft()
 
-            	DIRECTION.getPrevious(bot.getRobotDir());
-            	System.out.println("Direction: " + DIRECTION.getPrevious(bot.getRobotDir()));
+            	//DIRECTION.getPrevious(bot.getRobotDir());
+            	//System.out.println("Direction: " + DIRECTION.getPrevious(bot.getRobotDir()));
             	
             	//p = getPointOnCircle(90, (GraphicsConstant.ROBOT_DIR_W / 2f));
             	
@@ -143,8 +143,8 @@ public class Mapper extends JPanel {
             case EAST:
                 //g.fillOval(c * GraphicsConstant.CELL_SIZE + 35 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 10, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
                 
-            	DIRECTION.getPrevious(bot.getRobotDir());
-            	System.out.println("Direction: " + DIRECTION.getPrevious(bot.getRobotDir()));
+            	//DIRECTION.getPrevious(bot.getRobotDir());
+            	//System.out.println("Direction: " + DIRECTION.getPrevious(bot.getRobotDir()));
             	
             	//p = getPointOnCircle(90, (diameter / 2f) - (innerDiameter / 2));
             	
@@ -169,8 +169,8 @@ public class Mapper extends JPanel {
             case SOUTH:
                 //g.fillOval(c * GraphicsConstant.CELL_SIZE + 10 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 35, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
                 
-            	DIRECTION.getPrevious(bot.getRobotDir());
-            	System.out.println("Direction: " + DIRECTION.getPrevious(bot.getRobotDir()));
+            	//DIRECTION.getPrevious(bot.getRobotDir());
+            	//System.out.println("Direction: " + DIRECTION.getPrevious(bot.getRobotDir()));
             	
             	//p = getPointOnCircle(90, (diameter / 2f) - (innerDiameter / 2));
             	
@@ -195,8 +195,8 @@ public class Mapper extends JPanel {
             case WEST:
                 //g.fillOval(c * GraphicsConstant.CELL_SIZE - 15 + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE + 10, GraphicsConstant.ROBOT_DIR_W, GraphicsConstant.ROBOT_DIR_H);
             	
-            	DIRECTION.getPrevious(bot.getRobotDir());
-            	System.out.println("Direction: " + DIRECTION.getPrevious(bot.getRobotDir()));
+            	//DIRECTION.getPrevious(bot.getRobotDir());
+            	//System.out.println("Direction: " + DIRECTION.getPrevious(bot.getRobotDir()));
             	
             	//p = getPointOnCircle(90, (diameter / 2f) - (innerDiameter / 2));
             	

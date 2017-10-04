@@ -4,6 +4,7 @@ package jframe_pkg.map;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -41,7 +42,7 @@ public class Mapper extends JPanel {
     	
     	
         // Just use the transform that's already in the graphics.
-        //Graphics2D g2 = (Graphics2D) g.create();
+        Graphics2D g2 = (Graphics2D) g.create();
         Point p = null;
         //g2.setToIdentity();
         // The code for your other transforms is garbled in my browser. Fill in here.
@@ -88,14 +89,11 @@ public class Mapper extends JPanel {
         g.fillOval((c - 1) * GraphicsConstant.CELL_SIZE + GraphicsConstant.ROBOT_X_OFFSET + GraphicsConstant.MAP_X_OFFSET, GraphicsConstant.MAP_H - (r * GraphicsConstant.CELL_SIZE + GraphicsConstant.ROBOT_Y_OFFSET), GraphicsConstant.ROBOT_W, GraphicsConstant.ROBOT_H);
 		
         //TODO: rotation test
-        int diameter = Math.min(getWidth(), getHeight());
+        int diameter = Math.min(GraphicsConstant.ROBOT_W, GraphicsConstant.ROBOT_H);
         int x = (getWidth() - diameter) / 2;
         int y = (getHeight() - diameter) / 2;
 
-        //g2.setColor(Color.GREEN);
-        //g2.drawOval(x, y, diameter, diameter);
-
-        //g2.setColor(Color.RED);
+        g2.setColor(Color.RED);
         float innerDiameter = 20;
         
         //Paint the robot's direction indicator on-screen.
@@ -103,6 +101,9 @@ public class Mapper extends JPanel {
         RobotConstants.DIRECTION d = bot.getRobotCurDir();
         switch (d) {
             case NORTH:
+            	//depending how fast the turn speed delay is
+            	//TimeUnit.MILLISECONDS.sleep(turnSpeed);
+            	
             	//TODO: Project Polygon Rotation
             	//targetted_angle = 0
             	// bot angle can only be -90 (West), or 90 (East)
@@ -112,16 +113,15 @@ public class Mapper extends JPanel {
             	DIRECTION.getPrevious(bot.getRobotDir());
             	System.out.println("Direction: " + DIRECTION.getPrevious(bot.getRobotDir()));
             	
-            	
             	//p = getPointOnCircle(90, (GraphicsConstant.ROBOT_DIR_W / 2f));
             	
             	Point n_p = new Point((c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+6),(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-25));
             	Point w_p = new Point((c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+6),(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-15));
             	Point e_p = new Point((c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+26),(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-15));
             	
-            	Point north_temp_point = rotate_point(0,0,90,n_p); // shift to EAST?
-            	Point west_temp_point = rotate_point(0,0,90,w_p);
-            	Point east_temp_point = rotate_point(0,0,90,e_p);
+            	Point north_temp_point = rotate_point(bot.getRobotPosRow(),bot.getRobotPosCol(),90,n_p); // shift to EAST?
+            	Point west_temp_point = rotate_point(bot.getRobotPosRow(),bot.getRobotPosCol(),90,w_p);
+            	Point east_temp_point = rotate_point(bot.getRobotPosRow(),bot.getRobotPosCol(),90,e_p);
             	
             	g.fillPolygon(new int[] {c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+6, // West Point x
             							(c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+26), // East Point X
@@ -131,13 +131,13 @@ public class Mapper extends JPanel {
 	            						(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-25)}, // North Point y
             				3);
             	
-            	System.out.println("North Rotate Point: " + north_temp_point);
-            	System.out.println("West Rotate Point: " + west_temp_point);
-            	System.out.println("East Rotate Point: " + east_temp_point);
+            	//System.out.println("North Rotate Point: " + north_temp_point);
+            	//System.out.println("West Rotate Point: " + west_temp_point);
+            	//System.out.println("East Rotate Point: " + east_temp_point);
             	
-            	System.out.println("North, Polygon North Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+16) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-25) + ")");
-            	System.out.println("North, Polygon West Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+6) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-15) + ")");
-            	System.out.println("North, Polygon East Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+26) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-15) + ")");
+            	//System.out.println("North, Polygon North Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+16) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-25) + ")");
+            	//System.out.println("North, Polygon West Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+6) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-15) + ")");
+            	//System.out.println("North, Polygon East Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+26) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE-15) + ")");
             	
                 break;
             case EAST:
@@ -156,9 +156,9 @@ public class Mapper extends JPanel {
 									(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15)}, // North Point y
 						3);
                 
-            	System.out.println("North, Polygon North Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+56) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15) + ")");
-            	System.out.println("North, Polygon West Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+46) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+5) + ")");
-            	System.out.println("North, Polygon East Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+46) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+25) + ")");
+            	//System.out.println("North, Polygon North Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+56) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15) + ")");
+            	//System.out.println("North, Polygon West Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+46) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+5) + ")");
+            	//System.out.println("North, Polygon East Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+46) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+25) + ")");
             	
             	
             	//TODO: if turning to North, rotate -90, turning counter clockwise
@@ -183,9 +183,9 @@ public class Mapper extends JPanel {
 									(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+56)}, // North Point y
 						3);
             	
-            	System.out.println("North, Polygon North Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+16) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+56) + ")");
-            	System.out.println("North, Polygon West Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+6) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+46) + ")");
-            	System.out.println("North, Polygon East Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+26) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+46) + ")");
+            	//System.out.println("North, Polygon North Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+16) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+56) + ")");
+            	//System.out.println("North, Polygon West Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+6) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+46) + ")");
+            	//System.out.println("North, Polygon East Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET+26) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+46) + ")");
             	
             	//TODO: if turning to East, rotate -90, turning counter clockwise
             	
@@ -208,9 +208,9 @@ public class Mapper extends JPanel {
 									(GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15)}, // North Point y
 						3);
             	
-            	System.out.println("North, Polygon North Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-26) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15) + ")");
-            	System.out.println("North, Polygon West Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-16) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+5) + ")");
-            	System.out.println("North, Polygon East Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-16) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15) + ")");
+            	//System.out.println("North, Polygon North Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-26) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15) + ")");
+            	//System.out.println("North, Polygon West Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-16) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+5) + ")");
+            	//System.out.println("North, Polygon East Point: " + "(" + (c * GraphicsConstant.CELL_SIZE + GraphicsConstant.MAP_X_OFFSET-16) + ", " + (GraphicsConstant.MAP_H - r * GraphicsConstant.CELL_SIZE+15) + ")");
             	
             	//TODO: if turning to South, rotate -90, turning counter clockwise
             	

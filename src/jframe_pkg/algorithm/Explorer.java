@@ -81,6 +81,8 @@ public class Explorer {
         System.out.println("Explored Area: " + areaExplored);
 
         explorationLoop(bot.getRobotPosRow(), bot.getRobotPosCol());
+        //condition is if coverage < 300
+        //explorationInnerLoop
     }
 
     /**
@@ -95,21 +97,33 @@ public class Explorer {
             areaExplored = calculateAreaExplored();
             System.out.println("Area explored: " + areaExplored);
 
-            if (bot.getRobotPosRow() == r && bot.getRobotPosCol() == c) {
-                if (areaExplored >= 100) { // if fully 100% coverage
+            if (bot.getRobotPosRow() == r && bot.getRobotPosCol() == c) { 
+                if (areaExplored >= 300) { // if fully 300 cells coverage
                     break;
                 }
-                //else
-                //{
+                else //else explore middle portion of the map
+                {
+                	//fastest to next starting point
+                	System.out.println("~in inner loop~");
                 	
-                //}
-                //else
-                //explore middle portion of the map
+                	//repaint the fastest path to next starting point
+                	senseAndRepaint();
+                	
+                	Sprinter goToNextStart = new Sprinter(exMap, bot, realMap);
+                	goToNextStart.runFastestPath(6, 6);
+                	//reduce the grids, or avoid the grids - reduce weightage of the explored area
+                	explorationLoop(bot.getRobotPosRow(), bot.getRobotPosCol());
+                }
             }
         }
         
         while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
         goHome();
+    }
+    
+    private void explorationInnerLoop()
+    {
+    	
     }
     
     //TODO: check if the middle part is explored

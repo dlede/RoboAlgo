@@ -74,13 +74,14 @@ public class Rotation {
             int x = (getWidth() - diameter) / 2;
             int y = (getHeight() - diameter) / 2;
 
-            g2d.setColor(Color.GREEN);
-            g2d.drawOval(x, y, diameter, diameter);
+            //g2d.setColor(Color.GREEN);
+            //g2d.drawOval(x, y, diameter, diameter);
 
-            g2d.setColor(Color.RED);
-            float innerDiameter = 20;
+            g2d.setColor(Color.BLACK);
+            
+            //diameter for the smaller circle
+            float innerDiameter = 30;
 
-            //
             Point p = getPointOnCircle(degrees, (diameter / 2f) - (innerDiameter / 2));
             g2d.drawOval(x + p.x - (int) (innerDiameter / 2), y + p.y - (int) (innerDiameter / 2), (int) innerDiameter, (int) innerDiameter);
 

@@ -596,28 +596,19 @@ public class MainFrame extends JFrame {
 				}
 
 				fastest_wp_Path = new Sprinter(e_Mapper, bot);
-
 				fastest_wp_Path.runFastestPath(Integer.parseInt(text_x), Integer.parseInt(text_y));
-				// fastestPath.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
 
-				// bot.setRobotPos(Integer.parseInt(text_x), Integer.parseInt(text_y));
-				// bot.setRobotDir(RobotConstants.DIRECTION.SOUTH);
-				// fastestPath.runFastestPath(Integer.parseInt(text_x),
-				// Integer.parseInt(text_y));
 				System.out.println("\n\nbreaker....");
 				System.out.println("breaker....");
 				System.out.println("breaker.... \n\n");
 
 				bot.setRobotPos(Integer.parseInt(text_x), Integer.parseInt(text_y));
 				bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
-				e_Mapper.repaint();
-				
+
 				System.out.println("Waypoint visited \n\n");
 
 				fastest_goal_Path = new Sprinter(e_Mapper, bot);
-				
-				e_Mapper.repaint();
-				
+
 				fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
 				//fastest_wp_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
 				timer.stop();

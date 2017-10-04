@@ -289,6 +289,10 @@ public class Sprinter {
         	tempBot = new Robot (map.gridder.waypoint_x, map.gridder.waypoint_y, false); // waypoints in mapper, trial
         
         }
+        else if (goalRow == 1 && goalCol == 1) // if goal is set to origin start point
+        {
+        	tempBot = new Robot (5, 4, false); // new start point from original startpoint in mapper, trial
+        }
         else
         	tempBot = new Robot(1, 1, false);
         
@@ -319,7 +323,7 @@ public class Sprinter {
         }
 
         if (!bot.getRealBot() || explorationMode) {
-        	//System.out.println("in HK first Loop!");
+        	System.out.println("in HK first Loop!");
             for (MOVEMENT x : movements) {
                 if (x == MOVEMENT.FORWARD) {
                     if (!canMoveForward()) {

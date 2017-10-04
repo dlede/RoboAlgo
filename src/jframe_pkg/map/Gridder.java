@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 
 public class Gridder extends JFrame {
 	//init variables	
-	private final Cell[][] grid;
+	public final Cell[][] grid;
 	public int waypoint_x; // TODO: put waypoint somewhere else
 	public int waypoint_y; // TODO: put waypoint somewhere else
 	
@@ -48,9 +48,13 @@ public class Gridder extends JFrame {
     
     
     public boolean waypoint_validator (int row, int col) {
-    	for (int x = row-1; x<row+1; x++ ) {
-    		for (int y = col-1; y<col+1; y++) {
-    			if (getIsObstacleOrWall(x,y)) {
+    	for (int x = row-1; x<=row+1; x++ ) { 
+    		for (int y = col-1; y<=col+1; y++) { 
+    			//System.out.println("grid: " + x + "," + y);
+    			//System.out.println("obstacle status: " + getCell(x,y).getIsObstacle());
+    			if (getIsObstacleOrWall(x,y)) 
+    			{
+        			//System.out.println("explored status: " + !getCell(x, y).getIsExplored());
     				System.out.println("Error! Cannot place waypoint on obstacle grids.");
     				return false;
     			}

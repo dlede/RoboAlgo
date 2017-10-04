@@ -25,6 +25,9 @@ public class Explorer {
     private int lastCalibrate;
     private boolean calibrationMode;
     private int counter;
+	int temp_row;
+	int temp_col;
+	Sprinter returnToStart;
 
     public Explorer(Mapper exMap, Mapper realMap, Robot bot, int coverageLimit, int timeLimit) {
         this.exMap = exMap;
@@ -112,15 +115,59 @@ public class Explorer {
                 }**/
             }
         }
-        
         while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
-        goHome();
+        explorationInnerLoop();
+        
+        //TODO gohome() have an issue, cannot go home, check Sprinter class on the tempbot
+        //goHome();
     }
     
-  //TODO: check if the middle part is explored
+    //TODO: check if the middle part is explored
+    // put this function after the do while loop in exploration loop
     private void explorationInnerLoop()
     {
+    	if(areaExplored < 300) // if_outerloopcleared
+    	{
+    		System.out.println("I'm in, before NextStartPoint");
+	    	//Fastest to next possible start point
+	    	goNextStartPoint();
+	    	
+	    	//System.out.println("temp_row: " + temp_row + ", temp_col: " + temp_col);
+	    	/*
+	        for (int row = 0; row < this.exMap.gridder.grid.length; row++) {
+	            for (int col = 0; col < this.exMap.gridder.grid[0].length; col++) {
+	            	//this.exMap.gridder.grid[row][col] = new Cell(row, col);
+	
+	                // Set the extra padding virtual walls of the arena
+	                if (row == 0 || col == 0 || row == MapConstant.MAP_X - 1 || col == MapConstant.MAP_Y - 1) {
+	                	this.exMap.gridder.grid[row][col].setInnerVirtualWall(true); //reduce the virtualwall
+	                }
+	            }
+	        }*/
+	    	do
+	    	{
+	    		nextMove();
+	            areaExplored = calculateAreaExplored();
+	            System.out.println("Area explored: " + areaExplored);
+	    	}
+	    	while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
+    	}
     	
+    	//Setbackvirtualwall();
+        for (int row = 0; row < this.exMap.gridder.grid.length; row++) 
+        {
+            for (int col = 0; col < this.exMap.gridder.grid[0].length; col++) 
+            {
+            	//this.exMap.gridder.grid[row][col] = new Cell(row, col);
+
+                // Set the virtual walls of the arena
+                if (row == 0 || col == 0 || row == MapConstant.MAP_X - 1 || col == MapConstant.MAP_Y - 1) {
+                	this.exMap.gridder.grid[row][col].setVirtualWall(true);
+                }
+            }
+        }
+    	
+    	//goHome();
     }
     
     
@@ -239,7 +286,7 @@ public class Explorer {
      * Returns the robot to START after exploration and points the bot northwards.
      */
     private void goHome() {
-        if (!bot.getTouchedGoal() && (coverageLimit == 300 || timeLimit == 3600)) {
+        if (!bot.getTouchedGoal() && coverageLimit == 300 && timeLimit == 3600) {
         	System.out.println("In goHome() of ExplorationAlgo first loop");
             Sprinter goToGoal = new Sprinter(exMap, bot, realMap);
             goToGoal.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
@@ -264,6 +311,69 @@ public class Explorer {
             moveBot(MOVEMENT.CALIBRATE);
         }
         turnBotDirection(DIRECTION.NORTH);
+    }
+    
+    private void goNextStartPoint()
+    {
+    	setNewSP();
+    	//set bot on origin starting point
+    	bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
+    	bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
+    	
+        if (!bot.getTouchedGoal() && coverageLimit == 300 && timeLimit == 3600)
+        {
+        	System.out.println("In goNextStartPoint() of ExplorationAlgo first loop");
+            Sprinter goToGoal = new Sprinter(exMap, bot);
+            goToGoal.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL); // run fastest path if 
+        }
+        System.out.println("In goNextStartPoint() of ExplorationAlgo second loop");
+        
+        returnToStart = new Sprinter(exMap, bot, realMap);//, realMap
+        returnToStart.runFastestPath(temp_row, temp_col);
+
+		System.out.println("\n\nbreaker....");
+		System.out.println("breaker....");
+		System.out.println("breaker.... \n\n");
+    }
+    
+    private void setNewSP() {	
+    	int r=4;
+    	int c=4;
+    	
+    	while (r<=16 && c<=11) {
+    		if (r<16 && newSP_validator (r,c) == false) {
+    			System.out.println("r: " + r);
+    			 r++;
+    		}
+    		else if (r==16 && newSP_validator(r,c) == false) {
+    			System.out.println("c: " + c);
+    			r=5;
+    			c++;
+    		}
+    		else {
+    			System.out.println("temp_row: " + temp_row);
+    			System.out.println("temp_col: " + temp_col);
+    			temp_row = r;
+    			temp_col = c;
+    			break;
+    		}   			
+    	}
+    }
+    
+    public boolean newSP_validator (int r, int c) {
+    	for (int x = r-1; x<=(r+1); x++ ) {
+    		for (int y = c-1; y<=(c+1); y++) {
+    			//System.out.println("grid: " + x + "," + y);
+    			//System.out.println("obstacle status: " + exMap.gridder.getCell(x,y).getIsObstacle());
+    			//System.out.println("explored status: " + !exMap.gridder.getCell(x, y).getIsExplored());
+    			if (exMap.gridder.getCell(x,y).getIsObstacle() || !exMap.gridder.getCell(x, y).getIsExplored()) {
+    				System.out.println("return false");
+    				return false;
+    			}
+    		}
+    	}
+    	System.out.println("return true");
+    	return true;
     }
 
     /**

@@ -22,7 +22,7 @@ import static java.lang.Math.cos;
 public class Mapper extends JPanel {
 
 	public Gridder gridder = new Gridder();
-	private final Robot bot;
+	public final Robot bot;
 	private float angle = 0;
 	
 	public Mapper(Robot bot) //bot, gridder

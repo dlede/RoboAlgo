@@ -39,7 +39,7 @@ public class Cell {
             this.is_boundary = true;
         } else {
             //if (x != 0 && x != MapConstant.MAP_X - 3 && y != 0 && y != MapConstant.MAP_Y - 3) 
-            if((0 < x || x <= 2) && ((MapConstant.MAP_X - 1) > x || (x > MapConstant.MAP_X - 3)) && (2 >= y || y > 0) && ((MapConstant.MAP_Y - 1) > y || (y > (MapConstant.MAP_Y - 2))))
+            if((0 < x || x <= 2) && ((MapConstant.MAP_X - 1) > x || (x > MapConstant.MAP_X - 2)) && (2 >= y || y > 0) && ((MapConstant.MAP_Y - 1) > y || (y > (MapConstant.MAP_Y - 2))))
             {
                 this.is_boundary = false;
             }

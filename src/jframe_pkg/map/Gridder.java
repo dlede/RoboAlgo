@@ -11,8 +11,10 @@ import javax.swing.JFrame;
 public class Gridder extends JFrame {
 	//init variables	
 	public final Cell[][] grid;
-	public int waypoint_x; // TODO: put waypoint somewhere else
-	public int waypoint_y; // TODO: put waypoint somewhere else
+	public int waypoint_x; // 
+	public int waypoint_y; // 
+	public int temp_row; // next start point row
+	public int temp_col; // next start point col
 	
 	public Gridder()
 	{
@@ -28,6 +30,25 @@ public class Gridder extends JFrame {
                 }
             }
         }
+	}
+	
+    public boolean in_newStartPoint(int x, int y) //added 
+    {
+    	return((x <= temp_row+1 && x >= temp_row-1) && (y <= temp_col+1 && y >= temp_col-1)); // check if the robot is in the new start point
+    }
+	
+	public int get_prev_row()
+	{
+		if (in_newStartPoint(temp_row, temp_col))
+			return temp_row;
+		return 1; // if not in new start point, go back origin
+	}
+	
+	public int get_prev_col()
+	{
+		if (in_newStartPoint(temp_row, temp_col))
+			return temp_col;
+		return 1; // if not in new start point, go back origin
 	}
 	
     public void set_waypoint(int x, int y) // TODO: put this somewhere else 
@@ -78,8 +99,6 @@ public class Gridder extends JFrame {
     public boolean in_waypoint(int x, int y) //added 
     {
     	return((x <= waypoint_x+1 && x >= waypoint_x-1) && (y <= waypoint_y+1 && y >= waypoint_y-1)); // TODO: may not be correct
-    	
-      	
     }
     
     public Cell getCell(int x, int y) {

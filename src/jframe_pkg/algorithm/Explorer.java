@@ -25,8 +25,8 @@ public class Explorer {
     private int lastCalibrate;
     private boolean calibrationMode;
     private int counter;
-	int temp_row;
-	int temp_col;
+    private boolean inner_start = false;
+
 	Sprinter returnToStart;
 
     public Explorer(Mapper exMap, Mapper realMap, Robot bot, int coverageLimit, int timeLimit) {
@@ -130,11 +130,13 @@ public class Explorer {
     	{
     		System.out.println("I'm in, before NextStartPoint");
 	    	//Fastest to next possible start point
-	    	goNextStartPoint();
+	    	//goNextStartPoint();
+	    	
+	    	//TODO: fastest path with nextmove on the quadrant
 	    	
 	    	//System.out.println("temp_row: " + temp_row + ", temp_col: " + temp_col);
-	    	/*
-	        for (int row = 0; row < this.exMap.gridder.grid.length; row++) {
+	    	
+	        /*for (int row = 0; row < this.exMap.gridder.grid.length; row++) {
 	            for (int col = 0; col < this.exMap.gridder.grid[0].length; col++) {
 	            	//this.exMap.gridder.grid[row][col] = new Cell(row, col);
 	
@@ -144,13 +146,16 @@ public class Explorer {
 	                }
 	            }
 	        }*/
+	    	
 	    	do
 	    	{
-	    		nextMove();
+	    		goNextStartPoint();
+	    		//nextMove();
 	            areaExplored = calculateAreaExplored();
 	            System.out.println("Area explored: " + areaExplored);
 	    	}
 	    	while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
+	    	
     	}
     	
     	//Setbackvirtualwall();
@@ -317,8 +322,14 @@ public class Explorer {
     {
     	setNewSP();
     	//set bot on origin starting point
-    	bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
-    	bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
+    	if (!inner_start)//if have not started
+    	{
+        	bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
+        	bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
+        	inner_start = true;
+    	}
+    	
+
     	
         if (!bot.getTouchedGoal() && coverageLimit == 300 && timeLimit == 3600)
         {
@@ -329,16 +340,22 @@ public class Explorer {
         System.out.println("In goNextStartPoint() of ExplorationAlgo second loop");
         
         returnToStart = new Sprinter(exMap, bot, realMap);//, realMap
-        returnToStart.runFastestPath(temp_row, temp_col);
-
+        returnToStart.runFastestPath(exMap.gridder.temp_row, exMap.gridder.temp_col);
+        
+        bot.setRobotPos(exMap.gridder.temp_row, exMap.gridder.temp_col);
+        bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
+        
 		System.out.println("\n\nbreaker....");
 		System.out.println("breaker....");
 		System.out.println("breaker.... \n\n");
     }
     
     private void setNewSP() {	
-    	int r=4;
-    	int c=4;
+    	int r=bot.getRobotPosRow()+3;
+    	int c=bot.getRobotPosCol()+3;
+    	
+    	System.out.println("row: " + bot.getRobotPosRow()+1);
+    	System.out.println("col: " + bot.getRobotPosCol()+1);
     	
     	while (r<=16 && c<=11) {
     		if (r<16 && newSP_validator (r,c) == false) {
@@ -351,10 +368,10 @@ public class Explorer {
     			c++;
     		}
     		else {
-    			System.out.println("temp_row: " + temp_row);
-    			System.out.println("temp_col: " + temp_col);
-    			temp_row = r;
-    			temp_col = c;
+    			System.out.println("temp_row: " + exMap.gridder.temp_row);
+    			System.out.println("temp_col: " + exMap.gridder.temp_col);
+    			exMap.gridder.temp_row = r;
+    			exMap.gridder.temp_col = c;
     			break;
     		}   			
     	}

@@ -281,7 +281,16 @@ public class Sprinter {
         ArrayList<MOVEMENT> movements = new ArrayList<>();
         
         Robot tempBot = null;
+        //System.out.println("My debug codes - goalRow: " + goalRow + " goalCol: " + goalCol + "\n");
+        
+        //int temp_row = map.gridder.get_prev_row();
+        //int temp_col = map.gridder.get_prev_col();
+        
+        int temp_row = map.bot.getRobotPosRow();
+        int temp_col = map.bot.getRobotPosCol();
+        
         System.out.println("My debug codes - goalRow: " + goalRow + " goalCol: " + goalCol + "\n");
+        System.out.println("My debug codes - temp_goalRow: " + temp_row + " temp_goalCol: " + temp_col + "\n");
         
         if (goalRow == MapConstant.GOAL_Y && goalCol == MapConstant.GOAL_X) 
         {
@@ -289,9 +298,13 @@ public class Sprinter {
         	tempBot = new Robot (map.gridder.waypoint_x, map.gridder.waypoint_y, false); // waypoints in mapper, trial
         
         }
-        else if (goalRow == 1 && goalCol == 1) // if goal is set to origin start point
+        else if (goalRow == map.gridder.temp_row && goalCol == map.gridder.temp_col) // if goal is set to next 
         {
-        	tempBot = new Robot (5, 4, false); // new start point from original startpoint in mapper, trial
+        	tempBot = new Robot (temp_row, temp_col, false); // new start point from original startpoint in mapper, trial
+        }
+        else if (goalRow == 1 && goalCol == 1) // if going back after inner loop exploration
+        {
+        	tempBot = new Robot (map.gridder.temp_row, map.gridder.temp_col, false);
         }
         else
         	tempBot = new Robot(1, 1, false);

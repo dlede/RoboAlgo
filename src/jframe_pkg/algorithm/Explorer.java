@@ -134,7 +134,7 @@ public class Explorer {
     	{
     		System.out.println("I'm in, before NextStartPoint");
 	    	//Fastest to next possible start point
-	    	goNextStartPoint();
+	    	//goNextStartPoint();
 	    	
 	    	//TODO: fastest path with nextmove on the quadrant
 	    	
@@ -454,6 +454,54 @@ public class Explorer {
     	return true;
     }
 
+    public void checkQuadrant () {
+    	int q1 = countUnexplored(1);
+    	int q2 = countUnexplored(2);
+    	int q3 = countUnexplored(3);
+    	int q4 = countUnexplored(4);
+    	
+    	//setNewCoordinates(Math.max(q1, Math.max(q2, Math.max(q3,q4))));
+    }
+    
+    private int countUnexplored (int q) {
+    	int count = 0;
+    	switch (q) {
+    		case 1:
+    			for (int r=0; r<=9; r++) {
+    				for (int c=0; c<7; c++) {
+    					if (!exMap.gridder.getCell(r, c).getIsExplored() && !exMap.gridder.getIsObstacleOrWall(r, c))
+    						count ++;
+    				}
+    			}
+    			break;
+    		case 2:
+    			for (int r=0; r<=9; r++) {
+    				for (int c=7; c<15; c++) {
+    					if (!exMap.gridder.getCell(r, c).getIsExplored() && !exMap.gridder.getIsObstacleOrWall(r, c))
+    						count ++;
+    				}
+    			}
+    			break;
+    		case 3:
+    			for (int r=10; r<20; r++) {
+	    			for (int c=7; c<15; c++) {
+						if (!exMap.gridder.getCell(r, c).getIsExplored() && !exMap.gridder.getIsObstacleOrWall(r, c))
+							count ++;
+					}
+				}
+				break;
+    		case 4:
+    			for (int r=10; r<20; r++) {
+	    			for (int c=0; c<7; c++) {
+						if (!exMap.gridder.getCell(r, c).getIsExplored() && !exMap.gridder.getIsObstacleOrWall(r, c))
+							count ++;
+					}
+				}
+				break;
+    	}
+    	return count;
+    }
+    
     /**
      * Returns true for cells that are explored and not obstacles.
      */

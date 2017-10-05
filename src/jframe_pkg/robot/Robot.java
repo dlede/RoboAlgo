@@ -28,7 +28,7 @@ import javax.swing.JTextField;
  *   	  [X] [X] [X] SR >
  *
  * SR = Short Range Sensor, LR = Long Range Sensor
- *
+ * Correct input sensor reading should be: SRFL;	 SRFL;	SRFR;		SRR;	SRR2;	LRL
  */
 // @formatter:on
 
@@ -351,9 +351,9 @@ public class Robot {
             result[0] = SRFrontLeft.sense(explorationMap, realMap);
             result[1] = SRFrontCenter.sense(explorationMap, realMap);
             result[2] = SRFrontRight.sense(explorationMap, realMap);
-            result[3] = LRLeft.sense(explorationMap, realMap);
-            result[4] = SRRight.sense(explorationMap, realMap);
-            result[5] = SRRight2.sense(explorationMap, realMap);
+            result[3] = SRRight.sense(explorationMap, realMap); // LRLeft.sense(explorationMap, realMap); 
+            result[4] = SRRight.sense(explorationMap, realMap); // SRRight.sense(explorationMap, realMap);
+            result[5] = LRLeft.sense(explorationMap, realMap); // SRRight2.sense(explorationMap, realMap);
         } 
         // commMgr not needed now, sensereal is for real, sense if for simulation only
         else {

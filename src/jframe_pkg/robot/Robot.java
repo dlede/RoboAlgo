@@ -270,7 +270,7 @@ public class Robot {
 		}
         
         if (m != MOVEMENT.CALIBRATE && sendMoveToAndroid) {
-
+        	System.out.println("m != MOVEMENT.CALIBRATE && sendMoveToAndroid: Robot.java, L273");
         	//System.out.println(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
         	//comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
         }
@@ -281,7 +281,7 @@ public class Robot {
      * Sets the sensors' position and direction values according to the robot's current position and direction.
      */
     public void setSensors() {
-    	System.out.println("set Sensors, directions: " + robotDir);
+    	System.out.println("set Sensors, directions: " + robotDir + ": Robot.java, L284");
         switch (robotDir) {
         
             case NORTH:
@@ -357,10 +357,9 @@ public class Robot {
         } 
         // commMgr not needed now, sensereal is for real, sense if for simulation only
         else {
-        	System.out.println("Getting sensors counter: " + counter);
-        	
-            this.comm.sendMsg("GET SENSOR");
-            System.out.println("SENSOR MSG SENT");
+        	System.out.println("Getting sensors counter: " + counter + ": Robot.java, L360");
+            this.comm.sendMsg("GET SENSOR: Robot.java, L361");
+            System.out.println("SENSOR MSG SENT: Robot.java, L362");
            /* 
         	try {
     			Thread.sleep(100);
@@ -369,10 +368,10 @@ public class Robot {
     			e.printStackTrace();
     		}*/
 
-            System.out.println("WAITING FOR SENSOR VALUE");
+            System.out.println("WAITING FOR SENSOR VALUE: Robot.java, L371");
             String msg = comm.revMsg();
 
-            System.out.println("GOT SENSOR VALUE");
+            System.out.println("GOT SENSOR VALUE: Robot.java, L374");
             //System.out.println("msg11: "+ msg);
             String[] msgArr = msg.split(";");
             for(String str: msgArr) {
@@ -409,22 +408,23 @@ public class Robot {
             System.out.println("SRFrontLeft: " + result[0]);
             System.out.println("SRFrontCenter: " + result[1]);
             System.out.println("SRFrontRight: " + result[2]);
-            System.out.println("LRLeft: " + result[3]);
-            System.out.println("SRRight: " + result[4]);
-            System.out.println("SRRight2: " + result[5]);
-            
+            System.out.println("SRRight: " + result[3]);
+            System.out.println("SRRight2: " + result[4]);
+            System.out.println("LRLeft: " + result[5]);
+
             SRFrontLeft.senseReal(explorationMap.gridder, result[0]);
             SRFrontCenter.senseReal(explorationMap.gridder, result[1]);
             SRFrontRight.senseReal(explorationMap.gridder, result[2]);
-            System.out.println("done front");
+            System.out.println("done front sense: Robot.java, L418");
             
-            LRLeft.senseReal(explorationMap.gridder, result[3]);
-            System.out.println("done left");
-            
-            SRRight.senseReal(explorationMap.gridder, result[4]);
-            SRRight2.senseReal(explorationMap.gridder, result[5]);
+            SRRight.senseReal(explorationMap.gridder, result[3]);
+            SRRight2.senseReal(explorationMap.gridder, result[4]);
+            System.out.println("done right sense: Robot.java, L422");
 
-            System.out.println("done sensereal");
+            LRLeft.senseReal(explorationMap.gridder, result[5]);
+            System.out.println("done left sense: Robot.java, L425");
+            
+            System.out.println("done sensereal: Robot.java, L427");
             counter++;
             //String[] mapStrings = MapDescriptor.generateMapDescriptor(explorationMap);
             //System.out.println(mapStrings[0] + " " + mapStrings[1] + " " + CommMgr.MAP_STRINGS);

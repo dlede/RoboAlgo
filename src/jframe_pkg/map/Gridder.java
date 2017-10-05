@@ -18,7 +18,6 @@ public class Gridder extends JFrame {
 	
 	public Gridder()
 	{
-
         grid = new Cell[MapConstant.MAP_X][MapConstant.MAP_Y];
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[0].length; col++) {

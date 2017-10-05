@@ -45,44 +45,79 @@ public class Explorer {
      * Main method that is called to start the exploration.
      */
     public void runExploration() {
-        if (bot.getRealBot()) {
+       
+    	if (bot.getRealBot()) {
             System.out.println("Starting calibration...");
 
-            CommMgr.getCommMgr().revMsg();
+         
+            //CommMgr.getCommMgr().revMsg();
             if (bot.getRealBot()) {
                 bot.move(MOVEMENT.LEFT, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.CALIBRATE, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.LEFT, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.CALIBRATE, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.RIGHT, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.CALIBRATE, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.RIGHT, false);
             }
 
             while (true) {
                 System.out.println("Waiting for EX_START...");
                 String msg = CommMgr.getCommMgr().revMsg();
-                String[] msgArr = msg.split(";");
-                if (msgArr[0].equals(CommMgr.EX_START)) break;
+                
+                System.out.println("msg: " + msg);
+                System.out.println("def: " + CommMgr.EX_START);
+                //String[] msgArr = msg.split(";");
+                //System.out.println("?????");
+                /*Class cls = msg.getClass();
+                Class cls2 = (CommMgr.EX_START).getClass();
+                System.out.println("msg type: " + cls.getName());
+                System.out.println("def type: " + cls2.getName());
+                
+                System.out.println("msg bytes: " + msg.getBytes());
+                System.out.println("def bytes: " + (CommMgr.EX_START).getBytes());
+                
+                System.out.println("truth: " + ((String)msg == "EX_START"));
+                System.out.println("truth2: " + (msg.equals(CommMgr.EX_START)));*/
+                
+               /* if ((String)msg == "EX_START") 
+                {
+                	System.out.println("im here1");
+                	//break;
+                }*/
+                
+                if (msg.equals(CommMgr.EX_START)) 
+                {
+                	System.out.println("im here2");
+                	break;
+                }
+                	
             }
+            
         }
 
         System.out.println("Starting exploration...");
         startTime = System.currentTimeMillis();
         endTime = startTime + (timeLimit * 1000);
 
+        System.out.println("timer start");
+        
         if (bot.getRealBot()) {
             //CommMgr.getCommMgr().sendMsg(null, CommMgr.BOT_START);
         	CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
         }
         
+        System.out.println("realbot send bot started");
+        
         senseAndRepaint();
+        
+        System.out.println("sense and repainted");
 
         areaExplored = calculateAreaExplored();
         // Here is moved
@@ -134,7 +169,7 @@ public class Explorer {
     	{
     		System.out.println("I'm in, before NextStartPoint");
 	    	//Fastest to next possible start point
-	    	//goNextStartPoint();
+	    	goNextStartPoint();
 	    	
 	    	//TODO: fastest path with nextmove on the quadrant
 	    	
@@ -454,54 +489,6 @@ public class Explorer {
     	return true;
     }
 
-    public void checkQuadrant () {
-    	int q1 = countUnexplored(1);
-    	int q2 = countUnexplored(2);
-    	int q3 = countUnexplored(3);
-    	int q4 = countUnexplored(4);
-    	
-    	//setNewCoordinates(Math.max(q1, Math.max(q2, Math.max(q3,q4))));
-    }
-    
-    private int countUnexplored (int q) {
-    	int count = 0;
-    	switch (q) {
-    		case 1:
-    			for (int r=0; r<=9; r++) {
-    				for (int c=0; c<7; c++) {
-    					if (!exMap.gridder.getCell(r, c).getIsExplored() && !exMap.gridder.getIsObstacleOrWall(r, c))
-    						count ++;
-    				}
-    			}
-    			break;
-    		case 2:
-    			for (int r=0; r<=9; r++) {
-    				for (int c=7; c<15; c++) {
-    					if (!exMap.gridder.getCell(r, c).getIsExplored() && !exMap.gridder.getIsObstacleOrWall(r, c))
-    						count ++;
-    				}
-    			}
-    			break;
-    		case 3:
-    			for (int r=10; r<20; r++) {
-	    			for (int c=7; c<15; c++) {
-						if (!exMap.gridder.getCell(r, c).getIsExplored() && !exMap.gridder.getIsObstacleOrWall(r, c))
-							count ++;
-					}
-				}
-				break;
-    		case 4:
-    			for (int r=10; r<20; r++) {
-	    			for (int c=0; c<7; c++) {
-						if (!exMap.gridder.getCell(r, c).getIsExplored() && !exMap.gridder.getIsObstacleOrWall(r, c))
-							count ++;
-					}
-				}
-				break;
-    	}
-    	return count;
-    }
-    
     /**
      * Returns true for cells that are explored and not obstacles.
      */
@@ -576,9 +563,18 @@ public class Explorer {
      * Sets the bot's sensors, processes the sensor data and repaints the map.
      */
     private void senseAndRepaint() {
-        bot.setSensors();
+    	bot.setSensors();
+    	System.out.println("sensor set");
+    	try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         bot.sense(exMap, realMap);
+        System.out.println("realbot sensing");
         exMap.repaint();
+        System.out.println("repainted");
     }
 
     /**
@@ -587,7 +583,8 @@ public class Explorer {
     private boolean canCalibrateOnTheSpot(DIRECTION botDir) {
         int row = bot.getRobotPosRow();
         int col = bot.getRobotPosCol();
-
+        System.out.println("in calbrating on the spot");
+        System.out.println("botDir: " + botDir);
         switch (botDir) {
             case NORTH:
                 return exMap.gridder.getIsObstacleOrWall(row + 2, col - 1) && exMap.gridder.getIsObstacleOrWall(row + 2, col) && exMap.gridder.getIsObstacleOrWall(row + 2, col + 1);
@@ -599,6 +596,7 @@ public class Explorer {
                 return exMap.gridder.getIsObstacleOrWall(row + 1, col - 2) && exMap.gridder.getIsObstacleOrWall(row, col - 2) && exMap.gridder.getIsObstacleOrWall(row - 1, col - 2);
         }
 
+        System.out.println("done calibrating on the spot");
         return false;
     }
 
@@ -610,13 +608,25 @@ public class Explorer {
         DIRECTION dirToCheck;
 
         dirToCheck = DIRECTION.getNext(origDir);                    // right turn
-        if (canCalibrateOnTheSpot(dirToCheck)) return dirToCheck;
+        if (canCalibrateOnTheSpot(dirToCheck)) 
+    	{
+        	System.out.println("calibrate direction: in case of Right turn");
+    		return dirToCheck;
+    	}
 
         dirToCheck = DIRECTION.getPrevious(origDir);                // left turn
-        if (canCalibrateOnTheSpot(dirToCheck)) return dirToCheck;
+        if (canCalibrateOnTheSpot(dirToCheck)) 
+    	{
+        	System.out.println("calibrate direction: in case of Left turn");
+    		return dirToCheck;
+    	}
 
         dirToCheck = DIRECTION.getPrevious(dirToCheck);             // u turn
-        if (canCalibrateOnTheSpot(dirToCheck)) return dirToCheck;
+        if (canCalibrateOnTheSpot(dirToCheck)) 
+    	{
+        	System.out.println("calibrate direction: in case of U turn");
+    		return dirToCheck;
+    	}
 
         return null;
     }

@@ -11,7 +11,7 @@ import jframe_pkg.utils.MapDescriptor;
 import jframe_pkg.robot.Sensor;
 
 import java.util.concurrent.TimeUnit;
-
+import java.lang.*;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -47,7 +47,8 @@ public class Robot {
     private final boolean realBot;
     private JTextArea monitorScreen; 
 	private JTextField field_cp;
-	private double angle; 
+	private int counter =0; 
+	private CommMgr comm;
 
     public Robot(int row, int col, boolean realBot) {
         posRow = row;
@@ -55,6 +56,8 @@ public class Robot {
         robotDir = RobotConstants.START_DIR;
         speed = RobotConstants.SPEED;
         //angle = 0.0; // for rotation animation
+        
+        comm = CommMgr.getCommMgr();
         
         this.realBot = realBot;
 
@@ -104,8 +107,10 @@ public class Robot {
     //hk check if reached goal
 
     private void updateTouchedGoal() {
+    	System.out.println("inupdategoaltouch");
         if (this.getRobotPosRow() == MapConstant.GOAL_Y && this.getRobotPosCol() == MapConstant.GOAL_X)
             this.touchedGoal = true;
+        System.out.println("outupdategoaltouch");
     }
 
     public boolean getTouchedGoal() {
@@ -117,6 +122,8 @@ public class Robot {
      * if this.realBot is set.
      */
     public void move(MOVEMENT m, boolean sendMoveToAndroid) {
+        //CommMgr comm = CommMgr.getCommMgr();//testing
+    	
         if (!realBot) {
             // Emulate real movement by pausing execution.
             try {
@@ -165,18 +172,23 @@ public class Robot {
                 robotDir = findNewDirection(m);
                 break;
             case CALIBRATE:
+            	//comm.sendMsg("calibrate");
                 break;
             default:
                 System.out.println("Error in Robot.move()!");
                 break;
         }
 
-        //if (realBot) sendMovement(m, sendMoveToAndroid);
-        //else 
-        System.out.println("Move: " + MOVEMENT.print(m));
+        if (realBot) 
+        	sendMovement(m, sendMoveToAndroid);
+        else 
+        	System.out.println("Move: " + MOVEMENT.print(m));
+        	
 
         field_cp.setText("Row : " + posRow + ", Col: " + posCol);
         monitorScreen.append("Move: " + MOVEMENT.print(m) + "\n");
+        
+        System.out.println("Row : " + posRow + ", Col: " + posCol);
         
         updateTouchedGoal();
     }
@@ -201,9 +213,11 @@ public class Robot {
             CommMgr comm = CommMgr.getCommMgr();
             if (count == 10) {
                 //comm.sendMsg("0", CommMgr.INSTRUCTIONS);
+            	System.out.println("msg1");
                 comm.sendMsg("0" + "" + CommMgr.INSTRUCTIONS);
             } else if (count < 10) {
                 //comm.sendMsg(Integer.toString(count), CommMgr.INSTRUCTIONS);
+            	System.out.println("msg2");
             	comm.sendMsg(Integer.toString(count) + "" +  CommMgr.INSTRUCTIONS);
             }
 
@@ -223,7 +237,10 @@ public class Robot {
             }
 
             //comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()), CommMgr.BOT_POS);
-            comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
+
+        	System.out.println("msg3");
+        	//comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()));
+        	//CommMgr.BOT_POS
         }
     }
     
@@ -234,21 +251,39 @@ public class Robot {
     
     // no commMgr yet
     
-    /**
+    
     private void sendMovement(MOVEMENT m, boolean sendMoveToAndroid) {
-        CommMgr comm = CommMgr.getCommMgr();
-        comm.sendMsg(MOVEMENT.print(m) + "", CommMgr.INSTRUCTIONS);
+        //CommMgr comm = CommMgr.getCommMgr();
+
+    	System.out.println(MOVEMENT.print(m) + "" + CommMgr.INSTRUCTIONS);
+        //comm.sendMsg(MOVEMENT.print(m) + "" + CommMgr.INSTRUCTIONS);
+    	
+    	
+    	comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
+
+    	//comm.sendMsg("R");
+    	try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         if (m != MOVEMENT.CALIBRATE && sendMoveToAndroid) {
-            comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()), CommMgr.BOT_POS);
+
+        	//System.out.println(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
+        	//comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
         }
     }
-    **/
+    
 
     /**
      * Sets the sensors' position and direction values according to the robot's current position and direction.
      */
     public void setSensors() {
+    	System.out.println("set Sensors, directions: " + robotDir);
         switch (robotDir) {
+        
             case NORTH:
                 SRFrontLeft.setSensor(this.posRow + 1, this.posCol - 1, this.robotDir);
                 SRFrontCenter.setSensor(this.posRow + 1, this.posCol, this.robotDir);
@@ -288,6 +323,7 @@ public class Robot {
                 SRRight2.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
                 break;
         }
+       
 
     }
 
@@ -318,32 +354,81 @@ public class Robot {
             result[3] = LRLeft.sense(explorationMap, realMap);
             result[4] = SRRight.sense(explorationMap, realMap);
             result[5] = SRRight2.sense(explorationMap, realMap);
-
         } 
         // commMgr not needed now, sensereal is for real, sense if for simulation only
         else {
-            CommMgr comm = CommMgr.getCommMgr();
+        	System.out.println("Getting sensors counter: " + counter);
+        	
+            this.comm.sendMsg("GET SENSOR");
+            System.out.println("SENSOR MSG SENT");
+           /* 
+        	try {
+    			Thread.sleep(100);
+    		} catch (InterruptedException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}*/
+
+            System.out.println("WAITING FOR SENSOR VALUE");
             String msg = comm.revMsg();
+
+            System.out.println("GOT SENSOR VALUE");
+            //System.out.println("msg11: "+ msg);
             String[] msgArr = msg.split(";");
-
-            if (msgArr[0].equals(CommMgr.SENSOR_DATA)) {
-                result[0] = Integer.parseInt(msgArr[1].split("_")[1]);
-                result[1] = Integer.parseInt(msgArr[2].split("_")[1]);
-                result[2] = Integer.parseInt(msgArr[3].split("_")[1]);
-                result[3] = Integer.parseInt(msgArr[4].split("_")[1]);
-                result[4] = Integer.parseInt(msgArr[5].split("_")[1]);
-                result[5] = Integer.parseInt(msgArr[6].split("_")[1]);
+            for(String str: msgArr) {
+            	System.out.println("msgArr: "+ str);
             }
+            
 
+//            floor(Double.parseDouble())
+            
+/*            if (msgArr[0].equals(CommMgr.SENSOR_DATA)) {
+                result[0] = Integer.parseInt(msgArr[1].split(".")[1]);
+                result[1] = Integer.parseInt(msgArr[2].split(".")[1]);
+                result[2] = Integer.parseInt(msgArr[3].split(".")[1]);
+                result[3] = Integer.parseInt(msgArr[4].split(".")[1]);
+                result[4] = Integer.parseInt(msgArr[5].split(".")[1]);
+                result[5] = Integer.parseInt(msgArr[6].split(".")[1]);
+            }*/
+            
+            result[0] = (int)(Math.floor(Double.parseDouble(msgArr[0])));
+            result[1] = (int)(Math.floor(Double.parseDouble(msgArr[1])));
+            result[2] = (int)(Math.floor(Double.parseDouble(msgArr[2])));
+            result[3] = (int)(Math.floor(Double.parseDouble(msgArr[3])));
+            result[4] = (int)(Math.floor(Double.parseDouble(msgArr[4])));
+            result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5])));
+            
+            
+            /*result[0] = Integer.parseInt((msgArr[0].split("."))[0]);
+            result[1] = Integer.parseInt((msgArr[1].split("."))[0]);
+            result[2] = Integer.parseInt((msgArr[2].split("."))[0]);
+            result[3] = Integer.parseInt((msgArr[3].split("."))[0]);
+            result[4] = Integer.parseInt((msgArr[4].split("."))[0]);
+            result[5] = Integer.parseInt((msgArr[5].split("."))[0]);*/
+            
+            System.out.println("SRFrontLeft: " + result[0]);
+            System.out.println("SRFrontCenter: " + result[1]);
+            System.out.println("SRFrontRight: " + result[2]);
+            System.out.println("LRLeft: " + result[3]);
+            System.out.println("SRRight: " + result[4]);
+            System.out.println("SRRight2: " + result[5]);
+            
             SRFrontLeft.senseReal(explorationMap.gridder, result[0]);
             SRFrontCenter.senseReal(explorationMap.gridder, result[1]);
             SRFrontRight.senseReal(explorationMap.gridder, result[2]);
+            System.out.println("done front");
+            
             LRLeft.senseReal(explorationMap.gridder, result[3]);
+            System.out.println("done left");
+            
             SRRight.senseReal(explorationMap.gridder, result[4]);
             SRRight2.senseReal(explorationMap.gridder, result[5]);
 
-            String[] mapStrings = MapDescriptor.generateMapDescriptor(explorationMap);
-            comm.sendMsg(mapStrings[0] + " " + mapStrings[1] + " " + CommMgr.MAP_STRINGS);
+            System.out.println("done sensereal");
+            counter++;
+            //String[] mapStrings = MapDescriptor.generateMapDescriptor(explorationMap);
+            //System.out.println(mapStrings[0] + " " + mapStrings[1] + " " + CommMgr.MAP_STRINGS);
+            //comm.sendMsg(mapStrings[0] + " " + mapStrings[1] + " " + CommMgr.MAP_STRINGS);
         }
         
         return result;

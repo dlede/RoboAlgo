@@ -26,7 +26,11 @@ public class Explorer {
     private boolean calibrationMode;
     private int counter;
     private boolean inner_start = false;
-
+    private boolean quad_one = false;
+    private boolean quad_two = false;
+    private boolean quad_three = false;
+    private boolean quad_four = false;
+    
 	Sprinter returnToStart;
 
     public Explorer(Mapper exMap, Mapper realMap, Robot bot, int coverageLimit, int timeLimit) {
@@ -102,7 +106,7 @@ public class Explorer {
             System.out.println("Area explored: " + areaExplored);
 
             if (bot.getRobotPosRow() == r && bot.getRobotPosCol() == c) { 
-                if (areaExplored >= 100) { // if fully 300 cells coverage
+                if (areaExplored >= 100) { // if 100 cells coverage
                 	//goHome();
                     break;
                 }
@@ -124,25 +128,29 @@ public class Explorer {
     
     //TODO: check if the middle part is explored
     // put this function after the do while loop in exploration loop
-    private void explorationInnerLoop()
+    private void explorationInnerLoop()//int r, int c
     {
     	if(areaExplored < 300) // if_outerloopcleared
     	{
     		System.out.println("I'm in, before NextStartPoint");
 	    	//Fastest to next possible start point
-	    	//goNextStartPoint();
+	    	goNextStartPoint();
 	    	
 	    	//TODO: fastest path with nextmove on the quadrant
 	    	
 	    	//System.out.println("temp_row: " + temp_row + ", temp_col: " + temp_col);
-	    	
-	        /*for (int row = 0; row < this.exMap.gridder.grid.length; row++) {
+	    	/*
+	        for (int row = 0; row < this.exMap.gridder.grid.length; row++) {
 	            for (int col = 0; col < this.exMap.gridder.grid[0].length; col++) {
 	            	//this.exMap.gridder.grid[row][col] = new Cell(row, col);
 	
-	                // Set the extra padding virtual walls of the arena
-	                if (row == 0 || col == 0 || row == MapConstant.MAP_X - 1 || col == MapConstant.MAP_Y - 1) {
-	                	this.exMap.gridder.grid[row][col].setInnerVirtualWall(true); //reduce the virtualwall
+	            	// row == 0 || col == 0 || row == MapConstant.MAP_X - 1 || col == MapConstant.MAP_Y - 1
+	            	//|| row == 1 || col == 1 || row == MapConstant.MAP_X - 2 || col == MapConstant.MAP_Y - 2
+	            	//|| row == 2 || col == 2 || row == MapConstant.MAP_X - 3 || col == MapConstant.MAP_Y - 3
+	            	//System.out.println("row: " + row + ", col: " + col + ", value: " + this.exMap.gridder.grid[row][col].getIsVirtualWall());
+	            	// Set the extra padding virtual walls of the arena
+	                if (row == 1 || col == 1 || row == MapConstant.MAP_X - 2 || col == MapConstant.MAP_Y - 2 || row == 2 || col == 2 || row == MapConstant.MAP_X - 3 || col == MapConstant.MAP_Y - 3) {
+	                	this.exMap.gridder.grid[row][col].setVirtualWall(true); //reduce the virtualwall, setInnerVirtualWall(true)
 	                }
 	            }
 	        }*/
@@ -153,12 +161,19 @@ public class Explorer {
 	    		//nextMove();
 	            areaExplored = calculateAreaExplored();
 	            System.out.println("Area explored: " + areaExplored);
+	            
+	            if (bot.getRobotPosRow() == exMap.gridder.temp_row && bot.getRobotPosCol() == exMap.gridder.temp_col) { 
+	                if (areaExplored >= 300) { // if fully 300 cells coverage
+	                	//goHome();
+	                    break;
+	                }
+	            }
 	    	}
 	    	while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
-	    	
     	}
     	
     	//Setbackvirtualwall();
+    	/*
         for (int row = 0; row < this.exMap.gridder.grid.length; row++) 
         {
             for (int col = 0; col < this.exMap.gridder.grid[0].length; col++) 
@@ -170,9 +185,9 @@ public class Explorer {
                 	this.exMap.gridder.grid[row][col].setVirtualWall(true);
                 }
             }
-        }
+        }*/
     	
-    	//goHome();
+    	goHome();
     }
     
     
@@ -329,8 +344,6 @@ public class Explorer {
         	inner_start = true;
     	}
     	
-
-    	
         if (!bot.getTouchedGoal() && coverageLimit == 300 && timeLimit == 3600)
         {
         	System.out.println("In goNextStartPoint() of ExplorationAlgo first loop");
@@ -351,8 +364,56 @@ public class Explorer {
     }
     
     private void setNewSP() {	
-    	int r=bot.getRobotPosRow()+3;
-    	int c=bot.getRobotPosCol()+3;
+    	int r=2;
+    	int c=2;
+    	
+    	//quadrant 1 not cleared
+    	if(!quad_one)
+    	{
+    		System.out.println("quad_one");
+    		r=r+3;
+    		c=c+3;
+    		//r=bot.getRobotPosRow()+3;
+    		//c=bot.getRobotPosCol()+3;
+    		quad_one = true;
+    	}
+    	
+    	//quadrant 2 not cleared
+    	else if(!quad_two && quad_one)
+    	{
+    		System.out.println("quad_two");
+    		r=r+3;
+    		c=c+9;
+	    	//r=bot.getRobotPosRow()+9;
+	    	//c=bot.getRobotPosCol()+3;
+	    	quad_two = true;
+    	}
+    	//quadrant 3 not cleared
+    	else if(!quad_three && quad_two && quad_one)
+    	{
+    		System.out.println("quad_three");
+    		r=r+14;
+    		c=c+9;
+    		//r=bot.getRobotPosRow()+9;
+    		//c=bot.getRobotPosCol()+14;
+    		quad_three = true;
+    	}
+    	//quadrant 4 not cleared
+    	else if(!quad_four && quad_three && quad_two && quad_one)
+    	{
+    		System.out.println("quad_four");
+    		r=r+14;
+    		c=c+3;
+	    	//r=bot.getRobotPosRow()+3;
+	    	//c=bot.getRobotPosCol()+14;
+    		quad_four = true;
+    	}
+    	else //(quad_one && quad_two && quad_three && quad_four)
+    	{
+    		System.out.println("home");
+    		goHome();
+    	}
+    	
     	
     	System.out.println("row: " + bot.getRobotPosRow()+1);
     	System.out.println("col: " + bot.getRobotPosCol()+1);

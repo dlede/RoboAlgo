@@ -73,6 +73,8 @@ public class Mapper extends JPanel {
                         cellColor = GraphicsConstant.C_UNEXPLORED;
                     else if (gridder.get_Grid()[x][y].getIsObstacle())
                         cellColor = GraphicsConstant.C_OBSTACLE;
+                    else if (gridder.get_Grid()[x][y].getIsVirtualWall())
+                    	cellColor = GraphicsConstant.C_VIRTUAL;
                     else
                         cellColor = GraphicsConstant.C_FREE;
                 }

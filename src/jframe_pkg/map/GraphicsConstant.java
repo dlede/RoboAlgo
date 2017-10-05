@@ -12,6 +12,7 @@ public class GraphicsConstant {
     public static final Color C_FREE = Color.WHITE;
     public static final Color C_OBSTACLE = Color.DARK_GRAY; //BLACK
     public static final Color C_WAYPOINT = Color.MAGENTA;
+    public static final Color C_VIRTUAL = Color.PINK;
 
     public static final Color C_ROBOT = Color.ORANGE;
     public static final Color C_ROBOT_DIR = Color.RED; //WHITE

@@ -18,6 +18,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -87,7 +89,7 @@ public class MainFrame extends JFrame {
 	public static boolean map_Clear = false; // if both explore and sprint is cleared, can do next map
 
 	private static int timeLimit = 3600; // TODO: time limit
-	private static int coverageLimit = 300; // TODO: coverage limit
+	private static int coverageLimit = 150; // TODO: coverage limit
 
 	private static final CommMgr comm = CommMgr.getCommMgr();
 	private static final boolean realRun = true;
@@ -587,12 +589,14 @@ public class MainFrame extends JFrame {
 
 				if (realRun) {
 					while (true) {
-						
 						System.out.println("Waiting for FP_START...");
 						info.append("Waiting for FP_START...\n");
-						String msg = comm.revMsg();
+						String msg = comm.revMsg(); // "FP_START"
 						if (msg.equals(CommMgr.FP_START))
+						{
 							break;
+						}
+
 					}
 				}
 
@@ -661,7 +665,7 @@ public class MainFrame extends JFrame {
 				 **/
 
 				exploration.runExploration();
-				generateMapDescriptor(e_Mapper);
+				
 				timer.stop();
 				info.append("Time Taken: " + timer.getMinSec() + "\n");
 

@@ -55,6 +55,33 @@ public class Sensor {
      * -1 if no obstacle is detected.
      */
     private int getSensorVal(Mapper exploredMap, Mapper realMap, int rowInc, int colInc) {
+        // Check if starting point is valid for sensors with lowerRange > 1.
+        if (lowerRange > 1) {
+            for (int i = 1; i < this.lowerRange; i++) {
+                int row = this.sensorPosRow + (rowInc * i);
+                int col = this.sensorPosCol + (colInc * i);
+
+                if (!exploredMap.gridder.coordinate_validator(row, col)) return i;
+                if (realMap.gridder.getCell(row, col).getIsObstacle()) return i;
+            }
+        }
+
+        // Check if anything is detected by the sensor and return that value.
+        for (int i = this.lowerRange; i <= this.upperRange; i++) {
+            int row = this.sensorPosRow + (rowInc * i);
+            int col = this.sensorPosCol + (colInc * i);
+
+            if (!exploredMap.gridder.coordinate_validator(row, col)) return i;
+
+            exploredMap.gridder.getCell(row, col).setIsExplored(true);
+
+            if (realMap.gridder.getCell(row, col).getIsObstacle()) {
+                exploredMap.gridder.setObstacleCell(row, col, true);
+                return i;
+            }
+        }
+    	
+    	/*
         for (int i = this.lowerRange; i <= this.upperRange; i++) {
             int row = this.sensorPosRow + (rowInc * i);
             int col = this.sensorPosCol + (colInc * i);
@@ -62,10 +89,16 @@ public class Sensor {
             if (!exploredMap.gridder.coordinate_validator(row, col)) return i;
             
             // hk- Set the cell to be explored
+            if(exploredMap.gridder.getCell(row, col).getIsObstacle()) // 
+            {
+            	break;
+            	//exploredMap.gridder.getCell(row, col).setIsExplored(true); //to explore, to make the grid white, black...
+            }
+            
             //if(exploredMap.gridder.getCell(row, col).getIsObstacle()) // 
             //{
             	//break;
-            	exploredMap.gridder.getCell(row, col).setIsExplored(true); //to explore, to make the grid white, black...
+            	//exploredMap.gridder.getCell(row, col).setIsExplored(true); //to explore, to make the grid white, black...
             //}
             
             // hk- set the obstacles 
@@ -73,7 +106,7 @@ public class Sensor {
                 exploredMap.gridder.setObstacleCell(row, col, true);
                 return i;
             }
-        }
+        }*/
         return -1;
     }
 

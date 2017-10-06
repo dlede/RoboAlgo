@@ -398,6 +398,7 @@ public class Sprinter {
         int col = bot.getRobotPosCol();
 
         switch (bot.getRobotCurDir()) {
+       
             case NORTH:
                 if (!map.gridder.isObstacleCell(row + 2, col - 1) && !map.gridder.isObstacleCell(row + 2, col) && !map.gridder.isObstacleCell(row + 2, col + 1)) {
                     return true;

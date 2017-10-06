@@ -25,7 +25,7 @@ import javax.swing.JTextField;
  *         SR  SR  SR
  *   	  [X] [X] [X] SR >
  *   < LR [X] [X] [X] 
- *   	  [X] [X] [X] SR >
+ *   	  [X] [X] [X] SR2 >
  *
  * SR = Short Range Sensor, LR = Long Range Sensor
  * Correct input sensor reading should be: SRFL;	 SRFL;	SRFR;		SRR;	SRR2;	LRL
@@ -49,6 +49,9 @@ public class Robot {
 	private JTextField field_cp;
 	private int counter =0; 
 	private CommMgr comm;
+	public int front_average = 0;
+	public int right_average = 0;
+	private MOVEMENT prev_mov;
 
     public Robot(int row, int col, boolean realBot) {
         posRow = row;
@@ -117,6 +120,11 @@ public class Robot {
         return this.touchedGoal;
     }
 
+    public int averageSense(int sense_val)
+    {
+    	return sense_val;
+    }
+    
     /**
      * Takes in a MOVEMENT and moves the robot accordingly by changing its position and direction. Sends the movement
      * if this.realBot is set.
@@ -134,6 +142,22 @@ public class Robot {
         }
 
         switch (m) {
+        	case FORWARD_M:
+        		switch (robotDir) {
+                case NORTH:
+                    posRow += 3;
+                    break;
+                case EAST:
+                    posCol += 3;
+                    break;
+                case SOUTH:
+                    posRow -= 3;
+                    break;
+                case WEST:
+                    posCol -= 3;
+                    break;
+	            }
+	            break;
             case FORWARD:
                 switch (robotDir) {
                     case NORTH:
@@ -172,6 +196,7 @@ public class Robot {
                 robotDir = findNewDirection(m);
                 break;
             case CALIBRATE:
+            case CALIBRATE_R:
             	//comm.sendMsg("calibrate");
                 break;
             default:
@@ -249,8 +274,10 @@ public class Robot {
      * Uses the CommMgr to send the next movement to the robot.
      */
     
-    // no commMgr yet
-    
+    public MOVEMENT getMovement()
+    {
+    	return this.prev_mov;
+    }
     
     private void sendMovement(MOVEMENT m, boolean sendMoveToAndroid) {
         //CommMgr comm = CommMgr.getCommMgr();
@@ -258,6 +285,7 @@ public class Robot {
     	System.out.println(MOVEMENT.print(m) + "" + CommMgr.INSTRUCTIONS);
         //comm.sendMsg(MOVEMENT.print(m) + "" + CommMgr.INSTRUCTIONS);
     	
+    	prev_mov = m;
     	
     	comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
 
@@ -358,7 +386,7 @@ public class Robot {
         // commMgr not needed now, sensereal is for real, sense if for simulation only
         else {
         	System.out.println("Getting sensors counter: " + counter + ": Robot.java, L360");
-            this.comm.sendMsg("GET SENSOR: Robot.java, L361");
+            this.comm.sendMsg("GET SENSOR");
             System.out.println("SENSOR MSG SENT: Robot.java, L362");
            /* 
         	try {
@@ -397,6 +425,17 @@ public class Robot {
             result[4] = (int)(Math.floor(Double.parseDouble(msgArr[4])));
             result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5])));
             
+            int temp = 0;
+            for (int i = 0; i < result.length; i++)
+            {
+            	//temp = setValue(result[i]);
+            	System.out.println("result: " + i);
+            	result[i] = setValue(result[i]);
+            }
+            //if (result[])
+            
+            front_average = averageSense((result[0] + result[1] + result[2])/3);
+            right_average = averageSense((result[3] + result[4]/2));
             
             /*result[0] = Integer.parseInt((msgArr[0].split("."))[0]);
             result[1] = Integer.parseInt((msgArr[1].split("."))[0]);
@@ -417,8 +456,8 @@ public class Robot {
             SRFrontRight.senseReal(explorationMap.gridder, result[2]);
             System.out.println("done front sense: Robot.java, L418");
             
-            SRRight.senseReal(explorationMap.gridder, result[3]);
-            SRRight2.senseReal(explorationMap.gridder, result[4]);
+            SRRight.senseReal(explorationMap.gridder, result[4]);
+            SRRight2.senseReal(explorationMap.gridder, result[3]);
             System.out.println("done right sense: Robot.java, L422");
 
             LRLeft.senseReal(explorationMap.gridder, result[5]);
@@ -432,6 +471,16 @@ public class Robot {
         }
         
         return result;
+    }
+    
+    public int setValue(int val)
+    {
+    	int temp = 0;
+    	//val = (((val+5)%10)*10); // round up to nearest 10
+    	temp = (int) Math.floor(((val +5)/ 10));// if sensor value is divided by 10
+    	System.out.println("val value: " + val);
+    	System.out.println("temp value: " + temp);
+    	return temp;
     }
     
 	public void setMonitorScreen(JTextArea info) {		

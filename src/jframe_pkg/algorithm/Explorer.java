@@ -153,9 +153,8 @@ public class Explorer {
                 	explorationLoop(r+3, c+3);
                 }**/
             }
-        }
-        while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
-        explorationInnerLoop();
+        }while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
+       //explorationInnerLoop();
         
         //TODO gohome() have an issue, cannot go home, check Sprinter class on the tempbot
         //goHome();
@@ -225,6 +224,11 @@ public class Explorer {
     	goHome();
     }
     
+    
+    private void checkItOut(Cell cell){
+    	//1. use short range sensors to check out cell. (f/r)
+    	//2. 
+    }
     
     
     private void quadrant()
@@ -577,7 +581,7 @@ public class Explorer {
     	bot.setSensors();
     	System.out.println("sensor set: Explorer.java, L578");
     	try {
-			Thread.sleep(1000);
+			Thread.sleep(5);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

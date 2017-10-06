@@ -60,7 +60,7 @@ public class Gridder extends JFrame {
 	{
 		return this.grid;
 	}
-	
+	//Check if coordinate is inside the map
     public boolean coordinate_validator(int row, int col) 
     {
         return row >= 0 && col >= 0 && row < MapConstant.MAP_X && col < MapConstant.MAP_Y;

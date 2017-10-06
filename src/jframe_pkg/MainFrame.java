@@ -90,7 +90,7 @@ public class MainFrame extends JFrame {
 	private static int coverageLimit = 300; // TODO: coverage limit
 
 	private static final CommMgr comm = CommMgr.getCommMgr();
-	private static final boolean realRun = true;
+	private static final boolean realRun = false;
 
 	private static boolean auto_mode = false; // auto mode false = manual, can
 	// use keystroke to move
@@ -101,9 +101,8 @@ public class MainFrame extends JFrame {
 
 		if (realRun) {
 			try {
-				comm.setUpConnection("192.168.15.15", 1515); // ip address and
+				comm.setUpConnection("192.168.2.1", 8088); // ip address and
 															// port on rpi3
-				//comm.sendMsg("hello");
 			} catch (UnknownHostException e) {
 				// Auto-generated catch block
 				e.printStackTrace();
@@ -206,7 +205,7 @@ public class MainFrame extends JFrame {
 		addLoadMapButton();
 		addTimerPanel();
 		addResetButton();
-		//addSendMsgButton();
+		addSendMsgButton();
 	}
 
 	private static void formatButton(JButton btn) {
@@ -587,7 +586,7 @@ public class MainFrame extends JFrame {
 
 				if (realRun) {
 					while (true) {
-						
+
 						System.out.println("Waiting for FP_START...");
 						info.append("Waiting for FP_START...\n");
 						String msg = comm.revMsg();
@@ -636,29 +635,15 @@ public class MainFrame extends JFrame {
 
 				bot.setRobotPos(row, col);
 				// e_Mapper.repaint();
-				e_Mapper.repaint();
+				r_Mapper.repaint();
 
 				exploration = new Explorer(e_Mapper, r_Mapper, bot, coverageLimit, timeLimit);
 				// exploration.setMonitorScreen(info);
 				// exploration.setTimer(timer);
 
 				if (realRun) {
-					System.out.println("im in realrun");
 					CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
 				}
-				
-				/**
-				if (realRun) {
-					while (true) {
-						
-						System.out.println("Waiting for FP_START...");
-						info.append("Waiting for FP_START...\n");
-						String msg = comm.revMsg();
-						if (msg.equals(CommMgr.FP_START))
-							break;
-					}
-				}
-				 **/
 
 				exploration.runExploration();
 				generateMapDescriptor(e_Mapper);
@@ -771,14 +756,6 @@ public class MainFrame extends JFrame {
 				int state = itemEvent.getStateChange();
 				if (state == ItemEvent.SELECTED) {
 					System.out.println("Auto Mode On"); // show your message here
-					
-					info.append("Starting exploration...\n");
-					CardLayout cl = ((CardLayout) _mapCards.getLayout());
-					cl.show(_mapCards, "EXPLORATION");
-					//cl.show(_mapCards, "REAL_MAP");
-					timer.start();// start timer
-					new Exploration().execute();
-					
 					info.append("Auto Mode On\n");
 					auto_mode = true; // if auto mode on
 					autoBtn.setText("Auto: ON");

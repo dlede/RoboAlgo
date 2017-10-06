@@ -1,6 +1,9 @@
 package jframe_pkg.algorithm;
 
+import java.util.ArrayList;
+
 import jframe_pkg.map.Cell;
+import jframe_pkg.map.Gridder;
 import jframe_pkg.map.Mapper;
 import jframe_pkg.map.MapConstant;
 import jframe_pkg.robot.Robot;
@@ -155,6 +158,8 @@ public class Explorer {
             }
         }while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
        //explorationInnerLoop();
+        Cell temp = exMap.gridder.getCell(3, 9);
+        checkItOut(temp);
         
         //TODO gohome() have an issue, cannot go home, check Sprinter class on the tempbot
         //goHome();
@@ -225,11 +230,48 @@ public class Explorer {
     }
     
     
-    private void checkItOut(Cell cell){
+    private void checkItOut(Cell unexplored){
+    	System.out.println("check it out");
     	//1. use short range sensors to check out cell. (f/r)
-    	//2. 
+    	//2. each obstacle will have a border of grid cells that the robot can sense the unexplored grid from
+    	//3. we just need to find a grid cell X to go to and a position to face, to detect whats at that unexplored grid
+    		//Conditions to pick this cell: 1) Must be free to go, 2) Shortest distance from current pos? maybe. lol. find first. 
+    	//4. Get the robot to go to that cell X. 
+    	ArrayList<Cell> possiblePositions = possibleSensingPositions(unexplored);
+    	Cell center = possiblePositions.get(0);
+    	bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
+    	bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
+    	Sprinter SprinterObject = new Sprinter(exMap, bot);
+    	SprinterObject.runFastestPath(center.get_x(), center.get_y());
+    	bot.move(MOVEMENT.RIGHT);
+    	senseAndRepaint();
+    	//after moving object to specified cell, need to make it face north.
+    	//
+    	
     }
     
+    private ArrayList<Cell> possibleSensingPositions(Cell unexplored){
+    	System.out.println("possibleSensingPositions");
+    	ArrayList<Cell> resultArray = new ArrayList<>();
+    	int x = unexplored.get_x();
+    	int y = unexplored.get_y();
+    	
+    	//Possible sensing positions comes from set of all possible explored boxes. Find them
+    	
+    	//lets just start with 3 away, face north to check out box
+    	//Temp method to get 3 possible positions to check out unexplored box
+    	//Should also check if cell is obstacle/virtualwall/
+    	Gridder gridderObject = exMap.gridder;
+    	Cell[][] gridMap = gridderObject.get_Grid();
+    	Cell centerNorth = gridMap[y-4][x];
+    	Cell leftNorth = gridMap[y-3][x-1];
+    	Cell rightNorth = gridMap[y-3][x+1];
+    	resultArray.add(centerNorth);
+    	resultArray.add(leftNorth);
+    	resultArray.add(rightNorth);
+    	
+    	return resultArray;
+    }
     
     private void quadrant()
     {

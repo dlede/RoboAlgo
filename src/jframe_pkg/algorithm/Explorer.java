@@ -45,44 +45,79 @@ public class Explorer {
      * Main method that is called to start the exploration.
      */
     public void runExploration() {
-        if (bot.getRealBot()) {
+       
+    	if (bot.getRealBot()) {
             System.out.println("Starting calibration...");
 
-            CommMgr.getCommMgr().revMsg();
+         
+            //CommMgr.getCommMgr().revMsg();
             if (bot.getRealBot()) {
                 bot.move(MOVEMENT.LEFT, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.CALIBRATE, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.LEFT, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.CALIBRATE, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.RIGHT, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.CALIBRATE, false);
-                CommMgr.getCommMgr().revMsg();
+                //CommMgr.getCommMgr().revMsg();
                 bot.move(MOVEMENT.RIGHT, false);
             }
 
             while (true) {
                 System.out.println("Waiting for EX_START...");
                 String msg = CommMgr.getCommMgr().revMsg();
-                String[] msgArr = msg.split(";");
-                if (msgArr[0].equals(CommMgr.EX_START)) break;
+                
+                System.out.println("msg: " + msg);
+                System.out.println("def: " + CommMgr.EX_START);
+                //String[] msgArr = msg.split(";");
+                //System.out.println("?????");
+                /*Class cls = msg.getClass();
+                Class cls2 = (CommMgr.EX_START).getClass();
+                System.out.println("msg type: " + cls.getName());
+                System.out.println("def type: " + cls2.getName());
+                
+                System.out.println("msg bytes: " + msg.getBytes());
+                System.out.println("def bytes: " + (CommMgr.EX_START).getBytes());
+                
+                System.out.println("truth: " + ((String)msg == "EX_START"));
+                System.out.println("truth2: " + (msg.equals(CommMgr.EX_START)));*/
+                
+               /* if ((String)msg == "EX_START") 
+                {
+                	System.out.println("im here1");
+                	//break;
+                }*/
+                
+                if (msg.equals(CommMgr.EX_START)) 
+                {
+                	System.out.println("im here2: Explorer.java, L97");
+                	break;
+                }
+                	
             }
+            
         }
 
         System.out.println("Starting exploration...");
         startTime = System.currentTimeMillis();
         endTime = startTime + (timeLimit * 1000);
 
+        System.out.println("timer start: Explorer.java, L109");
+        
         if (bot.getRealBot()) {
             //CommMgr.getCommMgr().sendMsg(null, CommMgr.BOT_START);
         	CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
         }
         
+        System.out.println("realbot send bot started: Explorer.java, L116");
+        
         senseAndRepaint();
+        
+        System.out.println("sense and repainted: Explorer.java, L120");
 
         areaExplored = calculateAreaExplored();
         // Here is moved
@@ -132,7 +167,7 @@ public class Explorer {
     {
     	if(areaExplored < 300) // if_outerloopcleared
     	{
-    		System.out.println("I'm in, before NextStartPoint");
+    		System.out.println("I'm in, before NextStartPoint: Explorer.java, L170");
 	    	//Fastest to next possible start point
 	    	goNextStartPoint();
 	    	
@@ -307,12 +342,12 @@ public class Explorer {
      */
     private void goHome() {
         if (!bot.getTouchedGoal() && coverageLimit == 300 && timeLimit == 3600) {
-        	System.out.println("In goHome() of ExplorationAlgo first loop");
+        	System.out.println("In goHome() of ExplorationAlgo first loop: Explorer.java, L345");
             Sprinter goToGoal = new Sprinter(exMap, bot, realMap);
             goToGoal.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
         }
         
-        System.out.println("In goHome() of ExplorationAlgo second loop");
+        System.out.println("In goHome() of ExplorationAlgo second loop: Explorer.java, L350");
         Sprinter returnToStart = new Sprinter(exMap, bot, realMap);
         returnToStart.runFastestPath(RobotConstants.START_ROW, RobotConstants.START_COL);
 
@@ -346,11 +381,11 @@ public class Explorer {
     	
         if (!bot.getTouchedGoal() && coverageLimit == 300 && timeLimit == 3600)
         {
-        	System.out.println("In goNextStartPoint() of ExplorationAlgo first loop");
+        	System.out.println("In goNextStartPoint() of ExplorationAlgo first loop: Explorer.java, L384");
             Sprinter goToGoal = new Sprinter(exMap, bot);
             goToGoal.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL); // run fastest path if 
         }
-        System.out.println("In goNextStartPoint() of ExplorationAlgo second loop");
+        System.out.println("In goNextStartPoint() of ExplorationAlgo second loop: Explorer.java, L388");
         
         returnToStart = new Sprinter(exMap, bot, realMap);//, realMap
         returnToStart.runFastestPath(exMap.gridder.temp_row, exMap.gridder.temp_col);
@@ -495,42 +530,62 @@ public class Explorer {
      * Moves the bot, repaints the map and calls senseAndRepaint().
      */
     private void moveBot(MOVEMENT m) {
+    	System.out.println("bot moved");
         bot.move(m);
         exMap.repaint();
+        System.out.println("exMap repainted");
         if (m != MOVEMENT.CALIBRATE) {
             senseAndRepaint();
+            System.out.println("senseAndRepaint");
         } else {
+        	System.out.println("am i trying to recieve message??: Explorer.java, L541");
             CommMgr commMgr = CommMgr.getCommMgr();
+            
             commMgr.revMsg();
+            System.out.println("recieved message: Explorer.java, L545");
         }
 
         if (bot.getRealBot() && !calibrationMode) {
             calibrationMode = true;
 
             if (canCalibrateOnTheSpot(bot.getRobotCurDir())) {
+            	System.out.println("last calibrate=0: Explorer.java, L552");
                 lastCalibrate = 0;
                 moveBot(MOVEMENT.CALIBRATE);
             } else {
+            	System.out.println("last calibrate++: Explorer.java, L556");
                 lastCalibrate++;
                 if (lastCalibrate >= 5) {
+                	System.out.println("lastCalibrate >= 5: Explorer.java, L559");
                     DIRECTION targetDir = getCalibrationDirection();
                     if (targetDir != null) {
                         lastCalibrate = 0;
+                        System.out.println("reset Calibrate Counter: Explorer.java, L563");
                         calibrateBot(targetDir);
                     }
                 }
             }
             calibrationMode = false;
         }
+        System.out.println("out of movebot(): Explorer.java, L571");
     }
 
     /**
      * Sets the bot's sensors, processes the sensor data and repaints the map.
      */
     private void senseAndRepaint() {
-        bot.setSensors();
+    	bot.setSensors();
+    	System.out.println("sensor set: Explorer.java, L578");
+    	try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         bot.sense(exMap, realMap);
+        System.out.println("realbot sensing: Explorer.java, L586");
         exMap.repaint();
+        System.out.println("repainted: Explorer.java, L588");
     }
 
     /**
@@ -539,7 +594,8 @@ public class Explorer {
     private boolean canCalibrateOnTheSpot(DIRECTION botDir) {
         int row = bot.getRobotPosRow();
         int col = bot.getRobotPosCol();
-
+        System.out.println("in calbrating on the spot: Explorer.java, L597");
+        System.out.println("botDir: " + botDir);
         switch (botDir) {
             case NORTH:
                 return exMap.gridder.getIsObstacleOrWall(row + 2, col - 1) && exMap.gridder.getIsObstacleOrWall(row + 2, col) && exMap.gridder.getIsObstacleOrWall(row + 2, col + 1);
@@ -551,6 +607,7 @@ public class Explorer {
                 return exMap.gridder.getIsObstacleOrWall(row + 1, col - 2) && exMap.gridder.getIsObstacleOrWall(row, col - 2) && exMap.gridder.getIsObstacleOrWall(row - 1, col - 2);
         }
 
+        System.out.println("done calibrating on the spot: Explorer.java, L610");
         return false;
     }
 
@@ -562,13 +619,25 @@ public class Explorer {
         DIRECTION dirToCheck;
 
         dirToCheck = DIRECTION.getNext(origDir);                    // right turn
-        if (canCalibrateOnTheSpot(dirToCheck)) return dirToCheck;
+        if (canCalibrateOnTheSpot(dirToCheck)) 
+    	{
+        	System.out.println("calibrate direction: in case of Right turn: Explorer.java, L624");
+    		return dirToCheck;
+    	}
 
         dirToCheck = DIRECTION.getPrevious(origDir);                // left turn
-        if (canCalibrateOnTheSpot(dirToCheck)) return dirToCheck;
+        if (canCalibrateOnTheSpot(dirToCheck)) 
+    	{
+        	System.out.println("calibrate direction: in case of Left turn: Explorer.java, L631");
+    		return dirToCheck;
+    	}
 
         dirToCheck = DIRECTION.getPrevious(dirToCheck);             // u turn
-        if (canCalibrateOnTheSpot(dirToCheck)) return dirToCheck;
+        if (canCalibrateOnTheSpot(dirToCheck)) 
+    	{
+        	System.out.println("calibrate direction: in case of U turn: Explorer.java, L638");
+    		return dirToCheck;
+    	}
 
         return null;
     }

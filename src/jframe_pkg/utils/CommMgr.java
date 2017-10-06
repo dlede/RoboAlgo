@@ -69,21 +69,58 @@ public class CommMgr {
 	//receive msg from RPI
 	public String revMsg(){
 		
+		/*try {
+			String txtFromRPI = null;
+			
+			if (txtFromRPI == null)
+			{
+				System.out.println("null1");
+			}
+			
+			txtFromRPI = fromRPi.readLine(); // read the text from RPI
+			
+			if (txtFromRPI == null)
+			{
+				System.out.println("null2");
+			}
+			
+			Class cls = txtFromRPI.getClass();
+            //Class cls2 = (CommMgr.EX_START).getClass();
+            System.out.println("txtFromRPI type: " + cls.getName());
+            //System.out.println("def type: " + cls2.getName());
+			
+		    System.out.println("Msg from pi: " + txtFromRPI);
+		    
+		   
+			if (!txtFromRPI.isEmpty() && txtFromRPI != null) {
+				System.out.println("Message from RPI: " + txtFromRPI);
+				return txtFromRPI.trim();
+			}
+			else 
+			{
+				System.out.println("null");
+			}*/
+
+		while (true) {
 		try {
 			String txtFromRPI = null;
-			txtFromRPI = fromRPi.readLine(); // read the text from RPI
-
-			if (txtFromRPI != null) {
-				//System.out.println("Message from RPI: " + txtFromRPI);
+			txtFromRPI = fromRPi.readLine().trim(); // read the text from RPI
+		
+			if (!txtFromRPI.isEmpty()) {
+				txtFromRPI = txtFromRPI.trim();
+				System.out.println("Message from RPI: " + txtFromRPI);
 				return txtFromRPI;
 			}
 
+		
+		
+		
 		} catch (Exception ex) {
 			Thread t = Thread.currentThread();
 			t.getUncaughtExceptionHandler().uncaughtException(t, ex);
 		}
-		
-		return null;
+			}
+		//return null;
 		
 	}
 	

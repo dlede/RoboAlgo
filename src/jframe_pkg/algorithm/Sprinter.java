@@ -7,6 +7,7 @@ import jframe_pkg.robot.Robot;
 import jframe_pkg.robot.RobotConstants;
 import jframe_pkg.robot.RobotConstants.DIRECTION;
 import jframe_pkg.robot.RobotConstants.MOVEMENT;
+import jframe_pkg.utils.CommMgr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -387,6 +388,8 @@ public class Sprinter {
         }
 
         System.out.println("\nMovements: " + outputString.toString());
+        //TODO: 
+        CommMgr.getCommMgr().sendMsg("FP,"+outputString.toString());
         return outputString.toString();
     }
 

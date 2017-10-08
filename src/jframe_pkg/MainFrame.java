@@ -89,10 +89,10 @@ public class MainFrame extends JFrame {
 	public static boolean map_Clear = false; // if both explore and sprint is cleared, can do next map
 
 	private static int timeLimit = 3600; // TODO: time limit
-	private static int coverageLimit = 150; // TODO: coverage limit
+	private static int coverageLimit = 300; // TODO: coverage limit
 
 	private static final CommMgr comm = CommMgr.getCommMgr();
-	private static final boolean realRun = true;
+	private static final boolean realRun = false;
 
 	private static boolean auto_mode = false; // auto mode false = manual, can
 	// use keystroke to move

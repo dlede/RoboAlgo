@@ -52,6 +52,7 @@ public class Robot {
 	public int front_average = 0;
 	public int right_average = 0;
 	private MOVEMENT prev_mov;
+	private int fwdblock_count = 0;
 
     public Robot(int row, int col, boolean realBot) {
         posRow = row;
@@ -218,6 +219,11 @@ public class Robot {
         updateTouchedGoal();
     }
 
+    public void setfwdblock_count(int fwd)
+    {
+    	this.fwdblock_count = fwd;
+    }
+    
     /**
      * Overloaded method that calls this.move(MOVEMENT m, boolean sendMoveToAndroid = true).
      */
@@ -287,7 +293,15 @@ public class Robot {
     	
     	prev_mov = m;
     	
-    	comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
+    	//TODO: need to test this out, multiple movement out
+    	if (m == MOVEMENT.FORWARD_M)
+    	{
+    		comm.sendMsg(String.valueOf(MOVEMENT.print(m))+","+fwdblock_count);
+    	}
+    	else
+    	{
+    		comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
+    	}
 
     	//comm.sendMsg("R");
     	try {
@@ -441,8 +455,55 @@ public class Robot {
             }
             //if (result[])
             
-            front_average = averageSense((result[0] + result[1] + result[2])/3);
-            right_average = averageSense((result[3] + result[4]/2));
+            //TODO: if 1 of the short sensors in any directions have a high number, as high as 50, means no block detected, so average will be inaccurate
+            //TODO: reduce the else if...
+            if (result[0] > 50 || result[1] > 50 || result[2] > 50 )
+            {
+            	if (result[0] > 50 && result[1] > 50) 
+            	{
+            		front_average = averageSense(result[2]);
+            	}
+            	else if (result[1] > 50 && result[2] > 50)
+            	{
+            		front_average = averageSense(result[0]);
+            	}
+            	else if (result[0] > 50 && result[2] > 50)
+            	{
+            		front_average = averageSense(result[1]);
+            	}
+            	else if (result[0] > 50)
+            	{
+            		front_average = averageSense((result[1] + result[2])/2);
+            	}
+            	else if (result[1] > 50)
+            	{
+            		front_average = averageSense((result[0] + result[2])/2);
+            	}
+            	else //result[2] > 50
+            	{
+            		front_average = averageSense((result[1] + result[0])/2);
+            	}
+            }
+            else
+            {
+            	front_average = averageSense((result[0] + result[1] + result[2])/3);
+            }
+            
+            if (result[3] > 50 || result[4] > 50)
+            {
+            	if (result[3] > 50)
+            	{
+            		right_average = averageSense(result[4]);
+            	}
+            	else
+            	{
+            		right_average = averageSense(result[3]);
+            	}
+            }
+            else
+            {
+            	right_average = averageSense((result[3] + result[4]/2));
+            }
             
             /*result[0] = Integer.parseInt((msgArr[0].split("."))[0]);
             result[1] = Integer.parseInt((msgArr[1].split("."))[0]);

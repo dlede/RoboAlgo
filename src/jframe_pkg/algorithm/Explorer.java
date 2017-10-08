@@ -200,25 +200,19 @@ public class Explorer {
 
             if (bot.getRobotPosRow() == r && bot.getRobotPosCol() == c) { 
             	System.out.println("back at starting point");
-                if (areaExplored >= 50) { // if 100 cells coverage
-                	System.out.println("covered breaker ");
-                	//goHome();
+                if (areaExplored >= 200) { // if x amount of cells coverage
+                	//System.out.println("covered breaker ");
+                	System.out.println("going home");
+                	goHome();
                     break;
                 }
-                /**else
-                {
-                	counter++;
-                	
-                	System.out.println("Counter: " +counter);
-                	explorationLoop(r+3, c+3);
-                }**/
             }
         }
         while (areaExplored <= coverageLimit && System.currentTimeMillis() <= endTime);
         //explorationInnerLoop();
         
         //TODO gohome() have an issue, cannot go home, check Sprinter class on the tempbot
-        System.out.println("going home");
+        //System.out.println("going home");
         goHome();   
     }
     
@@ -296,10 +290,39 @@ public class Explorer {
     /**
      * Determines the next move for the robot and executes it accordingly.
      */
-    private void nextMove() {
+    private void nextMove() { //fwdblock_count
         if (lookRight()) {
             moveBot(MOVEMENT.RIGHT);
-        	if (bot.front_average > 5) 
+            if (bot.front_average < 5) 
+            {
+            	this.bot.setfwdblock_count(1);
+            	moveBot(MOVEMENT.FORWARD);
+            }
+            else
+            {
+            	//TODO: need to change something based on the average
+            	if (bot.front_average > 6) // move 4 steps
+            	{
+            		this.bot.setfwdblock_count(4);
+            		System.out.println("moving 4 steps");
+            		moveBot(MOVEMENT.FORWARD_M);
+            	}
+            	else if (bot.front_average > 5) // move 3 steps
+            	{
+            		this.bot.setfwdblock_count(3);
+            		System.out.println("moving 3 steps");
+            		moveBot(MOVEMENT.FORWARD_M);
+            	}
+            	else if (bot.front_average > 4) // move 2 steps
+            	{
+            		this.bot.setfwdblock_count(2);
+            		System.out.println("moving 2 steps");
+            		moveBot(MOVEMENT.FORWARD_M);
+            	}
+            }
+            
+            
+        	/*if (bot.front_average > 5) 
         	{
         		System.out.println("moving multiple");
         		moveBot(MOVEMENT.FORWARD_M);
@@ -307,7 +330,7 @@ public class Explorer {
         	else
         	{
         		moveBot(MOVEMENT.FORWARD);
-        	}
+        	}*/
         } else if (lookForward()) {
         	if (bot.front_average > 5) 
         	{

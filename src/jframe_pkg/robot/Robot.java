@@ -67,7 +67,7 @@ public class Robot {
         SRFrontLeft = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol - 1, this.robotDir, "SRFL");
         SRFrontCenter = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol, this.robotDir, "SRFC");
         SRFrontRight = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol + 1, this.robotDir, "SRFR");
-        LRLeft = new Sensor(RobotConstants.SENSOR_LONG_RANGE_L, RobotConstants.SENSOR_LONG_RANGE_H, this.posRow, this.posCol - 1, findNewDirection(MOVEMENT.LEFT), "LRL");
+        LRLeft = new Sensor(RobotConstants.SENSOR_LONG_RANGE_L, RobotConstants.SENSOR_LONG_RANGE_H, this.posRow+1, this.posCol - 1, findNewDirection(MOVEMENT.LEFT), "LRL");
         // added
         SRRight = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT), "SRR");
         SRRight2 = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT), "SRR2");
@@ -312,44 +312,51 @@ public class Robot {
     	System.out.println("set Sensors, directions: " + robotDir + ": Robot.java, L284");
         switch (robotDir) {
         
-            case NORTH:
-                SRFrontLeft.setSensor(this.posRow + 1, this.posCol - 1, this.robotDir);
-                SRFrontCenter.setSensor(this.posRow + 1, this.posCol, this.robotDir);
-                SRFrontRight.setSensor(this.posRow + 1, this.posCol + 1, this.robotDir);
-                LRLeft.setSensor(this.posRow, this.posCol - 1, findNewDirection(MOVEMENT.LEFT));
-                //
-                SRRight.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
-                SRRight2.setSensor(this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
-                break;
-            case EAST:
-                SRFrontLeft.setSensor(this.posRow + 1, this.posCol + 1, this.robotDir);
-                SRFrontCenter.setSensor(this.posRow, this.posCol + 1, this.robotDir);
-                SRFrontRight.setSensor(this.posRow - 1, this.posCol + 1, this.robotDir);
-                LRLeft.setSensor(this.posRow + 1, this.posCol, findNewDirection(MOVEMENT.LEFT));
-                //
-                SRRight.setSensor(this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
-                SRRight2.setSensor(this.posRow - 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
+        case NORTH:
+        	
+        	SRFrontLeft.setSensor(this.posRow + 1, this.posCol - 1, this.robotDir);
+            
+            SRFrontCenter.setSensor(this.posRow + 1, this.posCol, this.robotDir);
+            
+            SRFrontRight.setSensor(this.posRow + 1, this.posCol + 1, this.robotDir);
+            
+            LRLeft.setSensor(this.posRow + 1, this.posCol - 1, findNewDirection(MOVEMENT.LEFT));
+            //
+            SRRight.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
+            
+            SRRight2.setSensor(this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
+            break;
+            
+        case EAST:
+            SRFrontLeft.setSensor(this.posRow + 1, this.posCol + 1, this.robotDir);
+            SRFrontCenter.setSensor(this.posRow, this.posCol + 1, this.robotDir);
+            SRFrontRight.setSensor(this.posRow - 1, this.posCol + 1, this.robotDir);
+            LRLeft.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.LEFT));
+            //
+            SRRight.setSensor(this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRight2.setSensor(this.posRow - 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
 
-                break;
-            case SOUTH:
-                SRFrontLeft.setSensor(this.posRow - 1, this.posCol + 1, this.robotDir);
-                SRFrontCenter.setSensor(this.posRow - 1, this.posCol, this.robotDir);
-                SRFrontRight.setSensor(this.posRow - 1, this.posCol - 1, this.robotDir);
-                LRLeft.setSensor(this.posRow, this.posCol + 1, findNewDirection(MOVEMENT.LEFT));
-                //
-                SRRight.setSensor(this.posRow - 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
-                SRRight2.setSensor(this.posRow + 1 , this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
-                break;
-                
-            case WEST:
-                SRFrontLeft.setSensor(this.posRow - 1, this.posCol - 1, this.robotDir);
-                SRFrontCenter.setSensor(this.posRow, this.posCol - 1, this.robotDir);
-                SRFrontRight.setSensor(this.posRow + 1, this.posCol - 1, this.robotDir);
-                LRLeft.setSensor(this.posRow - 1, this.posCol, findNewDirection(MOVEMENT.LEFT));
-                //
-                SRRight.setSensor(this.posRow + 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
-                SRRight2.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
-                break;
+            break;
+            
+        case SOUTH:
+            SRFrontLeft.setSensor(this.posRow - 1, this.posCol + 1, this.robotDir);
+            SRFrontCenter.setSensor(this.posRow - 1, this.posCol, this.robotDir);
+            SRFrontRight.setSensor(this.posRow - 1, this.posCol - 1, this.robotDir);
+            LRLeft.setSensor(this.posRow+1, this.posCol, findNewDirection(MOVEMENT.LEFT));
+            //
+            SRRight.setSensor(this.posRow - 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRight2.setSensor(this.posRow + 1 , this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
+            break;
+            
+        case WEST:
+            SRFrontLeft.setSensor(this.posRow - 1, this.posCol - 1, this.robotDir);
+            SRFrontCenter.setSensor(this.posRow, this.posCol - 1, this.robotDir);
+            SRFrontRight.setSensor(this.posRow + 1, this.posCol - 1, this.robotDir);
+            LRLeft.setSensor(this.posRow - 1, this.posCol - 1, findNewDirection(MOVEMENT.LEFT));
+            //
+            SRRight.setSensor(this.posRow + 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRight2.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
+            break;
         }
        
 

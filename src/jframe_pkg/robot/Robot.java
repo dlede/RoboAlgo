@@ -52,7 +52,7 @@ public class Robot {
 	public int front_average = 0;
 	public int right_average = 0;
 	private MOVEMENT prev_mov;
-	private int fwdblock_count = 0;
+	private int fwdblock_count;
 
     public Robot(int row, int col, boolean realBot) {
         posRow = row;
@@ -68,10 +68,10 @@ public class Robot {
         SRFrontLeft = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol - 1, this.robotDir, "SRFL");
         SRFrontCenter = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol, this.robotDir, "SRFC");
         SRFrontRight = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol + 1, this.robotDir, "SRFR");
-        LRLeft = new Sensor(RobotConstants.SENSOR_LONG_RANGE_L, RobotConstants.SENSOR_LONG_RANGE_H, this.posRow+1, this.posCol - 1, findNewDirection(MOVEMENT.LEFT), "LRL");
+        LRLeft = new Sensor(RobotConstants.SENSOR_LONG_RANGE_L, RobotConstants.SENSOR_LONG_RANGE_H, this.posRow+1, this.posCol + 1, findNewDirection(MOVEMENT.LEFT), "LRL");
         // added
-        SRRight = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT), "SRR");
-        SRRight2 = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT), "SRR2");
+        SRRight2 = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT), "SRR");
+        SRRight = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT), "SRR2");
         
     }
 
@@ -141,24 +141,125 @@ public class Robot {
                 System.out.println("Something went wrong in Robot.move()!");
             }
         }
+        
+        System.out.println("\n\nDebug statement - Robot.java fwdblock_count: " + fwdblock_count);
 
         switch (m) {
+	        case FORWARD_M:
+	        	switch (robotDir) {
+	        
+	            case NORTH:
+	                posRow+=1;
+	                break;
+	            case EAST:
+	                posCol+=1;
+	                break;
+	            case SOUTH:
+	                posRow-=1;
+	                break;
+	            case WEST:
+	                posCol-=1;
+	                break;
+	        }
+	        break;
+        	
+        /*
         	case FORWARD_M:
         		switch (robotDir) {
                 case NORTH:
-                    posRow += 3;
+                	
+                	if(this.fwdblock_count == 2)
+					{
+                		posRow += 2;
+                		//setfwdblock_count(0);
+					}
+                	else if (this.fwdblock_count == 3)
+                	{
+                		posRow += 3;
+                		//setfwdblock_count(0);
+                	}
+                	else if (this.fwdblock_count == 4)
+                	{
+                		posRow += 4;
+                		//setfwdblock_count(0);
+                	}
+                	else
+                	{
+                		posRow += 1;
+                		//setfwdblock_count(0);
+                	}
                     break;
                 case EAST:
-                    posCol += 3;
+                	if(this.fwdblock_count == 2)
+					{
+                		posCol += 2;
+                		//setfwdblock_count(0);
+					}
+                	else if (this.fwdblock_count == 3)
+                	{
+                		posCol += 3;
+                		//setfwdblock_count(0);
+                	}
+                	else if (this.fwdblock_count == 4)
+                	{
+                		posCol += 4;
+                		//setfwdblock_count(0);
+                	}
+                	else
+                	{
+                		posCol += 1;
+                		//setfwdblock_count(0);
+                	}
                     break;
+                	
                 case SOUTH:
-                    posRow -= 3;
+                	if(this.fwdblock_count == 2)
+					{
+                		posRow -= 2;
+                		//setfwdblock_count(0);
+					}
+                	else if (this.fwdblock_count == 3)
+                	{
+                		posRow -= 3;
+                		//setfwdblock_count(0);
+                	}
+                	else if (this.fwdblock_count == 4)
+                	{
+                		posRow -= 4;
+                		//setfwdblock_count(0);
+                	}
+                	else
+                	{
+                		posRow -= 1;
+                		//setfwdblock_count(0);
+                	}
                     break;
+                	
                 case WEST:
-                    posCol -= 3;
+                	if(this.fwdblock_count == 2)
+					{
+                		posCol -= 2;
+                		//setfwdblock_count(0);
+					}
+                	else if (this.fwdblock_count == 3)
+                	{
+                		posCol -= 3;
+                		//setfwdblock_count(0);
+                	}
+                	else if (this.fwdblock_count == 4)
+                	{
+                		posCol -= 4;
+                		//setfwdblock_count(0);
+                	}
+                	else
+                	{
+                		posCol -= 1;
+                		//setfwdblock_count(0);
+                	}
                     break;
+                	                	
 	            }
-	            break;
+	            break;*/
             case FORWARD:
                 switch (robotDir) {
                     case NORTH:
@@ -206,7 +307,10 @@ public class Robot {
         }
 
         if (realBot) 
+        {
         	sendMovement(m, sendMoveToAndroid);
+        	CommMgr.getCommMgr().revMsg();
+        }
         else 
         	System.out.println("Move: " + MOVEMENT.print(m));
         	
@@ -222,7 +326,13 @@ public class Robot {
     public void setfwdblock_count(int fwd)
     {
     	this.fwdblock_count = fwd;
+    	System.out.println("fwdblock_count: " + fwdblock_count);
     }
+    
+    /*public void getfwdblock_count()
+    {
+    	return this.bot.fwdblock_count;
+    }*/
     
     /**
      * Overloaded method that calls this.move(MOVEMENT m, boolean sendMoveToAndroid = true).
@@ -292,11 +402,22 @@ public class Robot {
         //comm.sendMsg(MOVEMENT.print(m) + "" + CommMgr.INSTRUCTIONS);
     	
     	prev_mov = m;
-    	
+    	System.out.println("moving Robot.java sendMovement" + this.fwdblock_count + " steps");
     	//TODO: need to test this out, multiple movement out
     	if (m == MOVEMENT.FORWARD_M)
     	{
-    		comm.sendMsg(String.valueOf(MOVEMENT.print(m))+","+fwdblock_count);
+    		/*
+    		if (fwdblock_count == 0 || fwdblock_count == 1)
+    		{
+    			comm.sendMsg(String.valueOf(MOVEMENT.print(m))+",1");
+    		}
+    		else
+    		{
+    			System.out.println("moving " + this.fwdblock_count + " steps");
+    			comm.sendMsg(String.valueOf(MOVEMENT.print(m))+","+this.fwdblock_count);
+    		}*/
+    		//comm.sendMsg(String.valueOf(MOVEMENT.print(m))+",1");
+    		comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
     	}
     	else
     	{
@@ -329,26 +450,23 @@ public class Robot {
         case NORTH:
         	
         	SRFrontLeft.setSensor(this.posRow + 1, this.posCol - 1, this.robotDir);
-            
             SRFrontCenter.setSensor(this.posRow + 1, this.posCol, this.robotDir);
-            
             SRFrontRight.setSensor(this.posRow + 1, this.posCol + 1, this.robotDir);
             
-            LRLeft.setSensor(this.posRow + 1, this.posCol - 1, findNewDirection(MOVEMENT.LEFT));
+            LRLeft.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.LEFT));
             //
-            SRRight.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
-            
-            SRRight2.setSensor(this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRight2.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRight.setSensor(this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
             break;
             
         case EAST:
             SRFrontLeft.setSensor(this.posRow + 1, this.posCol + 1, this.robotDir);
             SRFrontCenter.setSensor(this.posRow, this.posCol + 1, this.robotDir);
             SRFrontRight.setSensor(this.posRow - 1, this.posCol + 1, this.robotDir);
-            LRLeft.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.LEFT));
+            LRLeft.setSensor(this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.LEFT));
             //
-            SRRight.setSensor(this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
-            SRRight2.setSensor(this.posRow - 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRight2.setSensor(this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRight.setSensor(this.posRow - 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
 
             break;
             
@@ -356,20 +474,20 @@ public class Robot {
             SRFrontLeft.setSensor(this.posRow - 1, this.posCol + 1, this.robotDir);
             SRFrontCenter.setSensor(this.posRow - 1, this.posCol, this.robotDir);
             SRFrontRight.setSensor(this.posRow - 1, this.posCol - 1, this.robotDir);
-            LRLeft.setSensor(this.posRow+1, this.posCol, findNewDirection(MOVEMENT.LEFT));
+            LRLeft.setSensor(this.posRow-1, this.posCol-1, findNewDirection(MOVEMENT.LEFT));
             //
-            SRRight.setSensor(this.posRow - 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
-            SRRight2.setSensor(this.posRow + 1 , this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRight2.setSensor(this.posRow - 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRight.setSensor(this.posRow + 1 , this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
             break;
             
         case WEST:
             SRFrontLeft.setSensor(this.posRow - 1, this.posCol - 1, this.robotDir);
             SRFrontCenter.setSensor(this.posRow, this.posCol - 1, this.robotDir);
             SRFrontRight.setSensor(this.posRow + 1, this.posCol - 1, this.robotDir);
-            LRLeft.setSensor(this.posRow - 1, this.posCol - 1, findNewDirection(MOVEMENT.LEFT));
+            LRLeft.setSensor(this.posRow + 1, this.posCol - 1, findNewDirection(MOVEMENT.LEFT));
             //
-            SRRight.setSensor(this.posRow + 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
-            SRRight2.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRight2.setSensor(this.posRow + 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRight.setSensor(this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
             break;
         }
        
@@ -401,7 +519,7 @@ public class Robot {
             result[1] = SRFrontCenter.sense(explorationMap, realMap);
             result[2] = SRFrontRight.sense(explorationMap, realMap);
             result[3] = SRRight.sense(explorationMap, realMap); // LRLeft.sense(explorationMap, realMap); 
-            result[4] = SRRight.sense(explorationMap, realMap); // SRRight.sense(explorationMap, realMap);
+            result[4] = SRRight2.sense(explorationMap, realMap); // SRRight.sense(explorationMap, realMap);
             result[5] = LRLeft.sense(explorationMap, realMap); // SRRight2.sense(explorationMap, realMap);
         } 
         // commMgr not needed now, sensereal is for real, sense if for simulation only
@@ -442,9 +560,9 @@ public class Robot {
             result[0] = (int)(Math.floor(Double.parseDouble(msgArr[0])));
             result[1] = (int)(Math.floor(Double.parseDouble(msgArr[1])));
             result[2] = (int)(Math.floor(Double.parseDouble(msgArr[2])));
-            result[3] = (int)(Math.floor(Double.parseDouble(msgArr[3])));
-            result[4] = (int)(Math.floor(Double.parseDouble(msgArr[4])));
-            result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5])));
+            result[3] = (int)(Math.floor(Double.parseDouble(msgArr[3]))-5);
+            result[4] = (int)(Math.floor(Double.parseDouble(msgArr[4]))-5);
+            result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5]))+5);
             
             int temp = 0;
             for (int i = 0; i < result.length; i++)
@@ -457,6 +575,10 @@ public class Robot {
             
             //TODO: if 1 of the short sensors in any directions have a high number, as high as 50, means no block detected, so average will be inaccurate
             //TODO: reduce the else if...
+            //front_average = averageSense((result[0] + result[1] + result[2])/3);
+            //right_average = averageSense((result[3] + result[4]/2));
+            
+            
             if (result[0] > 50 || result[1] > 50 || result[2] > 50 )
             {
             	if (result[0] > 50 && result[1] > 50) 
@@ -505,6 +627,10 @@ public class Robot {
             	right_average = averageSense((result[3] + result[4]/2));
             }
             
+            System.out.println("front average: " + front_average);
+            System.out.println("right average: " + right_average);
+            
+            
             /*result[0] = Integer.parseInt((msgArr[0].split("."))[0]);
             result[1] = Integer.parseInt((msgArr[1].split("."))[0]);
             result[2] = Integer.parseInt((msgArr[2].split("."))[0]);
@@ -515,8 +641,8 @@ public class Robot {
             System.out.println("SRFrontLeft: " + result[0]);
             System.out.println("SRFrontCenter: " + result[1]);
             System.out.println("SRFrontRight: " + result[2]);
-            System.out.println("SRRight: " + result[3]);
-            System.out.println("SRRight2: " + result[4]);
+            System.out.println("SRRight: " + result[4]);
+            System.out.println("SRRight2: " + result[3]);
             System.out.println("LRLeft: " + result[5]);
 
             SRFrontLeft.senseReal(explorationMap.gridder, result[0]);

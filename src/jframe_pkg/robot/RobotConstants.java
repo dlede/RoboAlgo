@@ -68,7 +68,7 @@ public class RobotConstants {
                     return 'C';
                 case CALIBRATE_R:
                 	return 'W';
-                case FORWARD_M: // move 3 steps
+                case FORWARD_M: 
                 	return 'U';
                 case ERROR:
                 default:

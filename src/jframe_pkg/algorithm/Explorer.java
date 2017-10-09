@@ -4,6 +4,7 @@ import static jframe_pkg.utils.MapDescriptor.generateMapDescriptor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 import jframe_pkg.map.Cell;
 import jframe_pkg.map.Mapper;
@@ -35,7 +36,10 @@ public class Explorer {
     private boolean quad_two = false;
     private boolean quad_three = false;
     private boolean quad_four = false;
-    
+    private boolean turned = false;
+    private int turned_counter = 0;
+
+	Scanner sc = new Scanner(System.in);
 	Sprinter returnToStart;
 
     public Explorer(Mapper exMap, Mapper realMap, Robot bot, int coverageLimit, int timeLimit) {
@@ -57,27 +61,19 @@ public class Explorer {
          
             //CommMgr.getCommMgr().revMsg();
            if (bot.getRealBot()) {
+        	   
+
+       	   	   bot.move(MOVEMENT.RIGHT, false);
+       	   	   
+               bot.move(MOVEMENT.RIGHT, false);
+               //String msg = CommMgr.getCommMgr().revMsg();
+               bot.move(MOVEMENT.CALIBRATE, false);
+               bot.move(MOVEMENT.LEFT, false);
+               bot.move(MOVEMENT.CALIBRATE_R, false);
+               //bot.move(MOVEMENT.LEFT, false);
+        	   
                 //bot.move(MOVEMENT.LEFT, false);
                 //CommMgr.getCommMgr().revMsg();
-        	   	bot.move(MOVEMENT.RIGHT, false);
-        	    
-        	   	//bot.move(MOVEMENT.CALIBRATE_R, false);
-        	   //bot.move(MOVEMENT.CALIBRATE_R, false);
-        	   //bot.move(MOVEMENT.CALIBRATE_R, false);
-                //bot.move(MOVEMENT.CALIBRATE_R, false);
-                //CommMgr.getCommMgr().revMsg();
-                bot.move(MOVEMENT.RIGHT, false);
-                //CommMgr.getCommMgr().revMsg();
-                bot.move(MOVEMENT.CALIBRATE, false);
-                //CommMgr.getCommMgr().revMsg();
-                bot.move(MOVEMENT.LEFT, false);
-                
-                //CommMgr.getCommMgr().revMsg();
-                bot.move(MOVEMENT.CALIBRATE_R, false);
-                //bot.move(MOVEMENT.LEFT, false);
-                //CommMgr.getCommMgr().revMsg();
-                //bot.move(MOVEMENT.RIGHT, false);
-                //bot.move(MOVEMENT.CALIBRATE_R, false);
             }
 
 	         //set waypoint here
@@ -90,7 +86,7 @@ public class Explorer {
 	   			System.out.println("Waiting for WAYPOINT...");
 	   			//info.append("Waiting for WAYPOINT...\n");
 	   			waypoint = CommMgr.getCommMgr().revMsg(); // "10, 10"
-	   			if (!waypoint.equals(null)) //if waypoint not null e.g
+	   			if (!waypoint.equals("Done")) //if waypoint not null e.g
 	   				break;
 	   		}
 	   		//set waypoint
@@ -171,6 +167,8 @@ public class Explorer {
      */
     private void explorationLoop(int r, int c) {
         do {
+        	
+        	String msg = sc.nextLine();
             nextMove();
             
             //send map to android every move
@@ -179,20 +177,25 @@ public class Explorer {
 			System.out.println(gmd[0]);
 			System.out.println(gmd[1]);
 			
-			//send to rpi 
-			CommMgr.getCommMgr().sendMsg("UM,"+ gmd[0]);
+			//send to rpi, map stuffs
+			//CommMgr.getCommMgr().sendMsg("UM,"+ gmd[0]);
 			
 			//CommMgr.getCommMgr().sendMsg("UM,"+ gmd[1]);
 			
 			
 			String curAttr = (bot.getRobotPosRow() + ";" + bot.getRobotPosCol() + ";" + bot.getRobotCurDir());
 			System.out.println("curAttr: " + curAttr);
+			//TODO: Acknowlegdement
+			//CommMgr.getCommMgr().revMsg();
+			
+			/*		
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
+			
 			CommMgr.getCommMgr().sendMsg("CA," + curAttr);
             
             areaExplored = calculateAreaExplored();
@@ -203,7 +206,7 @@ public class Explorer {
                 if (areaExplored >= 200) { // if x amount of cells coverage
                 	//System.out.println("covered breaker ");
                 	System.out.println("going home");
-                	goHome();
+                	//goHome();
                     break;
                 }
             }
@@ -212,8 +215,8 @@ public class Explorer {
         //explorationInnerLoop();
         
         //TODO gohome() have an issue, cannot go home, check Sprinter class on the tempbot
-        //System.out.println("going home");
-        goHome();   
+        System.out.println("at home");
+        //goHome();   
     }
     
     //TODO: check if the middle part is explored
@@ -291,35 +294,56 @@ public class Explorer {
      * Determines the next move for the robot and executes it accordingly.
      */
     private void nextMove() { //fwdblock_count
+    	//this.bot.setfwdblock_count(1);
+    	//System.out.println("\n\nDebug statement - fwdblock_count: ");// + fwdblock_count);
+    	
         if (lookRight()) {
             moveBot(MOVEMENT.RIGHT);
-            if (bot.front_average < 5) 
+            if(bot.front_average < 5)
             {
-            	this.bot.setfwdblock_count(1);
             	moveBot(MOVEMENT.FORWARD);
             }
             else
             {
+            	//moveBot(MOVEMENT.FORWARD_M);
+            	moveBot(MOVEMENT.FORWARD);
+            }
+            
+            /*
+            if (bot.front_average < 4) 
+            {
+            	//this.bot.setfwdblock_count(1);
+            	moveBot(MOVEMENT.FORWARD);
+            }           
+            else
+            {
             	//TODO: need to change something based on the average
-            	if (bot.front_average > 6) // move 4 steps
+            	if (bot.front_average >= 5) // move 4 steps
             	{
             		this.bot.setfwdblock_count(4);
             		System.out.println("moving 4 steps");
             		moveBot(MOVEMENT.FORWARD_M);
             	}
-            	else if (bot.front_average > 5) // move 3 steps
+            	else if (bot.front_average > 4) // move 3 steps
             	{
             		this.bot.setfwdblock_count(3);
             		System.out.println("moving 3 steps");
             		moveBot(MOVEMENT.FORWARD_M);
             	}
-            	else if (bot.front_average > 4) // move 2 steps
+            	else if (bot.front_average > 3) // move 2 steps
             	{
             		this.bot.setfwdblock_count(2);
             		System.out.println("moving 2 steps");
             		moveBot(MOVEMENT.FORWARD_M);
             	}
-            }
+            	else
+            	{
+            		//this.bot.setfwdblock_count(1);
+            		System.out.println("moving 1 steps");
+            		moveBot(MOVEMENT.FORWARD);
+            	}
+            	
+            }*/
             
             
         	/*if (bot.front_average > 5) 
@@ -332,28 +356,31 @@ public class Explorer {
         		moveBot(MOVEMENT.FORWARD);
         	}*/
         } else if (lookForward()) {
-        	if (bot.front_average > 5) 
-        	{
-        		System.out.println("moving multiple");
-        		moveBot(MOVEMENT.FORWARD_M);
-        	}
-        	else
-        	{
-        		moveBot(MOVEMENT.FORWARD);
-        	}
+        	if(bot.front_average < 4)
+            {
+            	moveBot(MOVEMENT.FORWARD);
+            }
+            else
+            {
+            	//System.out.println("moving multiple");
+            	//moveBot(MOVEMENT.FORWARD_M);
+            	moveBot(MOVEMENT.FORWARD);
+            }
+        	
         } else if (lookLeft()) {
             moveBot(MOVEMENT.LEFT);
             if (lookForward())
         	{
-            	if (bot.front_average > 5) 
-            	{
-            		System.out.println("moving multiple");
-            		moveBot(MOVEMENT.FORWARD_M);
-            	}
-            	else
-            	{
-            		moveBot(MOVEMENT.FORWARD);
-            	}
+            	if(bot.front_average < 4)
+                {
+                	moveBot(MOVEMENT.FORWARD);
+                }
+                else
+                {
+                	//System.out.println("moving multiple");
+                	//moveBot(MOVEMENT.FORWARD_M);
+                	moveBot(MOVEMENT.FORWARD);
+                }
         	}
         } else {
             moveBot(MOVEMENT.RIGHT);
@@ -645,8 +672,13 @@ public class Explorer {
      * Moves the bot, repaints the map and calls senseAndRepaint().
      */
     private void moveBot(MOVEMENT m) {
+    	
     	System.out.println("bot moved");
         bot.move(m);
+        
+        //TODO: mgr recieve ack after bot move from rpi
+        CommMgr.getCommMgr().revMsg();
+        
         exMap.repaint();
         System.out.println("exMap repainted");
         if (m != MOVEMENT.CALIBRATE || m != MOVEMENT.CALIBRATE_R) {
@@ -654,15 +686,17 @@ public class Explorer {
             System.out.println("senseAndRepaint");
         } else {
         	System.out.println("am i trying to recieve message??: Explorer.java, L541");
-            //CommMgr commMgr = CommMgr.getCommMgr();
+            //TODO: what is this part?
+        	//CommMgr commMgr = CommMgr.getCommMgr();
             
             //commMgr.revMsg();
+            /*
             try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
             System.out.println("recieved message: Explorer.java, L545");
         }
 
@@ -677,38 +711,46 @@ public class Explorer {
             	System.out.println("bot.right_average: " + bot.right_average);
                 
             	//moveBot(MOVEMENT.CALIBRATE_R);
+            	//TODO: CALIBRATION Problem
             	
-                if(bot.front_average >= bot.right_average) // if front obstacle is far away
-                {
-                	System.out.println("right calibrate");
+            	if(bot.front_average < 1 || (bot.front_average < 1 && bot.right_average < 1) || turned_counter <= 3)
+            	{
+            		System.out.println("front calibrate");
+                	//moveBot(MOVEMENT.CALIBRATE);
+            		moveBot(MOVEMENT.RIGHT);
+                    moveBot(MOVEMENT.CALIBRATE);
+                    moveBot(MOVEMENT.LEFT);
+            	}
+            	/*
+            	else if(bot.right_average < 1 && turned)
+            	{
+            		System.out.println("right calibrate");
                 	moveBot(MOVEMENT.CALIBRATE_R);
-                }
-                else
-                {
-                	//front 3, check if right side got wall, turn right, calibrate, turn left
-                	System.out.println("front calibrate");
-                	moveBot(MOVEMENT.CALIBRATE);
-                }
-                
-                
+                	turned = false;
+            	} */
             } else {
             	System.out.println("last calibrate++: Explorer.java, L556");
-            	//if (bot.MOVE)
-            	//if(this.bot.getMovement().toString() == "FORWARD")
-            	//{
-            		//System.out.println("FORWARDING, plus calibration point! " + lastCalibrate);
-            		lastCalibrate++;
-            	//}
-                
-                if (lastCalibrate >= 5)//&& right_average < 9 , && this.bot.right_average < 8
+            	lastCalibrate++;
+            	                
+            	if (turned)
+            	{
+            		turned = false;
+            		turned_counter++;
+            	}
+            	
+            	//TODO: calibrate
+                if (lastCalibrate >= 7)//&& right_average < 9 , && this.bot.right_average < 8
                 { 
-                	System.out.println("lastCalibrate right >= 5: Explorer.java, L559");
+                	System.out.println("lastCalibrate right >= 3: Explorer.java, L559");
                     DIRECTION targetDir = getCalibrationDirection();
                     if (targetDir != null) {
                         lastCalibrate = 0;
                         System.out.println("reset Calibrate Counter: Explorer.java, L563");
                         //calibrateBot(targetDir);
-                        calibrateRightBot(targetDir);
+                        moveBot(MOVEMENT.RIGHT);
+                        moveBot(MOVEMENT.CALIBRATE);
+                        moveBot(MOVEMENT.LEFT);
+                        //calibrateRightBot(targetDir);
                     }
                 }
             }
@@ -721,15 +763,21 @@ public class Explorer {
      * Sets the bot's sensors, processes the sensor data and repaints the map.
      */
     private void senseAndRepaint() {
+    	
     	bot.setSensors();
+    	
+    	/*
     	System.out.println("sensor set: Explorer.java, L578");
     	try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
         bot.sense(exMap, realMap);
+        
+        
+        
         System.out.println("realbot sensing: Explorer.java, L586");
         exMap.repaint();
         System.out.println("repainted: Explorer.java, L588");
@@ -819,12 +867,15 @@ public class Explorer {
         if (numOfTurn == 1) {
             if (DIRECTION.getNext(bot.getRobotCurDir()) == targetDir) {
                 moveBot(MOVEMENT.RIGHT);
+                turned = true;
             } else {
                 moveBot(MOVEMENT.LEFT);
+                turned = true;
             }
         } else if (numOfTurn == 2) {
             moveBot(MOVEMENT.RIGHT);
             moveBot(MOVEMENT.RIGHT);
+            turned = true;
         }
     }
 }

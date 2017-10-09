@@ -92,7 +92,7 @@ public class MainFrame extends JFrame {
 	private static int coverageLimit = 300; // TODO: coverage limit
 
 	private static final CommMgr comm = CommMgr.getCommMgr();
-	private static final boolean realRun = false;
+	private static final boolean realRun = true;
 
 	private static boolean auto_mode = false; // auto mode false = manual, can
 	// use keystroke to move

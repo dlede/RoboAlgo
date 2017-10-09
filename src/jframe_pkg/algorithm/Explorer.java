@@ -90,7 +90,7 @@ public class Explorer {
 	   				break;
 	   		}
 	   		//set waypoint
-	   		//TODO:
+	   		//TODO: fix this maybe?
 	   		List<String> items = Arrays.asList(waypoint.split(","));
 	   		int temp_x = Integer.parseInt(items.get(0));
 	   		int temp_y = Integer.parseInt(items.get(1));
@@ -192,7 +192,7 @@ public class Explorer {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				// Auto-generated catch block
 				e.printStackTrace();
 			}*/
 			
@@ -281,13 +281,6 @@ public class Explorer {
         }*/
     	
     	goHome();
-    }
-    
-    
-    
-    private void quadrant()
-    {
-    	//TODO: 0, 0
     }
 
     /**
@@ -676,7 +669,6 @@ public class Explorer {
     	System.out.println("bot moved");
         bot.move(m);
         
-        //TODO: mgr recieve ack after bot move from rpi
         CommMgr.getCommMgr().revMsg();
         
         exMap.repaint();
@@ -694,7 +686,7 @@ public class Explorer {
             try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				// Auto-generated catch block
 				e.printStackTrace();
 			}*/
             System.out.println("recieved message: Explorer.java, L545");
@@ -771,7 +763,7 @@ public class Explorer {
     	try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}*/
         bot.sense(exMap, realMap);

@@ -306,59 +306,6 @@ public class MainFrame extends JFrame {
 			_settings.setVisible(true);
 		}
 	}
-	
-	private static void addSendMsgButton() {
-		msg_label = new JLabel("Message: ");
-		msg_field = new JTextField(10);
-		msg_field.setMaximumSize(map_field.getPreferredSize());
-		
-		
-		//&& comm.isConnected()
-		if (!realRun) {
-			btn_MsgSend = new JButton("Send Message");
-			formatButton(btn_MsgSend);
-
-			//System.out.println("\nComms Status: " + comm.isConnected());
-			
-			btn_MsgSend.addMouseListener(new MouseAdapter() {
-				public void mousePressed(MouseEvent e) {
-					//TODO: send a message button, not yet tested
-					//try {
-					
-					
-						if (comm.isConnected())
-						{
-							comm.sendMsg(msg_field.getText());
-							System.out.println("\nSending Message");
-						}
-						else
-						{
-							System.out.println("\nNo Communication Setup");
-						}
-					//} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						//System.out.println("\nNo Communication Setup");
-						//System.out.println("Comms Error: ");
-						//e1.printStackTrace();
-						//System.out.println("\n\n");
-					//}
-				}
-			});
-
-			_settings.add(msg_label);
-			msg_label.setAlignmentX(Component.LEFT_ALIGNMENT);
-			_settings.add(Box.createRigidArea(new Dimension(0, 10)));
-
-			_settings.add(msg_field);
-			msg_field.setAlignmentX(Component.LEFT_ALIGNMENT);
-			_settings.add(Box.createRigidArea(new Dimension(0, 10)));
-			
-			_settings.add(btn_MsgSend);
-			btn_MsgSend.setAlignmentX(Component.LEFT_ALIGNMENT);
-			_settings.add(Box.createRigidArea(new Dimension(0, 10)));
-			_settings.setVisible(true);
-		}
-	}	
 
 	private static void addWaypointPanel() {
 
@@ -525,24 +472,6 @@ public class MainFrame extends JFrame {
 
 	}
 
-	/**private static void addNxtStepPanel() {
-
-		// Next Step Btn
-		btn_NxtStep = new JButton("Next Step");
-
-		btn_NxtStep.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				System.out.println("Next Step Button Clicked!");
-			}
-		});
-
-		_monitor.add(btn_NxtStep);
-		btn_NxtStep.setAlignmentX(Component.LEFT_ALIGNMENT);
-		// padding- width, height
-		_monitor.add(Box.createRigidArea(new Dimension(0, 10)));
-
-	}**/
-
 	private static void addCurPosPanel() {
 
 		//JPanel cp_panel = new JPanel(new GridLayout(0, 1));
@@ -575,9 +504,6 @@ public class MainFrame extends JFrame {
 	}
 
 	private static void addModePanel() {
-
-		// TODO: Change this portion onwards, the multithreading portion
-
 		// FastestPath Class for Multithreading
 		class FastestPath extends SwingWorker<Integer, String> {
 			protected Integer doInBackground() throws Exception {

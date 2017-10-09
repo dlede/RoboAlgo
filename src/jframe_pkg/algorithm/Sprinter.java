@@ -126,8 +126,6 @@ public class Sprinter {
         return movementCost + turnCost;
     }
 
-    //TODO: add another 4 states of direction as fastest path. NE, NW, SW, SE
-    
     /**
      * Returns the target direction of the bot from [botR, botC] to target Cell.
      */
@@ -388,7 +386,7 @@ public class Sprinter {
         }
 
         System.out.println("\nMovements: " + outputString.toString());
-        //TODO: 
+        //TODO: sending string of FP,FFFFFFFFFRFFFFFFFFFFFFLFFFFFFFFFFFR.....
         CommMgr.getCommMgr().sendMsg("FP,"+outputString.toString());
         return outputString.toString();
     }

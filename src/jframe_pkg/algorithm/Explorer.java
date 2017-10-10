@@ -668,8 +668,11 @@ public class Explorer {
     	
     	System.out.println("bot moved");
         bot.move(m);
-        
-        CommMgr.getCommMgr().revMsg();
+ 
+    	System.out.println("WHAT AM I RECEIVING");
+        String wad = CommMgr.getCommMgr().revMsg();
+
+    	System.out.println("RECEIVED:" + wad);
         
         exMap.repaint();
         System.out.println("exMap repainted");
@@ -709,9 +712,24 @@ public class Explorer {
             	{
             		System.out.println("front calibrate");
                 	//moveBot(MOVEMENT.CALIBRATE);
-            		moveBot(MOVEMENT.RIGHT);
+            		/*moveBot(MOVEMENT.RIGHT);
+                    moveBot(MOVEMENT.LEFT);*/
+                    
+
                     moveBot(MOVEMENT.CALIBRATE);
-                    moveBot(MOVEMENT.LEFT);
+                    
+                  /*  if(canCalibrateOnTheSpot(bot.getRobotCurDir())){
+                    	System.out.println("\n\nCALIBRATING");
+                    	CommMgr.getCommMgr().sendMsg("C");
+                    	System.out.println("CALIBRATION DONE\n\n");
+                    	CommMgr.getCommMgr().revMsg();
+                    	System.out.println("Ho liao");
+                    	
+                    }*/
+                    
+                    
+                    
+                    
             	}
             	/*
             	else if(bot.right_average < 1 && turned)
@@ -739,9 +757,9 @@ public class Explorer {
                         lastCalibrate = 0;
                         System.out.println("reset Calibrate Counter: Explorer.java, L563");
                         //calibrateBot(targetDir);
-                        moveBot(MOVEMENT.RIGHT);
+                      //  moveBot(MOVEMENT.RIGHT);
                         moveBot(MOVEMENT.CALIBRATE);
-                        moveBot(MOVEMENT.LEFT);
+                        //moveBot(MOVEMENT.LEFT);
                         //calibrateRightBot(targetDir);
                     }
                 }
@@ -766,6 +784,8 @@ public class Explorer {
 			// Auto-generated catch block
 			e.printStackTrace();
 		}*/
+    	
+    	
         bot.sense(exMap, realMap);
         
         

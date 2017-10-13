@@ -137,14 +137,14 @@ public class Sensor {
      */
     private void processSensorVal(Gridder exploredMap, int sensorVal, int rowInc, int colInc) {
         if (sensorVal == 0) return;  // return value for LR sensor if obstacle before lowerRange
-        System.out.println("process Sensor Val");
+        //System.out.println("process Sensor Val");
         // If lowerRange > 1, exit from method if there is an obstacle before the sensor's range starts
         for (int i = 1; i < this.lowerRange; i++) {
             //hk - rowInc and colInc are multipliers to the sensor range (i think)
             int row = this.sensorPosRow + (rowInc * i);
             int col = this.sensorPosCol + (colInc * i);
-            System.out.println("lower-row: " + row + ", lower-col: " + col);
-            System.out.println("lower-ranging: " + i);
+            //System.out.println("lower-row: " + row + ", lower-col: " + col);
+            //System.out.println("lower-ranging: " + i);
 
             if (exploredMap.getCell(row, col).getIsObstacle()) 
         	{
@@ -152,7 +152,7 @@ public class Sensor {
         		return;
         	}
         }
-        System.out.println("lower range");
+        //System.out.println("lower range");
 
         for (int i = this.lowerRange; i <= this.upperRange; i++) {
             int row = this.sensorPosRow + (rowInc * i);
@@ -177,6 +177,6 @@ public class Sensor {
                 }
             }
         }
-        System.out.println("upper range");
+        //System.out.println("upper range");
     }
 }

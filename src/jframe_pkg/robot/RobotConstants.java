@@ -17,10 +17,13 @@ public class RobotConstants {
     public static final DIRECTION START_DIR = DIRECTION.NORTH;      // start direction
     
     public static final int SENSOR_SHORT_RANGE_L = 1;               // range of short range sensor (cells)
-    public static final int SENSOR_SHORT_RANGE_H = 3;               // range of short range sensor (cells)
+    public static final int SENSOR_SHORT_RANGE_H = 2;               // range of short range sensor (cells)
     
-    public static final int SENSOR_LONG_RANGE_L = 1;                // range of long range sensor (cells)
-    public static final int SENSOR_LONG_RANGE_H = 6;                // range of long range sensor (cells)
+    public static final int SENSOR_FRONT_SHORT_RANGE_L = 1;         // range of short front range sensor (cells)
+    public static final int SENSOR_FRONT_SHORT_RANGE_H = 2;         // range of short front range sensor (cells)
+    
+    public static final int SENSOR_LONG_RANGE_L = 2;                // range of long range sensor (cells)
+    public static final int SENSOR_LONG_RANGE_H = 4;                // range of long range sensor (cells)
 
     public static final int INFINITE_COST = 9999;
 
@@ -54,7 +57,7 @@ public class RobotConstants {
     }
 
     public enum MOVEMENT {
-        FORWARD, FORWARD_M, BACKWARD, RIGHT, LEFT, CALIBRATE, CALIBRATE_R, ERROR;
+        FORWARD, /*FORWARD_M,*/ BACKWARD, RIGHT, LEFT, CALIBRATE, CALIBRATE_R, ERROR;
 
         public static char print(MOVEMENT m) {
             switch (m) {
@@ -70,8 +73,8 @@ public class RobotConstants {
                     return 'C';
                 case CALIBRATE_R:
                 	return 'W';
-                case FORWARD_M: 
-                	return 'U';
+                //case FORWARD_M: 
+                //	return 'F';
                 case ERROR:
                 default:
                     return 'E';

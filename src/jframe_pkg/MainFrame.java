@@ -44,6 +44,8 @@ import jframe_pkg.algorithm.Sprinter;
 import jframe_pkg.map.Mapper;
 import jframe_pkg.robot.Robot;
 import jframe_pkg.robot.RobotConstants;
+import jframe_pkg.robot.RobotConstants.DIRECTION;
+import jframe_pkg.robot.RobotConstants.MOVEMENT;
 import jframe_pkg.utils.CommMgr;
 import jframe_pkg.utils.Stopwatch;
 
@@ -92,6 +94,7 @@ public class MainFrame extends JFrame {
 	private static int coverageLimit = 300; // TODO: coverage limit
 
 	private static final CommMgr comm = CommMgr.getCommMgr();
+	
 	private static final boolean realRun = true;
 
 	private static boolean auto_mode = false; // auto mode false = manual, can
@@ -103,7 +106,7 @@ public class MainFrame extends JFrame {
 
 		if (realRun) {
 			try {
-				comm.setUpConnection("192.168.15.15", 1515); // ip address and
+				comm.setUpConnection(); // ip address and
 															// port on rpi3
 				//comm.sendMsg("hello");
 			} catch (UnknownHostException e) {
@@ -507,8 +510,8 @@ public class MainFrame extends JFrame {
 		// FastestPath Class for Multithreading
 		class FastestPath extends SwingWorker<Integer, String> {
 			protected Integer doInBackground() throws Exception {
-				final String text_x = field_x.getText();
-				final String text_y = field_y.getText();
+				//final String text_x = field_x.getText();
+				//final String text_y = field_y.getText();
 
 				bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
 				e_Mapper.repaint();
@@ -522,24 +525,50 @@ public class MainFrame extends JFrame {
 						{
 							break;
 						}
-
 					}
 				}
 
+				int waypoint_x = e_Mapper.gridder.wp_x();
+				int waypoint_y = e_Mapper.gridder.wp_y();
+				
+				System.out.println("wp_x" + waypoint_x +", wp_y: " + waypoint_y);
+				
 				fastest_wp_Path = new Sprinter(e_Mapper, bot);
-				fastest_wp_Path.runFastestPath(Integer.parseInt(text_x), Integer.parseInt(text_y));
+				fastest_wp_Path.runFastestPath(waypoint_x, waypoint_y);
 
 				System.out.println("\n\nbreaker....");
 				System.out.println("breaker....");
 				System.out.println("breaker.... \n\n");
 
-				bot.setRobotPos(Integer.parseInt(text_x), Integer.parseInt(text_y));
+				bot.setRobotPos(waypoint_x, waypoint_y);
 				bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
 
+				//TODO: get robot direction and send as robot
+		        if(bot.getRobotCurDir() == DIRECTION.SOUTH)
+		        {
+		        	System.out.println("Turning South to North");
+		        	bot.move(MOVEMENT.RIGHT);//moveBot(MOVEMENT.RIGHT);
+		        	bot.move(MOVEMENT.RIGHT);//moveBot(MOVEMENT.RIGHT);
+		        	//moveBot(MOVEMENT.RIGHT);
+		        }
+		        else if (bot.getRobotCurDir() == DIRECTION.WEST) // if DIRECTION.WEST
+		        {
+		        	System.out.println("Turning West to North");
+		        	bot.move(MOVEMENT.RIGHT);
+		        }
+		        else if (bot.getRobotCurDir() == DIRECTION.EAST)
+		        {
+		        	System.out.println("Turning East to North");
+		        	bot.move(MOVEMENT.LEFT);
+		        }
+		        else
+		        {
+		        	System.out.println("Already in North");
+		        }
+				
 				System.out.println("Waypoint visited \n\n");
 
 				fastest_goal_Path = new Sprinter(e_Mapper, bot);
-
 				fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
 				//fastest_wp_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
 				timer.stop();
@@ -574,7 +603,7 @@ public class MainFrame extends JFrame {
 
 				if (realRun) {
 					System.out.println("im in realrun");
-					CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
+					//CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
 				}
 				
 				/**

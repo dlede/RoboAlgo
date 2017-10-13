@@ -53,6 +53,11 @@ public class Robot {
 	private CommMgr comm;
 	public int front_average = 0;
 	public int right_average = 0;
+	
+    public int sr_FrontLeft_value;       // north-facing front-left SR value for comparing
+    public int sr_FrontCenter_value;     // north-facing front-center SR value for comparing
+    public int sr_FrontRight_value;      // north-facing front-right SR	value for comparing
+	
 	private MOVEMENT prev_mov;
 	private int fwdblock_count;
 
@@ -64,17 +69,16 @@ public class Robot {
         comm = CommMgr.getCommMgr();
         
         this.realBot = realBot;
-
-        SRFrontLeft = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol - 1, this.robotDir, "SRFL");
-        SRFrontCenter = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol, this.robotDir, "SRFC");
-        SRFrontRight = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol + 1, this.robotDir, "SRFR");
-        
+        //SENSOR_FRONT_SHORT_RANGE_L
+        //SENSOR_FRONT_SHORT_RANGE_H
+        SRFrontLeft = new Sensor(RobotConstants.SENSOR_FRONT_SHORT_RANGE_L, RobotConstants.SENSOR_FRONT_SHORT_RANGE_H, this.posRow + 1, this.posCol - 1, this.robotDir, "SRFL");
+        SRFrontCenter = new Sensor(RobotConstants.SENSOR_FRONT_SHORT_RANGE_L, RobotConstants.SENSOR_FRONT_SHORT_RANGE_H, this.posRow + 1, this.posCol, this.robotDir, "SRFC");
+        SRFrontRight = new Sensor(RobotConstants.SENSOR_FRONT_SHORT_RANGE_L, RobotConstants.SENSOR_FRONT_SHORT_RANGE_H, this.posRow + 1, this.posCol + 1, this.robotDir, "SRFR");
         
         SRRightBack = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT), "SRL");
         SRRightFront = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT), "SRR");
         
-        
-        LRLeft = new Sensor(RobotConstants.SENSOR_LONG_RANGE_L, RobotConstants.SENSOR_LONG_RANGE_H, this.posRow, this.posCol + 1, findNewDirection(MOVEMENT.LEFT), "LRL");
+        LRLeft = new Sensor(RobotConstants.SENSOR_LONG_RANGE_L, RobotConstants.SENSOR_LONG_RANGE_H, this.posRow+1, this.posCol + 1, findNewDirection(MOVEMENT.LEFT), "LRL");
     
     }
 
@@ -145,26 +149,28 @@ public class Robot {
             }
         }
         
-        System.out.println("\n\nDebug statement - Robot.java fwdblock_count: " + fwdblock_count);
+        
+        
+       // System.out.println("\n\nDebug statement - Robot.java fwdblock_count: " + fwdblock_count);
 
         switch (m) {
-	        case FORWARD_M:
+	        /*case FORWARD_M:
 	        	switch (robotDir) {
 	        
 	            case NORTH:
-	                posRow+=1;
+	                posRow++; // posRow+=1;
 	                break;
 	            case EAST:
-	                posCol+=1;
+	            	posCol++; // posCol+=1;
 	                break;
 	            case SOUTH:
-	                posRow-=1;
+	            	posRow--; // posRow-=1;
 	                break;
 	            case WEST:
-	                posCol-=1;
+	            	posCol--; // posCol-=1;
 	                break;
 	        }
-	        break;
+	        break;*/
         	
         /*
         	case FORWARD_M:
@@ -312,7 +318,7 @@ public class Robot {
         if (realBot) 
         {
         	sendMovement(m, sendMoveToAndroid);
-        	CommMgr.getCommMgr().revMsg();
+        	//CommMgr.getCommMgr().revMsg();
         }
         else 
         	System.out.println("Move: " + MOVEMENT.print(m));
@@ -398,14 +404,26 @@ public class Robot {
     private void sendMovement(MOVEMENT m, boolean sendMoveToAndroid) {
         //CommMgr comm = CommMgr.getCommMgr();
 
-    	System.out.println(MOVEMENT.print(m) + "" + CommMgr.INSTRUCTIONS);
+    	//CommMgr.getCommMgr().revMsg();
+    	
+    	/*
+    	try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}*/
+    	
+    	
+    	
+    	//System.out.println(MOVEMENT.print(m) + "" + CommMgr.INSTRUCTIONS);
         //comm.sendMsg(MOVEMENT.print(m) + "" + CommMgr.INSTRUCTIONS);
     	
     	prev_mov = m;
-    	System.out.println("moving Robot.java sendMovement" + this.fwdblock_count + " steps");
+    	//System.out.println("moving Robot.java sendMovement" + this.fwdblock_count + " steps");
     	//TODO: need to test this out, multiple movement out
-    	if (m == MOVEMENT.FORWARD_M)
-    	{
+    	//if (m == MOVEMENT.FORWARD_M)
+    	//{
     		/*
     		if (fwdblock_count == 0 || fwdblock_count == 1)
     		{
@@ -417,20 +435,33 @@ public class Robot {
     			comm.sendMsg(String.valueOf(MOVEMENT.print(m))+","+this.fwdblock_count);
     		}*/
     		//comm.sendMsg(String.valueOf(MOVEMENT.print(m))+",1");
-    		comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
-    	}
-    	else
-    	{
-    		comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
-    	}
+    		//comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
+    	//}
+    	//else
+    	//{
+		//System.out.println("Sendingggggg");
+		
+    	System.out.println(String.valueOf(MOVEMENT.print(m)));
+		comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
+    	//CommMgr.getCommMgr().sendMsg(String.valueOf(MOVEMENT.print(m)));
+		
+		System.out.println("Receving");
+		comm.revMsg();
+		System.out.println("Done");
+		
+    	//}
 
     	//comm.sendMsg("R");
+    	//TODO: revMsg Debug - CommMgr.getCommMgr().revMsg();
+    		
+    	//CommMgr.getCommMgr().revMsg();
+    	/*
     	try {
-			Thread.sleep(1000);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
         
         if (m != MOVEMENT.CALIBRATE && sendMoveToAndroid) {
         	System.out.println("m != MOVEMENT.CALIBRATE && sendMoveToAndroid: Robot.java, L273");
@@ -473,7 +504,7 @@ public class Robot {
             SRFrontLeft.setSensor(this.posRow - 1, this.posCol + 1, this.robotDir);
             SRFrontCenter.setSensor(this.posRow - 1, this.posCol, this.robotDir);
             SRFrontRight.setSensor(this.posRow - 1, this.posCol - 1, this.robotDir);
-            SRRightBack.setSensor(this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT));
+            SRRightBack.setSensor(this.posRow + 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
             SRRightFront.setSensor(this.posRow - 1, this.posCol - 1, findNewDirection(MOVEMENT.RIGHT));
             LRLeft.setSensor(this.posRow, this.posCol - 1, findNewDirection(MOVEMENT.LEFT));
             
@@ -533,7 +564,7 @@ public class Robot {
             String msg = comm.revMsg();
 
             System.out.println("GOT SENSOR VALUE: Robot.java, L374");
-            //System.out.println("msg11: "+ msg);
+            System.out.println("Senses Value: "+ msg);
             
             //else
             //{
@@ -541,51 +572,64 @@ public class Robot {
             //}
             
             
-            for(String str: msgArr) {
-            	System.out.println("msgArr: "+ str);
-            }
+            //for(String str: msgArr) {
+            //	System.out.println("msgArr: "+ str);
+            //}
             
             //TODO: if the result stores value less than 15, the formulated result will give a 0, spawning a obstacle block on the right sensors themselves???
             //But since 0 its nearest to it, then just spawn infront of the right sensors
             
-            result[0] = (int)(Math.floor(Double.parseDouble(msgArr[0]))+4);
+           /* result[0] = (int)(Math.floor(Double.parseDouble(msgArr[0]))+4);
             result[1] = (int)(Math.floor(Double.parseDouble(msgArr[1]))+5);
             result[2] = (int)(Math.floor(Double.parseDouble(msgArr[2]))+4);
             
             result[3] = (int)(Math.floor(Double.parseDouble(msgArr[3])));
             result[4] = (int)(Math.floor(Double.parseDouble(msgArr[4])));
             
-            result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5]))+20);
+            result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5]))+20);*/
             
+            //front +x offsets
+            result[0] = Integer.parseInt(msgArr[0]);
+            result[1] = Integer.parseInt(msgArr[1]);
+            result[2] = Integer.parseInt(msgArr[2]);
+            
+            //right +x offsets
+            result[3] = Integer.parseInt(msgArr[3]);
+            result[4] = Integer.parseInt(msgArr[4]);
+            
+            result[5] = Integer.parseInt(msgArr[5])+10;
+            //result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5]))+9);
+            
+            //result[5] = Integer.parseInt(msgArr[5]);
             
             
             
             for (int i = 0; i < result.length; i++)
             {
-            	System.out.println("result: " + i);
+            	//System.out.println("result: " + i);
             	result[i] = setValue(result[i]);
             }
-
+            //huangkai
             //Finding is any sensors have a far block detected, take the nearest block averages
-            if (result[0] > 50 || result[1] > 50 || result[2] > 50 )
+            if (result[0] > 5 || result[1] > 5 || result[2] > 5 )
             {
-            	if (result[0] > 50 && result[1] > 50) 
+            	if (result[0] > 5 && result[1] > 5) 
             	{
             		front_average = averageSense(result[2]);
             	}
-            	else if (result[1] > 50 && result[2] > 50)
+            	else if (result[1] > 5 && result[2] > 5)
             	{
             		front_average = averageSense(result[0]);
             	}
-            	else if (result[0] > 50 && result[2] > 50)
+            	else if (result[0] > 5 && result[2] > 5)
             	{
             		front_average = averageSense(result[1]);
             	}
-            	else if (result[0] > 50)
+            	else if (result[0] > 5)
             	{
             		front_average = averageSense((result[1] + result[2])/2);
             	}
-            	else if (result[1] > 50)
+            	else if (result[1] > 5)
             	{
             		front_average = averageSense((result[0] + result[2])/2);
             	}
@@ -599,9 +643,9 @@ public class Robot {
             	front_average = averageSense((result[0] + result[1] + result[2])/3);
             }
             
-            if (result[3] > 50 || result[4] > 50)
+            if (result[3] > 5 || result[4] > 5)
             {
-            	if (result[3] > 50)
+            	if (result[3] > 5)
             	{
             		right_average = averageSense(result[4]);
             	}
@@ -618,21 +662,33 @@ public class Robot {
             System.out.println("front average: " + front_average);
             System.out.println("right average: " + right_average);
             
+            //Array Readings:
+            //SRFrontLeft, SRFrontCenter, SRFrontRight, SRRight_Top, SRRight_Btm, LRLeft
+            
             System.out.println("SRFrontLeft: " + result[0]);
             System.out.println("SRFrontCenter: " + result[1]);
             System.out.println("SRFrontRight: " + result[2]);
-            System.out.println("SRRight_Btm: " + result[4]);
             System.out.println("SRRight_Top: " + result[3]);
+            System.out.println("SRRight_Btm: " + result[4]);
             System.out.println("LRLeft: " + result[5]);
 
+            //Dhaslie for comparing front sensors
+            sr_FrontLeft_value = result[0];    
+            sr_FrontCenter_value = result[1]; 
+            sr_FrontRight_value = result[2];
+            //Dhaslie
+            
             SRFrontLeft.senseReal(explorationMap.gridder, result[0]);
             SRFrontCenter.senseReal(explorationMap.gridder, result[1]);
             SRFrontRight.senseReal(explorationMap.gridder, result[2]);
-            SRRightBack.senseReal(explorationMap.gridder, result[3]);
+            //SRRightFront.senseReal(explorationMap.gridder, result[3]);
+            //SRRightBack.senseReal(explorationMap.gridder, result[4]);
+            
             SRRightFront.senseReal(explorationMap.gridder, result[4]);
+            SRRightBack.senseReal(explorationMap.gridder, result[3]);
             LRLeft.senseReal(explorationMap.gridder, result[5]);
             
-            System.out.println("done sensereal: Robot.java, L427");
+            //System.out.println("done sensereal: Robot.java, L427");
             counter++;
             //String[] mapStrings = MapDescriptor.generateMapDescriptor(explorationMap);
             //System.out.println(mapStrings[0] + " " + mapStrings[1] + " " + CommMgr.MAP_STRINGS);
@@ -642,13 +698,13 @@ public class Robot {
         return result;
     }
     
-    public int setValue(int val)
+    public int setValue(int val) // set value as rounded off function
     {
     	int temp = 0;
     	//val = (((val+5)%10)*10); // round up to nearest 10
     	temp = (int) Math.floor(((val +5)/ 10));// if sensor value is divided by 10
-    	System.out.println("val value: " + val);
-    	System.out.println("temp value: " + temp);
+    	//System.out.println("val value: " + val);
+    	//System.out.println("temp value: " + temp);
     	return temp;
     }
     

@@ -38,7 +38,7 @@ public class CommMgr {
 	}
 
 	// setting up connection
-	public void setUpConnection(String IPAddress, int portNumber) throws UnknownHostException, IOException {
+	public void setUpConnection() throws UnknownHostException, IOException {
 
 		try {
 			commSocket = new Socket(RPI_IP_ADDRESS, RPI_PORT);

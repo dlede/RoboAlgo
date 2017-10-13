@@ -56,6 +56,16 @@ public class Gridder extends JFrame {
     	waypoint_y = y; 
     }
 	
+    public int wp_x()
+    {
+    	return waypoint_x;
+    }
+    
+    public int wp_y()
+    {
+    	return waypoint_y;
+    }
+    
 	public Cell[][] get_Grid()
 	{
 		return this.grid;

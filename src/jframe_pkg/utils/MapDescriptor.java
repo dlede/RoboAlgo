@@ -62,7 +62,7 @@ public class MapDescriptor {
 
         StringBuilder Part1 = new StringBuilder();
         StringBuilder Part1_bin = new StringBuilder();
-        Part1_bin.append("11");
+        //Part1_bin.append("11");
         for (int r = 0; r < MapConstant.MAP_X; r++) {
             for (int c = 0; c < MapConstant.MAP_Y; c++) {
                 if (map.gridder.getCell(r, c).getIsExplored())
@@ -76,23 +76,29 @@ public class MapDescriptor {
                 }
             }
         }
-        Part1_bin.append("11");
-        Part1.append(binToHex(Part1_bin.toString()));
+        //Part1_bin.append("11");
+        //Part1.append(binToHex(Part1_bin.toString()));
         System.out.println("P1: " + Part1.toString());
         ret[0] = Part1.toString();
         //System.out.println("P1: " + Part1_bin.toString());
         //ret[0] = Part1_bin.toString();
 
+        	//added huangkai, rmb to remove
         StringBuilder Part2 = new StringBuilder();
+        StringBuilder Part2_huangkai = new StringBuilder();
         StringBuilder Part2_bin = new StringBuilder();
         for (int r = 0; r < MapConstant.MAP_X; r++) {
             for (int c = 0; c < MapConstant.MAP_Y; c++) {
                 if (map.gridder.getCell(r, c).getIsExplored()) {
-                    if (map.gridder.getCell(r, c).getIsObstacle())
+                    if (map.gridder.getCell(r, c).getIsObstacle()){
                         Part2_bin.append("1");
+                    	Part2_huangkai.append("1");
+                    }
                     else
+                    {
                         Part2_bin.append("0");
-
+                    	Part2_huangkai.append("0");
+                    }
                     if (Part2_bin.length() == 4) {
                         Part2.append(binToHex(Part2_bin.toString()));
                         Part2_bin.setLength(0);
@@ -101,9 +107,10 @@ public class MapDescriptor {
             }
         }
         if (Part2_bin.length() > 0) Part2.append(binToHex(Part2_bin.toString()));
+        System.out.println("HuangKai: " + Part2_huangkai.toString());
         System.out.println("P2: " + Part2.toString());
         ret[1] = Part2.toString();
-        System.out.println("P2: " + Part2.toString());
+        //System.out.println("P2: " + Part2.toString());
         //System.out.println("P2: " + Part2_bin.toString());
         //ret[1] = Part2_bin.toString();
 

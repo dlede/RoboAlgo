@@ -53,6 +53,8 @@ public class Robot {
 	private CommMgr comm;
 	public int front_average = 0;
 	public int right_average = 0;
+    public int front_min = 0;
+    public int right_min = 0;
 	
     public int sr_FrontLeft_value;       // north-facing front-left SR value for comparing
     public int sr_FrontCenter_value;     // north-facing front-center SR value for comparing
@@ -78,8 +80,7 @@ public class Robot {
         SRRightBack = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow - 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT), "SRL");
         SRRightFront = new Sensor(RobotConstants.SENSOR_SHORT_RANGE_L, RobotConstants.SENSOR_SHORT_RANGE_H, this.posRow + 1, this.posCol + 1, findNewDirection(MOVEMENT.RIGHT), "SRR");
         
-        LRLeft = new Sensor(RobotConstants.SENSOR_LONG_RANGE_L, RobotConstants.SENSOR_LONG_RANGE_H, this.posRow+1, this.posCol + 1, findNewDirection(MOVEMENT.LEFT), "LRL");
-    
+        LRLeft = new Sensor(RobotConstants.SENSOR_LONG_RANGE_L, RobotConstants.SENSOR_LONG_RANGE_H, this.posRow, this.posCol + 1, findNewDirection(MOVEMENT.LEFT), "LRL");
     }
 
     public void setRobotPos(int row, int col) {
@@ -149,29 +150,7 @@ public class Robot {
             }
         }
         
-        
-        
-       // System.out.println("\n\nDebug statement - Robot.java fwdblock_count: " + fwdblock_count);
-
-        switch (m) {
-	        /*case FORWARD_M:
-	        	switch (robotDir) {
-	        
-	            case NORTH:
-	                posRow++; // posRow+=1;
-	                break;
-	            case EAST:
-	            	posCol++; // posCol+=1;
-	                break;
-	            case SOUTH:
-	            	posRow--; // posRow-=1;
-	                break;
-	            case WEST:
-	            	posCol--; // posCol-=1;
-	                break;
-	        }
-	        break;*/
-        	
+        switch (m) {        	
         /*
         	case FORWARD_M:
         		switch (robotDir) {
@@ -338,11 +317,6 @@ public class Robot {
     	System.out.println("fwdblock_count: " + fwdblock_count);
     }
     
-    /*public void getfwdblock_count()
-    {
-    	return this.bot.fwdblock_count;
-    }*/
-    
     /**
      * Overloaded method that calls this.move(MOVEMENT m, boolean sendMoveToAndroid = true).
      */
@@ -354,18 +328,19 @@ public class Robot {
      * Sends a number instead of 'F' for multiple continuous forward movements.
      */
     public void moveForwardMultiple(int count) {
+    	System.out.println("inside moveForwardMultiple function");
         if (count == 1) {
             move(MOVEMENT.FORWARD);
         } else {
             CommMgr comm = CommMgr.getCommMgr();
-            if (count == 10) {
-                //comm.sendMsg("0", CommMgr.INSTRUCTIONS);
-            	System.out.println("msg1");
-                comm.sendMsg("0" + "" + CommMgr.INSTRUCTIONS);
-            } else if (count < 10) {
-                //comm.sendMsg(Integer.toString(count), CommMgr.INSTRUCTIONS);
-            	System.out.println("msg2");
-            	comm.sendMsg(Integer.toString(count) + "" +  CommMgr.INSTRUCTIONS);
+            if (count >= 5) {
+                System.out.println("if front_min >= 5");
+                comm.sendMsg("U,"+ 4); // max furthest distance covered in straight line is 40cm
+                //comm.sendMsg("0" + "" + CommMgr.INSTRUCTIONS);
+            } else if (count < 5) {
+            	System.out.println("if front_min < 5");
+            	comm.sendMsg("U,"+ front_min);
+            	//comm.sendMsg(Integer.toString(count) + "" +  CommMgr.INSTRUCTIONS);
             }
 
             switch (robotDir) {
@@ -382,20 +357,12 @@ public class Robot {
                     posCol += count;
                     break;
             }
-
-            //comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()), CommMgr.BOT_POS);
-
-        	System.out.println("msg3");
-        	//comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()));
-        	//CommMgr.BOT_POS
         }
     }
     
-
     /**
      * Uses the CommMgr to send the next movement to the robot.
      */
-    
     public MOVEMENT getMovement()
     {
     	return this.prev_mov;
@@ -403,19 +370,7 @@ public class Robot {
     
     private void sendMovement(MOVEMENT m, boolean sendMoveToAndroid) {
         //CommMgr comm = CommMgr.getCommMgr();
-
-    	//CommMgr.getCommMgr().revMsg();
-    	
-    	/*
-    	try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		}*/
-    	
-    	
-    	
+	
     	//System.out.println(MOVEMENT.print(m) + "" + CommMgr.INSTRUCTIONS);
         //comm.sendMsg(MOVEMENT.print(m) + "" + CommMgr.INSTRUCTIONS);
     	
@@ -443,25 +398,10 @@ public class Robot {
 		
     	System.out.println(String.valueOf(MOVEMENT.print(m)));
 		comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
-    	//CommMgr.getCommMgr().sendMsg(String.valueOf(MOVEMENT.print(m)));
 		
 		System.out.println("Receving");
 		comm.revMsg();
 		System.out.println("Done");
-		
-    	//}
-
-    	//comm.sendMsg("R");
-    	//TODO: revMsg Debug - CommMgr.getCommMgr().revMsg();
-    		
-    	//CommMgr.getCommMgr().revMsg();
-    	/*
-    	try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		}*/
         
         if (m != MOVEMENT.CALIBRATE && sendMoveToAndroid) {
         	System.out.println("m != MOVEMENT.CALIBRATE && sendMoveToAndroid: Robot.java, L273");
@@ -566,27 +506,7 @@ public class Robot {
             System.out.println("GOT SENSOR VALUE: Robot.java, L374");
             System.out.println("Senses Value: "+ msg);
             
-            //else
-            //{
-            	String[] msgArr = msg.split(";");
-            //}
-            
-            
-            //for(String str: msgArr) {
-            //	System.out.println("msgArr: "+ str);
-            //}
-            
-            //TODO: if the result stores value less than 15, the formulated result will give a 0, spawning a obstacle block on the right sensors themselves???
-            //But since 0 its nearest to it, then just spawn infront of the right sensors
-            
-           /* result[0] = (int)(Math.floor(Double.parseDouble(msgArr[0]))+4);
-            result[1] = (int)(Math.floor(Double.parseDouble(msgArr[1]))+5);
-            result[2] = (int)(Math.floor(Double.parseDouble(msgArr[2]))+4);
-            
-            result[3] = (int)(Math.floor(Double.parseDouble(msgArr[3])));
-            result[4] = (int)(Math.floor(Double.parseDouble(msgArr[4])));
-            
-            result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5]))+20);*/
+            String[] msgArr = msg.split(";");
             
             //front +x offsets
             result[0] = Integer.parseInt(msgArr[0]);
@@ -597,12 +517,29 @@ public class Robot {
             result[3] = Integer.parseInt(msgArr[3]);
             result[4] = Integer.parseInt(msgArr[4]);
             
-            result[5] = Integer.parseInt(msgArr[5])+10;
+            result[5] = Integer.parseInt(msgArr[5])+12; // +10 offset if needed
             //result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5]))+9);
             
             //result[5] = Integer.parseInt(msgArr[5]);
             
-            
+            //dhaslie min array function
+            // put result in to respective result
+            /*
+            int front_arr[] = null;
+            for(int i = 0; i < 3; i++) // take in result 0, 1, 2, front sensors value
+            {
+            	front_arr[i] = result[i];
+            }
+            int right_arr[] = null;
+            for(int i = 3; i < 5; i++) // take in result 3, result 4, right sensors value
+            {
+            	right_arr[i] = result[i];
+            }
+            front_min = minValue(front_arr);
+            right_min = minValue(right_arr);
+            */
+            System.out.println("front_min: " + front_min);
+            System.out.println("right_min: " + right_min);
             
             for (int i = 0; i < result.length; i++)
             {
@@ -664,7 +601,6 @@ public class Robot {
             
             //Array Readings:
             //SRFrontLeft, SRFrontCenter, SRFrontRight, SRRight_Top, SRRight_Btm, LRLeft
-            
             System.out.println("SRFrontLeft: " + result[0]);
             System.out.println("SRFrontCenter: " + result[1]);
             System.out.println("SRFrontRight: " + result[2]);
@@ -681,30 +617,47 @@ public class Robot {
             SRFrontLeft.senseReal(explorationMap.gridder, result[0]);
             SRFrontCenter.senseReal(explorationMap.gridder, result[1]);
             SRFrontRight.senseReal(explorationMap.gridder, result[2]);
-            //SRRightFront.senseReal(explorationMap.gridder, result[3]);
-            //SRRightBack.senseReal(explorationMap.gridder, result[4]);
             
             SRRightFront.senseReal(explorationMap.gridder, result[4]);
             SRRightBack.senseReal(explorationMap.gridder, result[3]);
             LRLeft.senseReal(explorationMap.gridder, result[5]);
             
-            //System.out.println("done sensereal: Robot.java, L427");
             counter++;
-            //String[] mapStrings = MapDescriptor.generateMapDescriptor(explorationMap);
-            //System.out.println(mapStrings[0] + " " + mapStrings[1] + " " + CommMgr.MAP_STRINGS);
-            //comm.sendMsg(mapStrings[0] + " " + mapStrings[1] + " " + CommMgr.MAP_STRINGS);
         }
         
         return result;
+    }
+  //dhaslie min array function
+    public int minValue(int arr[])
+    {
+    	System.out.println("enter minValue");
+    	int temp = arr[0]; 
+    	
+    	for(int i = 1; i < arr.length; i++) 
+    	{
+    		System.out.println("in minValue Loop");
+    		if(arr[i] < temp)
+    		{
+    			System.out.println("swap minValue");
+    			temp = arr[i];
+    		}
+    	}
+    	System.out.println("exit minValue");
+    	return temp;
     }
     
     public int setValue(int val) // set value as rounded off function
     {
     	int temp = 0;
-    	//val = (((val+5)%10)*10); // round up to nearest 10
-    	temp = (int) Math.floor(((val +5)/ 10));// if sensor value is divided by 10
-    	//System.out.println("val value: " + val);
-    	//System.out.println("temp value: " + temp);
+    	//huangkai change later
+    	int tmp = val % 10;
+    	if( (tmp == 7) || (tmp==8) || (tmp == 9) || (tmp == 0) || (tmp == 1) || (tmp == 2)){
+    		temp = (int) Math.floor(((val +3)/ 10));// based on arudino reading, if ending is 7,8,9,0,1, round to the closest 10s
+    	}
+    	else{
+    		temp = (int) val/10; // 32-36 will be 30, 37-41 will be 40
+    	}
+    	
     	return temp;
     }
     

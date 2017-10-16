@@ -533,7 +533,9 @@ public class MainFrame extends JFrame {
 				
 				System.out.println("wp_x" + waypoint_x +", wp_y: " + waypoint_y);
 				
-				fastest_wp_Path = new Sprinter(e_Mapper, bot);
+				//additional r_Mapper at the back to test the difference
+				fastest_wp_Path = new Sprinter(e_Mapper, bot, r_Mapper);
+				//fastest_wp_Path = new Sprinter(e_Mapper, bot);
 				fastest_wp_Path.runFastestPath(waypoint_x, waypoint_y);
 
 				System.out.println("\n\nbreaker....");
@@ -547,9 +549,8 @@ public class MainFrame extends JFrame {
 		        if(bot.getRobotCurDir() == DIRECTION.SOUTH)
 		        {
 		        	System.out.println("Turning South to North");
-		        	bot.move(MOVEMENT.RIGHT);//moveBot(MOVEMENT.RIGHT);
-		        	bot.move(MOVEMENT.RIGHT);//moveBot(MOVEMENT.RIGHT);
-		        	//moveBot(MOVEMENT.RIGHT);
+		        	bot.move(MOVEMENT.RIGHT);
+		        	bot.move(MOVEMENT.RIGHT);
 		        }
 		        else if (bot.getRobotCurDir() == DIRECTION.WEST) // if DIRECTION.WEST
 		        {
@@ -568,18 +569,23 @@ public class MainFrame extends JFrame {
 				
 				System.out.println("Waypoint visited \n\n");
 
-				fastest_goal_Path = new Sprinter(e_Mapper, bot);
-				fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
-				//fastest_wp_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+				fastest_goal_Path = new Sprinter(e_Mapper, bot, r_Mapper);
+				
+				String fp = fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+				//send fp to RPI
+				CommMgr.getCommMgr().sendMsg("FP,"+fp);
+				
+				
 				timer.stop();
 				info.append("Time Taken: " + timer.getMinSec() + "\n");
 				
+				/**
 				if(map_Clear == false)
 				{
 					System.out.println("If map is clear, then im here to reverse");
 					map_Clear = true;
 					System.out.println("map cleared is true!");
-				}
+				}**/
 
 				return 222;
 			}
@@ -606,19 +612,6 @@ public class MainFrame extends JFrame {
 					//CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
 				}
 				
-				/**
-				if (realRun) {
-					while (true) {
-						
-						System.out.println("Waiting for FP_START...");
-						info.append("Waiting for FP_START...\n");
-						String msg = comm.revMsg();
-						if (msg.equals(CommMgr.FP_START))
-							break;
-					}
-				}
-				 **/
-
 				exploration.runExploration();
 				
 				timer.stop();

@@ -74,7 +74,7 @@ public class RobotConstants {
                 case CALIBRATE_R:
                 	return 'W';
                 //case FORWARD_M: 
-                //	return 'F';
+                //	return 'U';
                 case ERROR:
                 default:
                     return 'E';

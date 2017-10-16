@@ -280,16 +280,13 @@ public class Sprinter {
         ArrayList<MOVEMENT> movements = new ArrayList<>();
         
         Robot tempBot = null;
-        //System.out.println("My debug codes - goalRow: " + goalRow + " goalCol: " + goalCol + "\n");
-        
-        //int temp_row = map.gridder.get_prev_row();
-        //int temp_col = map.gridder.get_prev_col();
         
         int temp_row = map.bot.getRobotPosRow();
         int temp_col = map.bot.getRobotPosCol();
         
         System.out.println("My debug codes - goalRow: " + goalRow + " goalCol: " + goalCol + "\n");
         System.out.println("My debug codes - temp_goalRow: " + temp_row + " temp_goalCol: " + temp_col + "\n");
+        
         
         if (goalRow == MapConstant.GOAL_Y && goalCol == MapConstant.GOAL_X) 
         {
@@ -387,7 +384,7 @@ public class Sprinter {
 
         System.out.println("\nMovements: " + outputString.toString());
         //TODO: sending string of FP,FFFFFFFFFRFFFFFFFFFFFFLFFFFFFFFFFFR.....
-        CommMgr.getCommMgr().sendMsg("FP,"+outputString.toString());
+        //CommMgr.getCommMgr().sendMsg("FP,"+outputString.toString());
         return outputString.toString();
     }
 

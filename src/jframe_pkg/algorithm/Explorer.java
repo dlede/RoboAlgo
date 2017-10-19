@@ -170,7 +170,7 @@ public class Explorer {
 
             if (bot.getRobotPosRow() == r && bot.getRobotPosCol() == c) { 
             	System.out.println("back at starting point");
-                if (areaExplored >= 200) { // if x amount of cells coverage
+                if (areaExplored >= 50) { // if x amount of cells coverage
                 	
                 	System.out.println("going home");
                 	//goHome();
@@ -182,7 +182,7 @@ public class Explorer {
         //explorationInnerLoop();
         
         //TODO gohome() have an issue, cannot go home, check Sprinter class on the tempbot
-        System.out.println("going home");
+        System.out.println("at home");
         
         
         goHome();
@@ -409,7 +409,7 @@ public class Explorer {
         int botCol = bot.getRobotPosCol();
         return (isExploredNotObstacle(botRow - 1, botCol - 1) && isExploredAndFree(botRow, botCol - 1) && isExploredNotObstacle(botRow + 1, botCol - 1));
     }
-
+    
     /**
      * Returns the robot to START after exploration and points the bot northwards.
      */
@@ -421,9 +421,12 @@ public class Explorer {
             goToGoal.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
         }
         
-        System.out.println("In goHome() of ExplorationAlgo second loop: Explorer.java, L350");
-        Sprinter returnToStart = new Sprinter(exMap, bot, realMap);
-        returnToStart.runFastestPath(RobotConstants.START_ROW, RobotConstants.START_COL);
+        //joey - if touched goal, but did not go back 1st
+        if (bot.getTouchedGoal() && bot.getRobotPosRow()!=RobotConstants.START_ROW && bot.getRobotPosCol()!=RobotConstants.START_COL) {
+            System.out.println("In goHome() of ExplorationAlgo second loop: Explorer.java, L350");
+            Sprinter returnToStart = new Sprinter(exMap, bot, realMap);
+            returnToStart.runFastestPath(RobotConstants.START_ROW, RobotConstants.START_COL);
+        }
 
         System.out.println("Exploration complete!");
         areaExplored = calculateAreaExplored();
@@ -431,14 +434,18 @@ public class Explorer {
         System.out.println(", " + areaExplored + " Cells");
         System.out.println((System.currentTimeMillis() - startTime) / 1000 + " Seconds");
 
+        System.out.println("I'm here, goHome before getRealbot");
         if (bot.getRealBot()) {
+        	System.out.println("goHome: inside getRealbot");
             turnBotDirection(DIRECTION.WEST);
             moveBot(MOVEMENT.CALIBRATE);
+            System.out.println("calibrating?");
             turnBotDirection(DIRECTION.SOUTH);
             moveBot(MOVEMENT.CALIBRATE);
             turnBotDirection(DIRECTION.WEST);
             moveBot(MOVEMENT.CALIBRATE);
         }
+        System.out.println("I'm here, goHome before Direction thingy");
         turnBotDirection(DIRECTION.NORTH);
         if(bot.getRobotCurDir() == DIRECTION.SOUTH)
         {

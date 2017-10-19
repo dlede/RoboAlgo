@@ -55,10 +55,14 @@ public class Robot {
 	public int right_average = 0;
     public int front_min = 0;
     public int right_min = 0;
+    private int front_arr[] = null;
+    private int right_arr[] = null;
 	
     public int sr_FrontLeft_value;       // north-facing front-left SR value for comparing
     public int sr_FrontCenter_value;     // north-facing front-center SR value for comparing
     public int sr_FrontRight_value;      // north-facing front-right SR	value for comparing
+    public int sr_RightTop_value;
+    public int sr_RightBtm_value;
 	
 	private MOVEMENT prev_mov;
 	private int fwdblock_count;
@@ -119,10 +123,10 @@ public class Robot {
     //hk check if reached goal
 
     private void updateTouchedGoal() {
-    	System.out.println("inupdategoaltouch");
+    	//System.out.println("inupdategoaltouch");
         if (this.getRobotPosRow() == MapConstant.GOAL_Y && this.getRobotPosCol() == MapConstant.GOAL_X)
             this.touchedGoal = true;
-        System.out.println("outupdategoaltouch");
+        //System.out.println("outupdategoaltouch");
     }
 
     public boolean getTouchedGoal() {
@@ -306,7 +310,7 @@ public class Robot {
         field_cp.setText("Row : " + posRow + ", Col: " + posCol);
         monitorScreen.append("Move: " + MOVEMENT.print(m) + "\n");
         
-        System.out.println("Row : " + posRow + ", Col: " + posCol);
+        //System.out.println("Row : " + posRow + ", Col: " + posCol);
         
         updateTouchedGoal();
     }
@@ -314,7 +318,7 @@ public class Robot {
     public void setfwdblock_count(int fwd)
     {
     	this.fwdblock_count = fwd;
-    	System.out.println("fwdblock_count: " + fwdblock_count);
+    	//System.out.println("fwdblock_count: " + fwdblock_count);
     }
     
     /**
@@ -328,17 +332,17 @@ public class Robot {
      * Sends a number instead of 'F' for multiple continuous forward movements.
      */
     public void moveForwardMultiple(int count) {
-    	System.out.println("inside moveForwardMultiple function");
+    	//System.out.println("inside moveForwardMultiple function");
         if (count == 1) {
             move(MOVEMENT.FORWARD);
         } else {
             CommMgr comm = CommMgr.getCommMgr();
             if (count >= 5) {
-                System.out.println("if front_min >= 5");
+                //System.out.println("if front_min >= 5");
                 comm.sendMsg("U,"+ 4); // max furthest distance covered in straight line is 40cm
                 //comm.sendMsg("0" + "" + CommMgr.INSTRUCTIONS);
             } else if (count < 5) {
-            	System.out.println("if front_min < 5");
+            	//System.out.println("if front_min < 5");
             	comm.sendMsg("U,"+ front_min);
             	//comm.sendMsg(Integer.toString(count) + "" +  CommMgr.INSTRUCTIONS);
             }
@@ -400,11 +404,25 @@ public class Robot {
 		comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
 		
 		System.out.println("Receving");
-		comm.revMsg();
+		
+		while(true) {
+		
+			String msg = comm.revMsg();
+			
+			if (msg.equals("!")) //break when done 
+            {
+            	//System.out.println("im here2: Explorer.java, L97");
+            	break;
+            }
+			
+			
+		}
+		
+		
 		System.out.println("Done");
         
         if (m != MOVEMENT.CALIBRATE && sendMoveToAndroid) {
-        	System.out.println("m != MOVEMENT.CALIBRATE && sendMoveToAndroid: Robot.java, L273");
+        	//System.out.println("m != MOVEMENT.CALIBRATE && sendMoveToAndroid: Robot.java, L273");
         	//System.out.println(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
         	//comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
         }
@@ -415,7 +433,7 @@ public class Robot {
      * Sets the sensors' position and direction values according to the robot's current position and direction.
      */
     public void setSensors() {
-    	System.out.println("set Sensors, directions: " + robotDir + ": Robot.java, L284");
+    	//System.out.println("set Sensors, directions: " + robotDir + ": Robot.java, L284");
         switch (robotDir) {
         
         case NORTH:
@@ -494,16 +512,22 @@ public class Robot {
         
         
         else {
-        	System.out.println("Getting sensors counter: " + counter + ": Robot.java, L360");
+        	//System.out.println("Getting sensors counter: " + counter + ": Robot.java, L360");
             this.comm.sendMsg("GET SENSOR");
-            System.out.println("SENSOR MSG SENT: Robot.java, L362");
-
-            
-            
+            //System.out.println("SENSOR MSG SENT: Robot.java, L362");
             System.out.println("WAITING FOR SENSOR VALUE: Robot.java, L371");
-            String msg = comm.revMsg();
+            
+            String msg;
 
-            System.out.println("GOT SENSOR VALUE: Robot.java, L374");
+            while (true) {
+            	msg = comm.revMsg(); 
+				if (!msg.equals("!"))
+				{
+					break;
+				}
+			}
+
+            //System.out.println("GOT SENSOR VALUE: Robot.java, L374");
             System.out.println("Senses Value: "+ msg);
             
             String[] msgArr = msg.split(";");
@@ -522,98 +546,30 @@ public class Robot {
             
             //result[5] = Integer.parseInt(msgArr[5]);
             
-            //dhaslie min array function
-            // put result in to respective result
-            /*
-            int front_arr[] = null;
-            for(int i = 0; i < 3; i++) // take in result 0, 1, 2, front sensors value
-            {
-            	front_arr[i] = result[i];
-            }
-            int right_arr[] = null;
-            for(int i = 3; i < 5; i++) // take in result 3, result 4, right sensors value
-            {
-            	right_arr[i] = result[i];
-            }
-            front_min = minValue(front_arr);
-            right_min = minValue(right_arr);
-            */
-            System.out.println("front_min: " + front_min);
-            System.out.println("right_min: " + right_min);
+            //Dhaslie for comparing front sensors, raw value
+            sr_FrontLeft_value = result[0];    
+            sr_FrontCenter_value = result[1]; 
+            sr_FrontRight_value = result[2];
+            
+            sr_RightTop_value = result[3];
+            sr_RightBtm_value = result[4];
+            //Dhaslie
             
             for (int i = 0; i < result.length; i++)
             {
             	//System.out.println("result: " + i);
             	result[i] = setValue(result[i]);
             }
-            //huangkai
-            //Finding is any sensors have a far block detected, take the nearest block averages
-            if (result[0] > 5 || result[1] > 5 || result[2] > 5 )
-            {
-            	if (result[0] > 5 && result[1] > 5) 
-            	{
-            		front_average = averageSense(result[2]);
-            	}
-            	else if (result[1] > 5 && result[2] > 5)
-            	{
-            		front_average = averageSense(result[0]);
-            	}
-            	else if (result[0] > 5 && result[2] > 5)
-            	{
-            		front_average = averageSense(result[1]);
-            	}
-            	else if (result[0] > 5)
-            	{
-            		front_average = averageSense((result[1] + result[2])/2);
-            	}
-            	else if (result[1] > 5)
-            	{
-            		front_average = averageSense((result[0] + result[2])/2);
-            	}
-            	else //result[2] > 50
-            	{
-            		front_average = averageSense((result[1] + result[0])/2);
-            	}
-            }
-            else
-            {
-            	front_average = averageSense((result[0] + result[1] + result[2])/3);
-            }
-            
-            if (result[3] > 5 || result[4] > 5)
-            {
-            	if (result[3] > 5)
-            	{
-            		right_average = averageSense(result[4]);
-            	}
-            	else
-            	{
-            		right_average = averageSense(result[3]);
-            	}
-            }
-            else
-            {
-            	right_average = averageSense((result[3] + result[4]/2));
-            }
-            
-            System.out.println("front average: " + front_average);
-            System.out.println("right average: " + right_average);
             
             //Array Readings:
             //SRFrontLeft, SRFrontCenter, SRFrontRight, SRRight_Top, SRRight_Btm, LRLeft
-            System.out.println("SRFrontLeft: " + result[0]);
+            /*System.out.println("SRFrontLeft: " + result[0]);
             System.out.println("SRFrontCenter: " + result[1]);
             System.out.println("SRFrontRight: " + result[2]);
             System.out.println("SRRight_Top: " + result[3]);
             System.out.println("SRRight_Btm: " + result[4]);
             System.out.println("LRLeft: " + result[5]);
-
-            //Dhaslie for comparing front sensors
-            sr_FrontLeft_value = result[0];    
-            sr_FrontCenter_value = result[1]; 
-            sr_FrontRight_value = result[2];
-            //Dhaslie
-            
+            */
             SRFrontLeft.senseReal(explorationMap.gridder, result[0]);
             SRFrontCenter.senseReal(explorationMap.gridder, result[1]);
             SRFrontRight.senseReal(explorationMap.gridder, result[2]);
@@ -625,24 +581,37 @@ public class Robot {
             counter++;
         }
         
+      //dhas test send extra sensor reading
+        this.comm.sendMsg("G");
+        
         return result;
     }
+    
+    public boolean rangeValue(int target, int lower_range, int upper_range)
+    {
+    	if (target < upper_range && target > lower_range )
+    	{
+    		return true;
+    	}
+    	return false;
+    }
+    
   //dhaslie min array function
     public int minValue(int arr[])
     {
-    	System.out.println("enter minValue");
+    	//System.out.println("enter minValue");
     	int temp = arr[0]; 
     	
     	for(int i = 1; i < arr.length; i++) 
     	{
-    		System.out.println("in minValue Loop");
+    		//System.out.println("in minValue Loop");
     		if(arr[i] < temp)
     		{
-    			System.out.println("swap minValue");
+    			//System.out.println("swap minValue");
     			temp = arr[i];
     		}
     	}
-    	System.out.println("exit minValue");
+    	//System.out.println("exit minValue");
     	return temp;
     }
     
@@ -651,8 +620,8 @@ public class Robot {
     	int temp = 0;
     	//huangkai change later
     	int tmp = val % 10;
-    	if( (tmp == 7) || (tmp==8) || (tmp == 9) || (tmp == 0) || (tmp == 1) || (tmp == 2)){
-    		temp = (int) Math.floor(((val +3)/ 10));// based on arudino reading, if ending is 7,8,9,0,1, round to the closest 10s
+    	if( (tmp == 5) ||(tmp == 6)|| (tmp == 7) || (tmp==8) || (tmp == 9)){
+    		temp = (int) Math.floor(((val +5)/ 10));// based on arudino reading, if ending is 7,8,9,0,1, round to the closest 10s
     	}
     	else{
     		temp = (int) val/10; // 32-36 will be 30, 37-41 will be 40

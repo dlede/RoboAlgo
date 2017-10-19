@@ -173,9 +173,11 @@ public class Sprinter {
      * Find the fastest path from the robot's current position to [goalRow, goalCol].
      */
     public String runFastestPath(int goalRow, int goalCol) {
-        System.out.println("Calculating fastest path from (" + current.get_x() + ", " + current.get_y() + ") to goal (" + goalRow + ", " + goalCol + ")...");
+        
+    	System.out.println("Calculating fastest path from (" + current.get_x() + ", " + current.get_y() + ") to goal (" + goalRow + ", " + goalCol + ")...");
 
         Stack<Cell> path;
+        
         do {
             loopCount++;
 
@@ -284,8 +286,8 @@ public class Sprinter {
         int temp_row = map.bot.getRobotPosRow();
         int temp_col = map.bot.getRobotPosCol();
         
-        System.out.println("My debug codes - goalRow: " + goalRow + " goalCol: " + goalCol + "\n");
-        System.out.println("My debug codes - temp_goalRow: " + temp_row + " temp_goalCol: " + temp_col + "\n");
+        //System.out.println("My debug codes - goalRow: " + goalRow + " goalCol: " + goalCol + "\n");
+        //System.out.println("My debug codes - temp_goalRow: " + temp_row + " temp_goalCol: " + temp_col + "\n");
         
         
         if (goalRow == MapConstant.GOAL_Y && goalCol == MapConstant.GOAL_X) 
@@ -331,8 +333,11 @@ public class Sprinter {
             outputString.append(MOVEMENT.print(m));
         }
 
-        if (!bot.getRealBot() || explorationMode) {
+        //we already have the fastest path in outputString, we dont have to go through the bottom codes - Joey
+        
+/*        if (!bot.getRealBot() || explorationMode) {
         	System.out.println("in HK first Loop!");
+        	
             for (MOVEMENT x : movements) {
                 if (x == MOVEMENT.FORWARD) {
                     if (!canMoveForward()) {
@@ -341,6 +346,9 @@ public class Sprinter {
                     }
                 }
                 	
+                System.out.println("Going to bot.move(x)");
+                System.out.println("What is x?");
+                System.out.println(x.toString());
                 bot.move(x);
                 //here HK
                 
@@ -381,7 +389,46 @@ public class Sprinter {
                 map.repaint();
             }
         }
+*/
+        
+        
+        //fastest path, move forward multiple steps - Joey
+        
+/*        	int fCount = 0;
 
+        	for (MOVEMENT x : movements) {
+                if (x == MOVEMENT.FORWARD) {
+                    fCount++;
+                } else if (x == MOVEMENT.RIGHT || x == MOVEMENT.LEFT) {
+                    
+                	if (fCount > 0) {
+                        
+                		CommMgr.getCommMgr().sendMsg("U,"+fCount);
+                        fCount = 0;
+                        //acknowledgement
+                    	while(true)
+            	   		{
+            	   			String doneMsg = CommMgr.getCommMgr().revMsg(); 
+            	   			if (doneMsg.equals("!")) 
+            	   				break;
+            	   		} 
+                        
+                        
+                	}
+                	//send to move either left or right
+                	CommMgr.getCommMgr().sendMsg(String.valueOf(MOVEMENT.print(x)));
+                    
+                	//acknowledgement
+                	while(true)
+        	   		{
+        	   			String doneMsg = CommMgr.getCommMgr().revMsg(); 
+        	   			if (doneMsg.equals("!")) 
+        	   				break;
+        	   		}
+                	
+                }
+        	}*/
+        
         System.out.println("\nMovements: " + outputString.toString());
         //TODO: sending string of FP,FFFFFFFFFRFFFFFFFFFFFFLFFFFFFFFFFFR.....
         //CommMgr.getCommMgr().sendMsg("FP,"+outputString.toString());

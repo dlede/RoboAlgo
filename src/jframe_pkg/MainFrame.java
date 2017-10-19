@@ -545,8 +545,10 @@ public class MainFrame extends JFrame {
 				bot.setRobotPos(waypoint_x, waypoint_y);
 				bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
 
-				//TODO: get robot direction and send as robot
-		        if(bot.getRobotCurDir() == DIRECTION.SOUTH)
+				
+				//Can we just change the direction of the robot for fastest path?
+				//TODO: get robot direction and send as robot 
+		       /* if(bot.getRobotCurDir() == DIRECTION.SOUTH)
 		        {
 		        	System.out.println("Turning South to North");
 		        	bot.move(MOVEMENT.RIGHT);
@@ -565,13 +567,14 @@ public class MainFrame extends JFrame {
 		        else
 		        {
 		        	System.out.println("Already in North");
-		        }
+		        }*/
 				
 				System.out.println("Waypoint visited \n\n");
 
 				fastest_goal_Path = new Sprinter(e_Mapper, bot, r_Mapper);
 				
 				String fp = fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+				
 				//send fp to RPI
 				CommMgr.getCommMgr().sendMsg("FP,"+fp);
 				
@@ -613,6 +616,8 @@ public class MainFrame extends JFrame {
 				}
 				
 				exploration.runExploration();
+				
+				System.out.println("DONE WITH EXPLORATION, STOP TIMER, GOING FP");
 				
 				timer.stop();
 				info.append("Time Taken: " + timer.getMinSec() + "\n");

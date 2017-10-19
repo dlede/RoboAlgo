@@ -7,6 +7,8 @@ package jframe_pkg.robot;
  */
 
 public class RobotConstants {
+    //public static final int GOAL_ROW = 4;                          // row no. of goal cell
+    //public static final int GOAL_COL = 9;                          // col no. of goal cell
     public static final int GOAL_ROW = 18;                          // row no. of goal cell
     public static final int GOAL_COL = 13;                          // col no. of goal cell
     public static final int START_ROW = 1;                          // row no. of start cell

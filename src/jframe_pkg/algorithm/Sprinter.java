@@ -394,7 +394,7 @@ public class Sprinter {
         
         //fastest path, move forward multiple steps - Joey
         
-/*        	int fCount = 0;
+        	int fCount = 0;
 
         	for (MOVEMENT x : movements) {
                 if (x == MOVEMENT.FORWARD) {
@@ -427,9 +427,15 @@ public class Sprinter {
         	   		}
                 	
                 }
-        	}*/
+        	}
         
+        	
+        	
         System.out.println("\nMovements: " + outputString.toString());
+        
+        
+        
+        
         //TODO: sending string of FP,FFFFFFFFFRFFFFFFFFFFFFLFFFFFFFFFFFR.....
         //CommMgr.getCommMgr().sendMsg("FP,"+outputString.toString());
         return outputString.toString();

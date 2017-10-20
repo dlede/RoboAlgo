@@ -141,14 +141,14 @@ public class Explorer {
             //send map to android every move
 			String[] gmd = generateMapDescriptor(exMap);
 			//System.out.println(Arrays.toString(gmd));
-			//System.out.println(gmd[0]);
-			//System.out.println(gmd[1]);
+			System.out.println(gmd[0]);
+			System.out.println(gmd[1]);
 			
 			//send to rpi, map stuffs
 			//CommMgr.getCommMgr().sendMsg("UM,"+ gmd[0]);
 			
 			String msg_to_bt = "1" + gmd[0] +"!1" + gmd[1];
-			System.out.println(msg_to_bt);
+			//System.out.println(msg_to_bt);
 			
 			CommMgr.getCommMgr().sendMsg("UM,"+ msg_to_bt);
 								
@@ -194,7 +194,7 @@ public class Explorer {
 
             if (bot.getRobotPosRow() == r && bot.getRobotPosCol() == c) { 
             	//System.out.println("back at starting point");
-                if (areaExplored >= 150) { // if x amount of cells coverage
+                if (areaExplored >= 50) { // if x amount of cells coverage
                 	
                 	System.out.println("going home");
                 	//goHome();

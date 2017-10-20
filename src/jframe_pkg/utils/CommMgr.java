@@ -128,6 +128,8 @@ public class CommMgr {
 	//send msg to RPI
 	public void sendMsg(String msgToRPI) {
 
+		
+		System.out.println(msgToRPI);
 		// Scanner in = new Scanner(System.in);
 		// String msgToRPI;
 		// System.out.println("Input message to android");

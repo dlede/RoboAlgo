@@ -535,9 +535,13 @@ public class MainFrame extends JFrame {
 				
 				//additional r_Mapper at the back to test the difference
 				fastest_wp_Path = new Sprinter(e_Mapper, bot, r_Mapper);
+				
 				//fastest_wp_Path = new Sprinter(e_Mapper, bot);
-				fastest_wp_Path.runFastestPath(waypoint_x, waypoint_y);
-
+				String fpwp = fastest_wp_Path.runFastestPath(waypoint_x, waypoint_y);
+				
+				//send fp to RPI
+				//CommMgr.getCommMgr().sendMsg("FP,"+fpwp);
+				
 				System.out.println("\n\nbreaker....");
 				System.out.println("breaker....");
 				System.out.println("breaker.... \n\n");
@@ -573,10 +577,10 @@ public class MainFrame extends JFrame {
 
 				fastest_goal_Path = new Sprinter(e_Mapper, bot, r_Mapper);
 				
-				String fp = fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+				String fpg = fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
 				
 				//send fp to RPI
-				CommMgr.getCommMgr().sendMsg("FP,"+fp);
+				//CommMgr.getCommMgr().sendMsg("FP,"+fpg);
 				
 				
 				timer.stop();

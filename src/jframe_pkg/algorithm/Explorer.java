@@ -687,51 +687,47 @@ public class Explorer {
         		
         	}
         }*/
-
         
-        // huangkai at here its calibrate
-        if (bot.getRealBot() && !calibrationMode) {
-        	
-        	//System.out.println("Checking before canCaibrateOnTheSpot");
-        	
-        	calibrationMode = true;
-            
-        	
-            //only checks front
-            if (canCalibrateOnTheSpot(bot.getRobotCurDir())) {
-
-                //lastCalibrate = 0;
-                //if front sensor have near reading
-            	//System.out.println("bot.sr_FrontLeft_value: " + bot.sr_FrontLeft_value);
-            	//System.out.println("bot.sr_FrontCenter_value: " + bot.sr_FrontCenter_value);
-            	//System.out.println("bot.sr_FrontRight_value: " + bot.sr_FrontRight_value);
-            	
-            	if(bot.sr_FrontLeft_value < 10 || bot.sr_FrontCenter_value < 10 || bot.sr_FrontRight_value < 10)
-            	{
-            		//front is near or corner cases where right wall hug
-            		System.out.println("huang kai front calibrate");
-                    moveBot(MOVEMENT.CALIBRATE);
-                    calibrated=true;
-                    //huangkai_turns =0;
-                    //added this - joey
-                    move_counter = 0;
-                }
-            }
-            
-            else if(canCalibrateOnTheRight(bot.getRobotCurDir())){
-            	if(bot.sr_RightBtm_value < 10 || bot.sr_RightTop_value < 10)
-            	{
-            		if (calibrated == false) {
-            		System.out.println("huang kai right calibrate");
-            		moveBot(MOVEMENT.CALIBRATE_R);
-            		calibrated = true;
-            		move_counter =0;
-            		}	
-            	}
-            }
-        calibrationMode = false;
-    }
-        //System.out.println("out of movebot(): Explorer.java, L571");
+        //commented by dhaslie
+	        /**
+	        // huangkai at here its calibrate
+	        if (bot.getRealBot() && !calibrationMode) {
+	        	calibrationMode = true;
+	            //only checks front
+	            if (canCalibrateOnTheSpot(bot.getRobotCurDir())) {
+	
+	                //lastCalibrate = 0;
+	                //if front sensor have near reading
+	            	//System.out.println("bot.sr_FrontLeft_value: " + bot.sr_FrontLeft_value);
+	            	//System.out.println("bot.sr_FrontCenter_value: " + bot.sr_FrontCenter_value);
+	            	//System.out.println("bot.sr_FrontRight_value: " + bot.sr_FrontRight_value);
+	            	
+	            	if(bot.sr_FrontLeft_value < 10 || bot.sr_FrontCenter_value < 10 || bot.sr_FrontRight_value < 10)
+	            	{
+	            		//front is near or corner cases where right wall hug
+	            		System.out.println("huang kai front calibrate");
+	                    moveBot(MOVEMENT.CALIBRATE);
+	                    calibrated=true;
+	                    //huangkai_turns =0;
+	                    //added this - joey
+	                    move_counter = 0;
+	                }
+	            }
+	            
+	            else if(canCalibrateOnTheRight(bot.getRobotCurDir())){
+	            	if(bot.sr_RightBtm_value < 10 || bot.sr_RightTop_value < 10)
+	            	{
+	            		if (calibrated == false) {
+	            		System.out.println("huang kai right calibrate");
+	            		moveBot(MOVEMENT.CALIBRATE_R);
+	            		calibrated = true;
+	            		move_counter =0;
+	            		}	
+	            	}
+	            }
+	        calibrationMode = false;
+	    }
+	    **/
     }
 
     /**

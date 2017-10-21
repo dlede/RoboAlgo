@@ -541,7 +541,7 @@ public class Robot {
             result[3] = Integer.parseInt(msgArr[3]);
             result[4] = Integer.parseInt(msgArr[4]);
             
-            result[5] = Integer.parseInt(msgArr[5])+12; // +10 offset if needed
+            result[5] = Integer.parseInt(msgArr[5]) +10; // +10 offset if needed huang kai remove +12 weird
             //result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5]))+9);
             
             //result[5] = Integer.parseInt(msgArr[5]);
@@ -551,8 +551,8 @@ public class Robot {
             sr_FrontCenter_value = result[1]; 
             sr_FrontRight_value = result[2];
             
-            sr_RightTop_value = result[3];
-            sr_RightBtm_value = result[4];
+            sr_RightTop_value = result[4]; //hk sensor 3
+            sr_RightBtm_value = result[3];
             //Dhaslie
             
             for (int i = 0; i < result.length; i++)
@@ -561,15 +561,6 @@ public class Robot {
             	result[i] = setValue(result[i]);
             }
             
-            //Array Readings:
-            //SRFrontLeft, SRFrontCenter, SRFrontRight, SRRight_Top, SRRight_Btm, LRLeft
-            /*System.out.println("SRFrontLeft: " + result[0]);
-            System.out.println("SRFrontCenter: " + result[1]);
-            System.out.println("SRFrontRight: " + result[2]);
-            System.out.println("SRRight_Top: " + result[3]);
-            System.out.println("SRRight_Btm: " + result[4]);
-            System.out.println("LRLeft: " + result[5]);
-            */
             SRFrontLeft.senseReal(explorationMap.gridder, result[0]);
             SRFrontCenter.senseReal(explorationMap.gridder, result[1]);
             SRFrontRight.senseReal(explorationMap.gridder, result[2]);

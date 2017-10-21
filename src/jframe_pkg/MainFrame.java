@@ -62,7 +62,7 @@ public class MainFrame extends JFrame {
 
 	private static JLabel map_label, wp_label, spd_label, timer_label, cp_label, exp_label, auto_label, msg_label;
 	private static JTextField map_field, field_spd, field_timer, field_cp, msg_field, field_x, field_y;
-	private static JButton btn_Waypoints, btn_LoadMap, reset_button, btn_Reset, btn_MsgSend; //btn_NxtStep
+	private static JButton btn_Waypoints, btn_LoadMap, reset_button, btn_Reset, btn_MsgSend; // btn_NxtStep
 
 	private static JPanel _monitor = null; // JPanel for monitor
 
@@ -94,7 +94,7 @@ public class MainFrame extends JFrame {
 	private static int coverageLimit = 300; // TODO: coverage limit
 
 	private static final CommMgr comm = CommMgr.getCommMgr();
-	
+
 	private static final boolean realRun = true;
 
 	private static boolean auto_mode = false; // auto mode false = manual, can
@@ -107,8 +107,8 @@ public class MainFrame extends JFrame {
 		if (realRun) {
 			try {
 				comm.setUpConnection(); // ip address and
-															// port on rpi3
-				//comm.sendMsg("hello");
+										// port on rpi3
+				// comm.sendMsg("hello");
 			} catch (UnknownHostException e) {
 				// Auto-generated catch block
 				e.printStackTrace();
@@ -157,7 +157,7 @@ public class MainFrame extends JFrame {
 		initToggleLayout();
 
 		// Add _mapCards & _settings to the main frame's content pane
-		//Container contentPane = _appFrame.getContentPane();
+		// Container contentPane = _appFrame.getContentPane();
 
 		_appFrame.setLayout(new BorderLayout());
 
@@ -185,16 +185,15 @@ public class MainFrame extends JFrame {
 			cl.show(_mapCards, "EXPLORATION");
 		}
 	}
-	
-	private static void resetMainLayout()
-	{
+
+	private static void resetMainLayout() {
 		if (!realRun) {
 			r_Mapper = new Mapper(bot);
 			r_Mapper.gridder.setAllUnexplored();
 		}
 		e_Mapper = new Mapper(bot); // argument bot
 		e_Mapper.gridder.setAllUnexplored();
-		
+
 		_mapCards.remove(r_Mapper);
 		_mapCards.remove(e_Mapper);
 		initMainLayout();
@@ -211,7 +210,7 @@ public class MainFrame extends JFrame {
 		addLoadMapButton();
 		addTimerPanel();
 		addResetButton();
-		//addSendMsgButton();
+		// addSendMsgButton();
 	}
 
 	private static void formatButton(JButton btn) {
@@ -229,15 +228,14 @@ public class MainFrame extends JFrame {
 			map_field.setMaximumSize(map_field.getPreferredSize());
 			btn_LoadMap = new JButton("Load Map");
 			formatButton(btn_LoadMap);
-			
-			String dir = System.getProperty("user.dir") + "/maps/"; 
+
+			String dir = System.getProperty("user.dir") + "/maps/";
 
 			btn_LoadMap.addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
 					File file = new File(dir + map_field.getText() + ".txt");
-					//System.out.println(file.getPath());
-					if (file.exists())
-					{
+					// System.out.println(file.getPath());
+					if (file.exists()) {
 						System.out.println("The Path is: " + file.getPath());
 						btn_LoadMap.setVisible(false);
 						loadMapFromDisk(r_Mapper, map_field.getText());
@@ -247,9 +245,7 @@ public class MainFrame extends JFrame {
 						map_Load = true;
 						System.out.println("Map Loaded: " + map_Load);
 						info.append("Map Loaded: " + map_Load + "\n");
-					}
-					else
-					{
+					} else {
 						System.out.println("The Path is: " + file.getPath());
 						System.out.println("Map does not exist, try again");
 						map_field.setText("");
@@ -271,7 +267,7 @@ public class MainFrame extends JFrame {
 			_settings.setVisible(true);
 		}
 	}
-	
+
 	private static void addResetButton() {
 		if (!realRun) {
 			btn_Reset = new JButton("Reset Map");
@@ -280,24 +276,23 @@ public class MainFrame extends JFrame {
 			btn_Reset.addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
 					System.out.println("Reset Map");
-					if(map_Clear == true)
-					{
+					if (map_Clear == true) {
 						System.out.println("\n\nSince map is cleared, reset possible");
 						map_Clear = false;
 						map_Load = false;
 						System.out.println("\nmap loaded is reset!");
 						System.out.println("\nmap cleared is reset!");
-						
+
 						btn_LoadMap.setVisible(true);
 						System.out.println("\nmap can now be loaded!");
-						
+
 						resetMainLayout();
-						
+
 						loadMapFromDisk(r_Mapper, "clean_map");
 						CardLayout cl = ((CardLayout) _mapCards.getLayout());
 						cl.show(_mapCards, "EXPLORATION_MAP");
 						e_Mapper.repaint();
-						
+
 						System.out.println("\nexplicitly reset the map to null");
 					}
 				}
@@ -441,7 +436,7 @@ public class MainFrame extends JFrame {
 		_monitor.setBorder(new EmptyBorder(40, 20, 40, 0));
 
 		addConsolePanel();
-		//addNxtStepPanel();
+		// addNxtStepPanel();
 		addCurPosPanel();
 	}
 
@@ -477,7 +472,7 @@ public class MainFrame extends JFrame {
 
 	private static void addCurPosPanel() {
 
-		//JPanel cp_panel = new JPanel(new GridLayout(0, 1));
+		// JPanel cp_panel = new JPanel(new GridLayout(0, 1));
 
 		// Current Position Info
 		cp_label = new JLabel("Current Position: ");
@@ -510,8 +505,10 @@ public class MainFrame extends JFrame {
 		// FastestPath Class for Multithreading
 		class FastestPath extends SwingWorker<Integer, String> {
 			protected Integer doInBackground() throws Exception {
-				//final String text_x = field_x.getText();
-				//final String text_y = field_y.getText();
+				// final String text_x = field_x.getText();
+				// final String text_y = field_y.getText();
+
+				String wpg_instr = "";
 
 				bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
 				e_Mapper.repaint();
@@ -521,8 +518,7 @@ public class MainFrame extends JFrame {
 						System.out.println("Waiting for FP_START...");
 						info.append("Waiting for FP_START...\n");
 						String msg = comm.revMsg(); // "FP_START"
-						if (msg.equals(CommMgr.FP_START))
-						{
+						if (msg.equals(CommMgr.FP_START)) {
 							break;
 						}
 					}
@@ -530,69 +526,140 @@ public class MainFrame extends JFrame {
 
 				int waypoint_x = e_Mapper.gridder.wp_x();
 				int waypoint_y = e_Mapper.gridder.wp_y();
-				
-				System.out.println("wp_x" + waypoint_x +", wp_y: " + waypoint_y);
-				
-				//additional r_Mapper at the back to test the difference
+
+				System.out.println("wp_x" + waypoint_x + ", wp_y: " + waypoint_y);
+
+				// additional r_Mapper at the back to test the difference
 				fastest_wp_Path = new Sprinter(e_Mapper, bot, r_Mapper);
-				
-				//fastest_wp_Path = new Sprinter(e_Mapper, bot);
+
+				// fastest_wp_Path = new Sprinter(e_Mapper, bot);
 				String fpwp = fastest_wp_Path.runFastestPath(waypoint_x, waypoint_y);
-				
-				//send fp to RPI
-				//CommMgr.getCommMgr().sendMsg("FP,"+fpwp);
-				
-				System.out.println("\n\nbreaker....");
-				System.out.println("breaker....");
-				System.out.println("breaker.... \n\n");
+
+				// send fp to RPI
+				// CommMgr.getCommMgr().sendMsg("FP,"+fpwp);
+
+				// System.out.println("\n\nbreaker....");
+				// System.out.println("breaker....");
+				// System.out.println("breaker.... \n\n");
 
 				bot.setRobotPos(waypoint_x, waypoint_y);
-				bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
+				//bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
 
-				
-				//Can we just change the direction of the robot for fastest path?
-				//TODO: get robot direction and send as robot 
-		       /* if(bot.getRobotCurDir() == DIRECTION.SOUTH)
-		        {
-		        	System.out.println("Turning South to North");
-		        	bot.move(MOVEMENT.RIGHT);
-		        	bot.move(MOVEMENT.RIGHT);
-		        }
-		        else if (bot.getRobotCurDir() == DIRECTION.WEST) // if DIRECTION.WEST
-		        {
-		        	System.out.println("Turning West to North");
-		        	bot.move(MOVEMENT.RIGHT);
-		        }
-		        else if (bot.getRobotCurDir() == DIRECTION.EAST)
-		        {
-		        	System.out.println("Turning East to North");
-		        	bot.move(MOVEMENT.LEFT);
-		        }
-		        else
-		        {
-		        	System.out.println("Already in North");
-		        }*/
-				
+				// Can we just change the direction of the robot for fastest path?
+				// TODO: get robot direction and send as robot
+				/*
+				 * if(bot.getRobotCurDir() == DIRECTION.SOUTH) {
+				 * System.out.println("Turning South to North"); bot.move(MOVEMENT.RIGHT);
+				 * bot.move(MOVEMENT.RIGHT); } else if (bot.getRobotCurDir() == DIRECTION.WEST)
+				 * // if DIRECTION.WEST { System.out.println("Turning West to North");
+				 * bot.move(MOVEMENT.RIGHT); } else if (bot.getRobotCurDir() == DIRECTION.EAST)
+				 * { System.out.println("Turning East to North"); bot.move(MOVEMENT.LEFT); }
+				 * else { System.out.println("Already in North"); }
+				 */
+
 				System.out.println("Waypoint visited \n\n");
 
 				fastest_goal_Path = new Sprinter(e_Mapper, bot, r_Mapper);
-				
+
 				String fpg = fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
+
+				//dhaslie add a few instruction to make it go north
 				
-				//send fp to RPI
-				//CommMgr.getCommMgr().sendMsg("FP,"+fpg);
 				
-				
+				// dhaslie added send long string from start, to waypoint to goal
+				wpg_instr = fpwp + fpg;
+
+				System.out.println("appended instruction FP string: " + wpg_instr);
+
+				// send fp to RPI
+				int fCount = 0;
+
+				for (int i = 0; i < wpg_instr.length(); i++) {
+
+					String curMove = Character.toString(wpg_instr.charAt(i));
+
+					if(i == fpwp.length())
+					{
+						 if(bot.getRobotCurDir() == DIRECTION.SOUTH) {
+							 System.out.println("Turning South to North"); 
+							 //bot.move(MOVEMENT.RIGHT);
+							 CommMgr.getCommMgr().sendMsg("R");
+							 //bot.move(MOVEMENT.RIGHT); 
+							 CommMgr.getCommMgr().sendMsg("R");
+						 } else if (bot.getRobotCurDir() == DIRECTION.WEST)// if DIRECTION.WEST 
+						 { 
+							 System.out.println("Turning West to North");
+							 //bot.move(MOVEMENT.RIGHT); 
+							 CommMgr.getCommMgr().sendMsg("R");
+						 } 
+						 else if (bot.getRobotCurDir() == DIRECTION.EAST)
+						 { 
+							 System.out.println("Turning East to North"); 
+							 CommMgr.getCommMgr().sendMsg("L");
+							 //bot.move(MOVEMENT.LEFT); 
+						 }
+						 else 
+						 { 
+							 System.out.println("Already in North"); 
+						 }
+					}
+					
+					if (curMove.equals("F")) {
+						fCount++;
+					} else if (curMove.equals("R") || curMove.equals("L")) {// if current move is turn right or left
+
+						if (fCount > 0) {
+
+							CommMgr.getCommMgr().sendMsg("U," + fCount);
+							fCount = 0;
+
+							// acknowledgement for send zoomzoom
+							while (true) {
+								String doneMsg = CommMgr.getCommMgr().revMsg();
+								if (doneMsg.equals("!"))
+									break;
+							}
+
+						} // end of fCount > 0
+
+						// send to move either left or right
+						CommMgr.getCommMgr().sendMsg(curMove);
+
+						// acknowledgement for right or left movements
+						while (true) {
+							String doneMsg = CommMgr.getCommMgr().revMsg();
+							if (doneMsg.equals("!"))
+								break;
+						}
+
+					} // end of else if
+
+					if (i == (wpg_instr.length() - 1)) {
+
+						CommMgr.getCommMgr().sendMsg("U," + fCount);
+						fCount = 0;
+
+						// acknowledgement for right or left movements
+						while (true) {
+							String doneMsg = CommMgr.getCommMgr().revMsg();
+							if (doneMsg.equals("!"))
+								break;
+						}
+
+					}
+
+				} // end of loop
+
+				// send fp to RPI
+				// CommMgr.getCommMgr().sendMsg("FP,"+wpg_instr);
+
 				timer.stop();
 				info.append("Time Taken: " + timer.getMinSec() + "\n");
-				
+
 				/**
-				if(map_Clear == false)
-				{
-					System.out.println("If map is clear, then im here to reverse");
-					map_Clear = true;
-					System.out.println("map cleared is true!");
-				}**/
+				 * if(map_Clear == false) { System.out.println("If map is clear, then im here to
+				 * reverse"); map_Clear = true; System.out.println("map cleared is true!"); }
+				 **/
 
 				return 222;
 			}
@@ -616,13 +683,13 @@ public class MainFrame extends JFrame {
 
 				if (realRun) {
 					System.out.println("im in realrun");
-					//CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
+					// CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
 				}
-				
+
 				exploration.runExploration();
-				
+
 				System.out.println("DONE WITH EXPLORATION, STOP TIMER, GOING FP");
-				
+
 				timer.stop();
 				info.append("Time Taken: " + timer.getMinSec() + "\n");
 
@@ -635,38 +702,32 @@ public class MainFrame extends JFrame {
 		}
 
 		/**
-		// CoverageExploration Class for Multithreading
-		class CoverageExploration extends SwingWorker<Integer, String> {
-			protected Integer doInBackground() throws Exception {
-				bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
-				e_Mapper.repaint();
+		 * // CoverageExploration Class for Multithreading class CoverageExploration
+		 * extends SwingWorker<Integer, String> { protected Integer doInBackground()
+		 * throws Exception { bot.setRobotPos(RobotConstants.START_ROW,
+		 * RobotConstants.START_COL); e_Mapper.repaint();
+		 * 
+		 * Explorer coverageExplo = new Explorer(e_Mapper, r_Mapper, bot, coverageLimit,
+		 * timeLimit); coverageExplo.runExploration();
+		 * 
+		 * generateMapDescriptor(e_Mapper);
+		 * 
+		 * return 444; } }
+		 * 
+		 * // TimeExploration Class for Multithreading class TimeExploration extends
+		 * SwingWorker<Integer, String> { protected Integer doInBackground() throws
+		 * Exception { bot.setRobotPos(RobotConstants.START_ROW,
+		 * RobotConstants.START_COL); e_Mapper.repaint();
+		 * 
+		 * Explorer timeExplo = new Explorer(e_Mapper, r_Mapper, bot, coverageLimit,
+		 * timeLimit); timeExplo.runExploration();
+		 * 
+		 * generateMapDescriptor(e_Mapper);
+		 * 
+		 * return 333; } }
+		 **/
 
-				Explorer coverageExplo = new Explorer(e_Mapper, r_Mapper, bot, coverageLimit, timeLimit);
-				coverageExplo.runExploration();
-
-				generateMapDescriptor(e_Mapper);
-
-				return 444;
-			}
-		}
-
-		// TimeExploration Class for Multithreading
-		class TimeExploration extends SwingWorker<Integer, String> {
-			protected Integer doInBackground() throws Exception {
-				bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
-				e_Mapper.repaint();
-
-				Explorer timeExplo = new Explorer(e_Mapper, r_Mapper, bot, coverageLimit, timeLimit);
-				timeExplo.runExploration();
-
-				generateMapDescriptor(e_Mapper);
-
-				return 333;
-			}
-		}
-		**/
-
-		//JPanel mode_panel = new JPanel(new FlowLayout());
+		// JPanel mode_panel = new JPanel(new FlowLayout());
 
 		exp_label = new JLabel("Exploration Mode: ");
 
@@ -684,7 +745,7 @@ public class MainFrame extends JFrame {
 						info.append("Starting exploration...\n");
 						CardLayout cl = ((CardLayout) _mapCards.getLayout());
 						cl.show(_mapCards, "EXPLORATION");
-						
+
 						timer.start();// start timer
 						new Exploration().execute();
 
@@ -732,14 +793,14 @@ public class MainFrame extends JFrame {
 				int state = itemEvent.getStateChange();
 				if (state == ItemEvent.SELECTED) {
 					System.out.println("Auto Mode On"); // show your message here
-					
+
 					info.append("Starting exploration...\n");
 					CardLayout cl = ((CardLayout) _mapCards.getLayout());
 					cl.show(_mapCards, "EXPLORATION");
-					//cl.show(_mapCards, "REAL_MAP");
+					// cl.show(_mapCards, "REAL_MAP");
 					timer.start();// start timer
 					new Exploration().execute();
-					
+
 					info.append("Auto Mode On\n");
 					auto_mode = true; // if auto mode on
 					autoBtn.setText("Auto: ON");

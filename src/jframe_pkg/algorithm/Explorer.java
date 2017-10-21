@@ -77,11 +77,18 @@ public class Explorer {
            
 	   	 System.out.println("Starting calibration...");
          if (bot.getRealBot()) {
-      	   	 bot.move(MOVEMENT.RIGHT, false);
+
+             bot.move(MOVEMENT.LEFT, false);
+             bot.move(MOVEMENT.CALIBRATE, false);
+             bot.move(MOVEMENT.LEFT, false);
+             bot.move(MOVEMENT.CALIBRATE, false);
+             bot.move(MOVEMENT.LEFT, false);
+        	 
+      	   	 //bot.move(MOVEMENT.RIGHT, false);
      	   	 //bot.move(MOVEMENT.RIGHT, false);
              //bot.move(MOVEMENT.CALIBRATE, false);
              //bot.move(MOVEMENT.LEFT, false);
-             bot.move(MOVEMENT.CALIBRATE_R, false);
+             //bot.move(MOVEMENT.CALIBRATE_R, false);
           }
 	   		
             while (true) {
@@ -129,8 +136,6 @@ public class Explorer {
      * 3. System.currentTimeMillis() > endTime
      */
     private void explorationLoop(int r, int c) {
-    	//System.out.println("Exploration Loop Start");
-    	//System.out.println("exploration loop row r: " + r + ", exploration loop col c:" + c);
         do {
         	//huangkai
         	//String msg = sc.nextLine();
@@ -158,22 +163,18 @@ public class Explorer {
 				
 				if (umMsg.equals("!")) //break when done 
 	            {
-	            	//System.out.println("im here2: Explorer.java, L97");
 	            	break;
 	            }
-				
-				
 			}
-			/*try {
-				Thread.sleep(350);
+						
+			try {
+			Thread.sleep(350);
 			} catch (InterruptedException e) {
 				//Auto-generated catch block;
 				e.printStackTrace();
-			}*/
-						
+			}
+			
 			String curAttr = (bot.getRobotPosRow() + ";" + bot.getRobotPosCol() + ";" + bot.getRobotCurDir());
-			//System.out.println("curAttr: " + curAttr);
-								
 			CommMgr.getCommMgr().sendMsg("CA," + curAttr);
             
 			while(true) {
@@ -182,11 +183,18 @@ public class Explorer {
 				
 				if (caMsg.equals("!")) //break when done 
 	            {
-	            	//System.out.println("im here2: Explorer.java, L97");
 	            	break;
 	            }
 				
 				
+				
+			}
+			
+			try {
+				Thread.sleep(350);
+			} catch (InterruptedException e) {
+				//Auto-generated catch block;
+				e.printStackTrace();
 			}
 			
 			areaExplored = calculateAreaExplored();

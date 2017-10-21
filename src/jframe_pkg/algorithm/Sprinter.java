@@ -286,10 +286,6 @@ public class Sprinter {
         int temp_row = map.bot.getRobotPosRow();
         int temp_col = map.bot.getRobotPosCol();
         
-        //System.out.println("My debug codes - goalRow: " + goalRow + " goalCol: " + goalCol + "\n");
-        //System.out.println("My debug codes - temp_goalRow: " + temp_row + " temp_goalCol: " + temp_col + "\n");
-        
-        
         if (goalRow == MapConstant.GOAL_Y && goalCol == MapConstant.GOAL_X) 
         {
         	//tempBot = new Robot (MapConstant.WAYPOINT_X, MapConstant.WAYPOINT_Y, false);
@@ -333,68 +329,9 @@ public class Sprinter {
             outputString.append(MOVEMENT.print(m));
         }
 
-        //we already have the fastest path in outputString, we dont have to go through the bottom codes - Joey
-        
-/*        if (!bot.getRealBot() || explorationMode) {
-        	System.out.println("in HK first Loop!");
-        	
-            for (MOVEMENT x : movements) {
-                if (x == MOVEMENT.FORWARD) {
-                    if (!canMoveForward()) {
-                        System.out.println("Early termination of fastest path execution.");
-                        return "T";
-                    }
-                }
-                	
-                System.out.println("Going to bot.move(x)");
-                System.out.println("What is x?");
-                System.out.println(x.toString());
-                bot.move(x);
-                //here HK
-                
-                this.map.repaint();
-
-                // During exploration, use sensor data to update map.
-                if (explorationMode) {
-                    bot.setSensors();
-                    bot.sense(this.map, this.realMap);
-                    this.map.repaint();
-                }
-            }
-        } else {
-
-            int fCount = 0;
-            for (MOVEMENT x : movements) {
-                if (x == MOVEMENT.FORWARD) {
-                    fCount++;
-                    if (fCount == 10) {
-                        bot.moveForwardMultiple(fCount);
-                        fCount = 0;
-                        map.repaint();
-                    }
-                } else if (x == MOVEMENT.RIGHT || x == MOVEMENT.LEFT) {
-                    if (fCount > 0) {
-                        bot.moveForwardMultiple(fCount);
-                        fCount = 0;
-                        map.repaint();
-                    }
-
-                    bot.move(x);
-                    map.repaint();
-                }
-            }
-
-            if (fCount > 0) {
-                bot.moveForwardMultiple(fCount);
-                map.repaint();
-            }
-        }
-*/
-        
-        
         //fastest path, move forward multiple steps - Joey
-        
-        	int fCount = 0;
+        //commented below to try long string for fastestpath
+        /**	int fCount = 0;
 
         	for (MOVEMENT x : movements) {
                 if (x == MOVEMENT.FORWARD) {
@@ -412,8 +349,6 @@ public class Sprinter {
             	   			if (doneMsg.equals("!")) 
             	   				break;
             	   		} 
-                        
-                        
                 	}
                 	//send to move either left or right
                 	CommMgr.getCommMgr().sendMsg(String.valueOf(MOVEMENT.print(x)));
@@ -425,17 +360,11 @@ public class Sprinter {
         	   			if (doneMsg.equals("!")) 
         	   				break;
         	   		}
-                	
                 }
-        	}
-        
-        	
-        	
+        	}**/
+
         System.out.println("\nMovements: " + outputString.toString());
-        
-        
-        
-        
+
         //TODO: sending string of FP,FFFFFFFFFRFFFFFFFFFFFFLFFFFFFFFFFFR.....
         //CommMgr.getCommMgr().sendMsg("FP,"+outputString.toString());
         return outputString.toString();

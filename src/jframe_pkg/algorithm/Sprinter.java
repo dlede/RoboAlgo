@@ -52,7 +52,8 @@ public class Sprinter {
      * Initialise the FastestPathAlgo object.
      */
     private void initObject(Mapper map, Robot bot) {
-        this.bot = bot;
+        
+    	this.bot = bot;
         this.map = map;
         this.toVisit = new ArrayList<>();
         this.visited = new ArrayList<>();
@@ -80,6 +81,7 @@ public class Sprinter {
         this.loopCount = 0;
     }
 
+    
     /**
      * Returns true if the cell can be visited.
      */
@@ -130,7 +132,8 @@ public class Sprinter {
      * Returns the target direction of the bot from [botR, botC] to target Cell.
      */
     private DIRECTION getTargetDir(int botR, int botC, DIRECTION botDir, Cell target) {
-        if (botC - target.get_y() > 0) {
+       
+    	if (botC - target.get_y() > 0) {
             return DIRECTION.WEST;
         } else if (target.get_y() - botC > 0) {
             return DIRECTION.EAST;
@@ -274,7 +277,8 @@ public class Sprinter {
      * Executes the fastest path and returns a StringBuilder object with the path steps.
      */
     private String executePath(Stack<Cell> path, int goalRow, int goalCol) {
-        StringBuilder outputString = new StringBuilder();
+        
+    	StringBuilder outputString = new StringBuilder();
 
         Cell temp = path.pop();
         DIRECTION targetDir;
@@ -304,6 +308,12 @@ public class Sprinter {
         	tempBot = new Robot(1, 1, false);
         
         
+        //jooo
+        System.out.println("bot starting in sprinter: " + bot.getRobotCurDir());
+        tempBot.setRobotDir(bot.getRobotCurDir());
+        
+        
+        
         tempBot.setCurPostScreen(bot.getCurPostScreen());
     	tempBot.setMonitorScreen(bot.getMonitorScreen());
         
@@ -329,40 +339,11 @@ public class Sprinter {
             outputString.append(MOVEMENT.print(m));
         }
 
-        //fastest path, move forward multiple steps - Joey
-        //commented below to try long string for fastestpath
-        /**	int fCount = 0;
-
-        	for (MOVEMENT x : movements) {
-                if (x == MOVEMENT.FORWARD) {
-                    fCount++;
-                } else if (x == MOVEMENT.RIGHT || x == MOVEMENT.LEFT) {
-                    
-                	if (fCount > 0) {
-                        
-                		CommMgr.getCommMgr().sendMsg("U,"+fCount);
-                        fCount = 0;
-                        //acknowledgement
-                    	while(true)
-            	   		{
-            	   			String doneMsg = CommMgr.getCommMgr().revMsg(); 
-            	   			if (doneMsg.equals("!")) 
-            	   				break;
-            	   		} 
-                	}
-                	//send to move either left or right
-                	CommMgr.getCommMgr().sendMsg(String.valueOf(MOVEMENT.print(x)));
-                    
-                	//acknowledgement
-                	while(true)
-        	   		{
-        	   			String doneMsg = CommMgr.getCommMgr().revMsg(); 
-        	   			if (doneMsg.equals("!")) 
-        	   				break;
-        	   		}
-                }
-        	}**/
-
+        //jooo
+        System.out.println("tempBot end cur dir: " + tempBot.getRobotCurDir());
+        bot.setRobotDir(tempBot.getRobotCurDir());
+        
+        
         System.out.println("\nMovements: " + outputString.toString());
 
         //TODO: sending string of FP,FFFFFFFFFRFFFFFFFFFFFFLFFFFFFFFFFFR.....

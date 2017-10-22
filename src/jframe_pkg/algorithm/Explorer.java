@@ -136,10 +136,12 @@ public class Explorer {
      * 3. System.currentTimeMillis() > endTime
      */
     private void explorationLoop(int r, int c) {
-        do {
+        
+    	do {
         	//huangkai
-        	//String msg = sc.nextLine();
-        	
+        	/*System.out.println("Continue?");
+    		String msg = sc.nextLine();
+        	*/
         	//CommMgr.getCommMgr().revMsg();
             nextMove();
             
@@ -166,14 +168,15 @@ public class Explorer {
 	            	break;
 	            }
 			}
-						
-			try {
-			Thread.sleep(350);
+			
+			
+			/*try {
+			Thread.sleep(250);
 			} catch (InterruptedException e) {
 				//Auto-generated catch block;
 				e.printStackTrace();
 			}
-			
+			*/
 			String curAttr = (bot.getRobotPosRow() + ";" + bot.getRobotPosCol() + ";" + bot.getRobotCurDir());
 			CommMgr.getCommMgr().sendMsg("CA," + curAttr);
             
@@ -186,16 +189,15 @@ public class Explorer {
 	            	break;
 	            }
 				
-				
-				
 			}
 			
-			try {
-				Thread.sleep(350);
+			/*try {
+				Thread.sleep(250);
 			} catch (InterruptedException e) {
 				//Auto-generated catch block;
 				e.printStackTrace();
 			}
+			*/
 			
 			areaExplored = calculateAreaExplored();
             //System.out.println("Area explored: " + areaExplored);
@@ -262,10 +264,13 @@ public class Explorer {
     	}
     	
         if (lookRight()) {
+        	
             moveBot(MOVEMENT.RIGHT);
+            
             if(lookForward()) {
             	moveBot(MOVEMENT.FORWARD);
             }
+            
             /*if(bot.front_average < 5)
             {
             	moveBot(MOVEMENT.FORWARD);
@@ -322,7 +327,9 @@ public class Explorer {
         	{
         		moveBot(MOVEMENT.FORWARD);
         	}*/
+        
         } else if (lookForward()) {
+        
         	moveBot(MOVEMENT.FORWARD);
         	/*if(bot.front_average < 4)
             {

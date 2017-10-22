@@ -509,8 +509,9 @@ public class MainFrame extends JFrame {
 				// final String text_y = field_y.getText();
 
 				String wpg_instr = "";
-
+				
 				bot.setRobotPos(RobotConstants.START_ROW, RobotConstants.START_COL);
+				
 				e_Mapper.repaint();
 
 				if (realRun) {
@@ -534,41 +535,36 @@ public class MainFrame extends JFrame {
 
 				// fastest_wp_Path = new Sprinter(e_Mapper, bot);
 				String fpwp = fastest_wp_Path.runFastestPath(waypoint_x, waypoint_y);
+				
+				System.out.println("Bot dir at wp: " + bot.getRobotCurDir());
+				
+				bot.setRobotPos(waypoint_x, waypoint_y);				
 
-				// send fp to RPI
-				// CommMgr.getCommMgr().sendMsg("FP,"+fpwp);
-
-				// System.out.println("\n\nbreaker....");
-				// System.out.println("breaker....");
-				// System.out.println("breaker.... \n\n");
-
-				bot.setRobotPos(waypoint_x, waypoint_y);
-				//bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
-
+				
 				// Can we just change the direction of the robot for fastest path?
-				// TODO: get robot direction and send as robot
-				/*
-				 * if(bot.getRobotCurDir() == DIRECTION.SOUTH) {
-				 * System.out.println("Turning South to North"); bot.move(MOVEMENT.RIGHT);
-				 * bot.move(MOVEMENT.RIGHT); } else if (bot.getRobotCurDir() == DIRECTION.WEST)
-				 * // if DIRECTION.WEST { System.out.println("Turning West to North");
-				 * bot.move(MOVEMENT.RIGHT); } else if (bot.getRobotCurDir() == DIRECTION.EAST)
-				 * { System.out.println("Turning East to North"); bot.move(MOVEMENT.LEFT); }
-				 * else { System.out.println("Already in North"); }
-				 */
-
-				System.out.println("Waypoint visited \n\n");
-
+/*				  if(bot.getRobotCurDir() == DIRECTION.SOUTH) {
+				  System.out.println("Turning South to North"); 
+				  bot.move(MOVEMENT.RIGHT);
+				  bot.move(MOVEMENT.RIGHT); 
+				  } else if (bot.getRobotCurDir() == DIRECTION.WEST) {
+				  // if DIRECTION.WEST { System.out.println("Turning West to North");
+				  bot.move(MOVEMENT.RIGHT); 
+				  } 
+				   else if (bot.getRobotCurDir() == DIRECTION.EAST){ 
+					   System.out.println("Turning East to North"); 
+					   bot.move(MOVEMENT.LEFT); 
+				  } else { 
+					  System.out.println("Already in North"); 
+				  }
+				 
+*/				
 				fastest_goal_Path = new Sprinter(e_Mapper, bot, r_Mapper);
 
 				String fpg = fastest_goal_Path.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
 
-				//dhaslie add a few instruction to make it go north
-				
-				
 				// dhaslie added send long string from start, to waypoint to goal
 				wpg_instr = fpwp + fpg;
-
+				
 				System.out.println("appended instruction FP string: " + wpg_instr);
 
 				// send fp to RPI
@@ -577,54 +573,46 @@ public class MainFrame extends JFrame {
 				for (int i = 0; i < wpg_instr.length(); i++) {
 
 					String curMove = Character.toString(wpg_instr.charAt(i));
-
-					if(i == fpwp.length())
-					{
-						 if(bot.getRobotCurDir() == DIRECTION.SOUTH) {
-							 System.out.println("Turning South to North"); 
-							 //bot.move(MOVEMENT.RIGHT);
-							 CommMgr.getCommMgr().sendMsg("R");
-							 //bot.move(MOVEMENT.RIGHT); 
-							 CommMgr.getCommMgr().sendMsg("R");
-						 } else if (bot.getRobotCurDir() == DIRECTION.WEST)// if DIRECTION.WEST 
-						 { 
-							 System.out.println("Turning West to North");
-							 //bot.move(MOVEMENT.RIGHT); 
-							 CommMgr.getCommMgr().sendMsg("R");
-						 } 
-						 else if (bot.getRobotCurDir() == DIRECTION.EAST)
-						 { 
-							 System.out.println("Turning East to North"); 
-							 CommMgr.getCommMgr().sendMsg("L");
-							 //bot.move(MOVEMENT.LEFT); 
-						 }
-						 else 
-						 { 
-							 System.out.println("Already in North"); 
-						 }
-					}
 					
 					if (curMove.equals("F")) {
 						fCount++;
+					
 					} else if (curMove.equals("R") || curMove.equals("L")) {// if current move is turn right or left
 
-						if (fCount > 0) {
-
-							CommMgr.getCommMgr().sendMsg("U," + fCount);
+						if (fCount == 1) {
+							CommMgr.getCommMgr().sendMsg("F");
 							fCount = 0;
-
+							
 							// acknowledgement for send zoomzoom
 							while (true) {
 								String doneMsg = CommMgr.getCommMgr().revMsg();
 								if (doneMsg.equals("!"))
 									break;
 							}
+							
+							
+						}else if (fCount > 1) {
+								
+							CommMgr.getCommMgr().sendMsg("U," + fCount);
+							fCount = 0;
 
-						} // end of fCount > 0
+								// acknowledgement for send zoomzoom
+								while (true) {
+									String doneMsg = CommMgr.getCommMgr().revMsg();
+									if (doneMsg.equals("!"))
+										break;
+								}//end of while
 
+							
+						} 
 						// send to move either left or right
-						CommMgr.getCommMgr().sendMsg(curMove);
-
+						if(curMove.equals("R")) {
+							CommMgr.getCommMgr().sendMsg("X");
+						}else {//if left
+							CommMgr.getCommMgr().sendMsg("Y");
+						}
+						
+						
 						// acknowledgement for right or left movements
 						while (true) {
 							String doneMsg = CommMgr.getCommMgr().revMsg();
@@ -632,12 +620,21 @@ public class MainFrame extends JFrame {
 								break;
 						}
 
-					} // end of else if
+					}// end of else if
 
 					if (i == (wpg_instr.length() - 1)) {
 
-						CommMgr.getCommMgr().sendMsg("U," + fCount);
-						fCount = 0;
+						
+						if(fCount == 1) {
+							CommMgr.getCommMgr().sendMsg("F");
+							
+						}else {//fCount > 1
+							CommMgr.getCommMgr().sendMsg("U," + fCount);
+							fCount = 0;
+						}
+						
+						
+						
 
 						// acknowledgement for right or left movements
 						while (true) {
@@ -739,6 +736,7 @@ public class MainFrame extends JFrame {
 				int state = itemEvent.getStateChange();
 				if (state == ItemEvent.SELECTED) {
 					System.out.println("Exploration Mode On"); // show your message here
+					
 					info.append("Exploration Mode On\n");
 					fast_mode = false; // if fast mode off, explore
 					if (auto_mode == true && fast_mode == false && map_Load == true) {
@@ -755,6 +753,111 @@ public class MainFrame extends JFrame {
 						}
 					}
 					expBtn.setText("Exploration: ON");
+					
+					
+					/*
+					 String wpg_instr = "LRLRFFF";
+				
+				if (realRun) {
+					while (true) {
+						System.out.println("Waiting for FP_START...");
+						info.append("Waiting for FP_START...\n");
+						String msg = comm.revMsg(); // "FP_START"
+						if (msg.equals(CommMgr.FP_START)) {
+							break;
+						}
+					}
+				}
+
+ 				System.out.println("appended instruction FP string: " + wpg_instr);
+
+				// send fp to RPI
+				int fCount = 0;
+
+				for (int i = 0; i < wpg_instr.length(); i++) {
+
+					String curMove = Character.toString(wpg_instr.charAt(i));
+					
+					if (curMove.equals("F")) {
+						fCount++;
+					
+					} else if (curMove.equals("R") || curMove.equals("L")) {// if current move is turn right or left
+
+						if (fCount == 1) {
+							CommMgr.getCommMgr().sendMsg("F");
+							fCount = 0;
+							
+							// acknowledgement for send zoomzoom
+							while (true) {
+								String doneMsg = CommMgr.getCommMgr().revMsg();
+								if (doneMsg.equals("!"))
+									break;
+							}
+							
+							
+						}else if (fCount > 1) {
+								
+							CommMgr.getCommMgr().sendMsg("U," + fCount);
+							fCount = 0;
+
+								// acknowledgement for send zoomzoom
+								while (true) {
+									String doneMsg = CommMgr.getCommMgr().revMsg();
+									if (doneMsg.equals("!"))
+										break;
+								}//end of while
+
+							
+						} 
+						// send to move either left or right
+						if(curMove.equals("R")) {
+							CommMgr.getCommMgr().sendMsg("X");
+						}else {//if left
+							CommMgr.getCommMgr().sendMsg("Y");
+						}
+						
+						
+						// acknowledgement for right or left movements
+						while (true) {
+							String doneMsg = CommMgr.getCommMgr().revMsg();
+							if (doneMsg.equals("!"))
+								break;
+						}
+
+					}// end of else if
+
+					if (i == (wpg_instr.length() - 1)) {
+
+						
+						if(fCount == 1) {
+							CommMgr.getCommMgr().sendMsg("F");
+							
+						}else {//fCount > 1
+							CommMgr.getCommMgr().sendMsg("U," + fCount);
+							fCount = 0;
+						}
+						
+						
+						
+
+						// acknowledgement for right or left movements
+						while (true) {
+							String doneMsg = CommMgr.getCommMgr().revMsg();
+							if (doneMsg.equals("!"))
+								break;
+						}
+
+					}
+
+				} // end of loop
+
+ 
+ 
+ 
+ 
+					 */
+					
+					
 
 				} else {
 					System.out.println("Off"); // remove your message
@@ -792,8 +895,9 @@ public class MainFrame extends JFrame {
 			public void itemStateChanged(ItemEvent itemEvent) {
 				int state = itemEvent.getStateChange();
 				if (state == ItemEvent.SELECTED) {
-					System.out.println("Auto Mode On"); // show your message here
 
+					System.out.println("Auto Mode On"); // show your message here
+					
 					info.append("Starting exploration...\n");
 					CardLayout cl = ((CardLayout) _mapCards.getLayout());
 					cl.show(_mapCards, "EXPLORATION");

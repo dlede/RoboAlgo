@@ -783,17 +783,15 @@ public class Explorer {
     
     //dhaslie can u turn?
 	private boolean can_UTurn(DIRECTION botDir) {
-        //int row = bot.getRobotPosRow();
-        //int col = bot.getRobotPosCol();
         switch (botDir) {
             case NORTH:
-                return northFree() && westFree() && eastFree();
+                return !northFree() && !westFree() && !eastFree();
             case EAST:
-                return eastFree() && northFree() && southFree();
+                return !eastFree() && !northFree() && !southFree();
             case SOUTH:
-                return southFree() && westFree() && eastFree();
+                return !southFree() && !westFree() && !eastFree();
             case WEST:
-                return westFree() && northFree() && southFree();
+                return !westFree() && !northFree() && !southFree();
         }
 
         //System.out.println("U Turn");

@@ -42,6 +42,11 @@ public class RobotConstants {
         public static DIRECTION getPrevious(DIRECTION curDirection) {
             return values()[(curDirection.ordinal() + values().length - 1) % values().length];
         }
+        
+        //180 degree, clockwise
+        public static DIRECTION getReverse(DIRECTION curDirection) {
+        	return values()[(curDirection.ordinal() + 2) % values().length];
+        }
 
         public static char print(DIRECTION d) {
             switch (d) {

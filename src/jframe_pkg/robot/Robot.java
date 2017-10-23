@@ -484,9 +484,13 @@ public class Robot {
     private DIRECTION findNewDirection(MOVEMENT m) {
         // only left or right
         if (m == MOVEMENT.RIGHT) {
-            return DIRECTION.getNext(robotDir);
-        } else {
-            return DIRECTION.getPrevious(robotDir);
+            return DIRECTION.getNext(robotDir); //turn clockwise
+        } else if (m == MOVEMENT.UTURN)
+        {
+        	return DIRECTION.getReverse(robotDir); //turn clockwise, 180 degree, reverse
+        }
+        else { //if m == movement.left
+            return DIRECTION.getPrevious(robotDir); //turn counter clockwise
         }
     }
 
@@ -553,7 +557,6 @@ public class Robot {
             }
             
             //dhaslie compute the minimum front array
-            /**
             for (int i = 0; i < 3; i++)
             {
             	front_arr.add(result[i]);
@@ -561,7 +564,6 @@ public class Robot {
             
             //Dhaslie add minValue again
             front_min = minValue(front_arr);
-            **/
             //dhaslie compute minimum front array end
             
             SRFrontLeft.senseReal(explorationMap.gridder, result[0]);

@@ -360,9 +360,53 @@ public class Explorer {
                 }*/
         	}
         } else {
-            moveBot(MOVEMENT.RIGHT);
-            moveBot(MOVEMENT.RIGHT);
+        	//dhaslie - testing if fully walled, u turn
+        	if (can_UTurn(bot.getRobotCurDir()))
+        	{
+        		moveBot(MOVEMENT.UTURN);
+        	}
+        	else //dhaslie - else turn twice right...
+        	{
+        		moveBot(MOVEMENT.RIGHT);
+                moveBot(MOVEMENT.RIGHT);
+        	}
         }
+    }
+    
+    //dhaslie - added multiple steps when near walls only
+	private boolean canWallMoveMult(DIRECTION botDir)
+    {
+        //if (exMap.gridder.coordinate_validator(r, c)) {
+    	int row = bot.getRobotPosRow();
+        int col = bot.getRobotPosCol();
+
+        switch (botDir) {
+            case NORTH:
+            	Cell a_north = exMap.gridder.getCell(row+1, col+2);
+            	Cell b_north = exMap.gridder.getCell(row, col+2);
+            	Cell c_north = exMap.gridder.getCell(row-1, col+2);
+            	
+                return a_north.getIsVirtualWall() && b_north.getIsVirtualWall() && c_north.getIsVirtualWall();
+            case EAST:
+            	Cell a_east = exMap.gridder.getCell(row-2, col+1);
+            	Cell b_east = exMap.gridder.getCell(row-2, col);
+            	Cell c_east = exMap.gridder.getCell(row-2, col-1);
+            	
+            	return a_east.getIsVirtualWall() && b_east.getIsVirtualWall() && c_east.getIsVirtualWall();
+            case SOUTH:
+            	Cell a_south = exMap.gridder.getCell(row+1, col-2);
+            	Cell b_south = exMap.gridder.getCell(row, col-2);
+            	Cell c_south = exMap.gridder.getCell(row-1, col-2);
+            	
+            	return a_south.getIsVirtualWall() && b_south.getIsVirtualWall() && c_south.getIsVirtualWall();
+            case WEST:
+            	Cell a_west = exMap.gridder.getCell(row+2, col+1);
+            	Cell b_west = exMap.gridder.getCell(row+2, col);
+            	Cell c_west = exMap.gridder.getCell(row+2, col-1);
+            	
+            	return a_west.getIsVirtualWall() && b_west.getIsVirtualWall() && c_west.getIsVirtualWall();
+        }
+    	return false;
     }
 
     /**
@@ -483,7 +527,6 @@ public class Explorer {
 
         
         //do we need to pause awhile before doing the calibration ?
-        
         if (bot.getRealBot()) {
         	System.out.println("RealBot");
             turnBotDirection(DIRECTION.WEST);
@@ -673,7 +716,16 @@ public class Explorer {
             senseAndRepaint();
         } 
         
-        //dhaslie fast_forward
+        //dhaslie fast_forward movements
+        if (canWallMoveMult(bot.getRobotCurDir()))
+        {
+        	if(bot.sr_FrontLeft_value > 10 && bot.sr_FrontCenter_value > 10 && bot.sr_FrontRight_value > 10)
+        	{
+        		bot.moveForwardMultiple(bot.front_min);
+        	}
+        	//bot.move(MOVEMENT.FORWARD_M);
+        }
+        
         //check for virtual and if there is a X amount of leeway for forward, fly forward
         /*if(exMap.gridder.isVirtualWallCell(this.bot.getRobotPosRow(), this.bot.getRobotPosCol()+1))
         {
@@ -699,7 +751,6 @@ public class Explorer {
 	        		// if all front values within raw value of 35 to 43
 	        		// move 4 steps
 	        	} 
-        		
         	}
         }*/
         
@@ -827,6 +878,25 @@ public class Explorer {
 
         return null;
     }
+    
+    //dhaslie can u turn?
+	private boolean can_UTurn(DIRECTION botDir) {
+        //int row = bot.getRobotPosRow();
+        //int col = bot.getRobotPosCol();
+        switch (botDir) {
+            case NORTH:
+                return northFree() && westFree() && eastFree();
+            case EAST:
+                return eastFree() && northFree() && southFree();
+            case SOUTH:
+                return southFree() && westFree() && eastFree();
+            case WEST:
+                return westFree() && northFree() && southFree();
+        }
+
+        //System.out.println("U Turn");
+        return false;
+    }
 
     /**
      * Turns the bot in the needed direction and sends the CALIBRATE movement. Once calibrated, the bot is turned back
@@ -864,8 +934,10 @@ public class Explorer {
                 turned = true;
             }
         } else if (numOfTurn == 2) {
-            moveBot(MOVEMENT.RIGHT);
-            moveBot(MOVEMENT.RIGHT);
+        	//dhaslie - added uturn
+        	moveBot(MOVEMENT.UTURN);
+            //moveBot(MOVEMENT.RIGHT);
+            //moveBot(MOVEMENT.RIGHT);
             turned = true;
         }
     }

@@ -56,6 +56,7 @@ public class Robot {
     public int front_min = 0;
     public int right_min = 0;
     private int front_arr[] = null;
+    //private ListArray front_la;
     private int right_arr[] = null;
 	
     public int sr_FrontLeft_value;       // north-facing front-left SR value for comparing
@@ -286,9 +287,13 @@ public class Robot {
                 break;
             case RIGHT:
             case LEFT:
+            case UTURN:
                 // what this
                 robotDir = findNewDirection(m);
                 break;
+            //case UTURN:
+            	//if uturn, find new direction
+            	//break;
             case CALIBRATE:
             case CALIBRATE_R:
             	//comm.sendMsg("calibrate");
@@ -417,15 +422,17 @@ public class Robot {
 			
 			
 		}
-		
-		
+
 		System.out.println("Done");
         
+		/**
+		// commented by dhaslie
         if (m != MOVEMENT.CALIBRATE && sendMoveToAndroid) {
-        	//System.out.println("m != MOVEMENT.CALIBRATE && sendMoveToAndroid: Robot.java, L273");
-        	//System.out.println(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
-        	//comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
+        	System.out.println("m != MOVEMENT.CALIBRATE && sendMoveToAndroid: Robot.java, L273");
+        	System.out.println(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
+        	comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
         }
+        **/
     }
     
 
@@ -544,8 +551,6 @@ public class Robot {
             result[5] = Integer.parseInt(msgArr[5]) +10; // +10 offset if needed huang kai remove +12 weird
             //result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5]))+9);
             
-            //result[5] = Integer.parseInt(msgArr[5]);
-            
             //Dhaslie for comparing front sensors, raw value
             sr_FrontLeft_value = result[0];    
             sr_FrontCenter_value = result[1]; 
@@ -561,6 +566,16 @@ public class Robot {
             	result[i] = setValue(result[i]);
             }
             
+            //dhaslie compute the minimum front array
+            for (int i = 0; i < 3; i++)
+            {
+            	front_arr[i] = result[i];
+            }
+            
+            //Dhaslie add minValue again
+            front_min = minValue(front_arr);
+            //dhaslie compute minimum front array end
+            
             SRFrontLeft.senseReal(explorationMap.gridder, result[0]);
             SRFrontCenter.senseReal(explorationMap.gridder, result[1]);
             SRFrontRight.senseReal(explorationMap.gridder, result[2]);
@@ -572,8 +587,8 @@ public class Robot {
             counter++;
         }
         
-      //dhas test send extra sensor reading
-        this.comm.sendMsg("G");
+        //dhas test send extra sensor reading
+        //this.comm.sendMsg("G");
         
         return result;
     }

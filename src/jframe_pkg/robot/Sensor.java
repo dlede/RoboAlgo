@@ -114,7 +114,7 @@ public class Sensor {
      * Uses the sensor direction and given value from the actual sensor to update the map.
      */
     public void senseReal(Gridder exploredMap, int sensorVal) {
-    	System.out.println("sensorDir: " + sensorDir);
+    	//System.out.println("sensorDir: " + sensorDir);
         switch (sensorDir) {
             case NORTH:
                 // direction determins the rowInc and colInc

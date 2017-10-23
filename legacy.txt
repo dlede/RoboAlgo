@@ -88,3 +88,127 @@
 				e.printStackTrace();
 			}
 			*/
+
+
+   /**
+     * Determines the next move for the robot and executes it accordingly.
+     */
+    private void nextMove() { //fwdblock_count
+    	
+    	move_counter++;
+    	
+    	if (move_counter >= 3) // if nextMove is called for 3 times or more, we calibrate
+    	{
+    		calibrated = false;
+    		//move_counter=0;
+    	}
+    	
+        if (lookRight()) {
+        	
+            moveBot(MOVEMENT.RIGHT);
+            
+            if(lookForward()) {
+            	moveBot(MOVEMENT.FORWARD);
+            }
+            
+            /*if(bot.front_average < 5)
+            {
+            	moveBot(MOVEMENT.FORWARD);
+            }
+            else
+            {
+            	//moveBot(MOVEMENT.FORWARD_M);
+            	moveBot(MOVEMENT.FORWARD);
+            }
+            */
+            /*
+            if (bot.front_average < 4) 
+            {
+            	//this.bot.setfwdblock_count(1);
+            	moveBot(MOVEMENT.FORWARD);
+            }           
+            else
+            {
+            	//TODO: need to change something based on the average
+            	if (bot.front_average >= 5) // move 4 steps
+            	{
+            		this.bot.setfwdblock_count(4);
+            		System.out.println("moving 4 steps");
+            		moveBot(MOVEMENT.FORWARD_M);
+            	}
+            	else if (bot.front_average > 4) // move 3 steps
+            	{
+            		this.bot.setfwdblock_count(3);
+            		System.out.println("moving 3 steps");
+            		moveBot(MOVEMENT.FORWARD_M);
+            	}
+            	else if (bot.front_average > 3) // move 2 steps
+            	{
+            		this.bot.setfwdblock_count(2);
+            		System.out.println("moving 2 steps");
+            		moveBot(MOVEMENT.FORWARD_M);
+            	}
+            	else
+            	{
+            		//this.bot.setfwdblock_count(1);
+            		System.out.println("moving 1 steps");
+            		moveBot(MOVEMENT.FORWARD);
+            	}
+            	
+            }*/
+            
+            
+        	/*if (bot.front_average > 5) 
+        	{
+        		System.out.println("moving multiple");
+        		moveBot(MOVEMENT.FORWARD_M);
+        	}
+        	else
+        	{
+        		moveBot(MOVEMENT.FORWARD);
+        	}*/
+        
+        } else if (lookForward()) {
+        
+        	moveBot(MOVEMENT.FORWARD);
+        	/*if(bot.front_average < 4)
+            {
+            	moveBot(MOVEMENT.FORWARD);
+            }
+            else
+            {
+            	//System.out.println("moving multiple");
+            	//moveBot(MOVEMENT.FORWARD_M);
+            	moveBot(MOVEMENT.FORWARD);
+            }*/
+        	
+        } else if (lookLeft()) {
+            moveBot(MOVEMENT.LEFT);
+            
+            if (lookForward())
+        	{
+            	moveBot(MOVEMENT.FORWARD);
+            	/*if(bot.front_average < 4)
+                {
+                	moveBot(MOVEMENT.FORWARD);
+                }
+                else
+                {
+                	//System.out.println("moving multiple");
+                	//moveBot(MOVEMENT.FORWARD_M);
+                	moveBot(MOVEMENT.FORWARD);
+                }*/
+        	}
+        } else {
+        	//dhaslie - testing if fully walled, u turn
+        	if (can_UTurn(bot.getRobotCurDir()))
+        	{
+        		moveBot(MOVEMENT.UTURN);
+        	}
+        	else //dhaslie - else turn twice right...
+        	{
+        		moveBot(MOVEMENT.RIGHT);
+                moveBot(MOVEMENT.RIGHT);
+        	}
+        }
+    }

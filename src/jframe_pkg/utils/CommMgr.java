@@ -108,7 +108,7 @@ public class CommMgr {
 		
 			if (!txtFromRPI.isEmpty()) {
 				txtFromRPI = txtFromRPI.trim();
-				System.out.println("Message from RPI: " + txtFromRPI);
+				//System.out.println("Message from RPI: " + txtFromRPI);
 				return txtFromRPI;
 			}
 

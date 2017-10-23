@@ -33,6 +33,7 @@ public class Explorer {
     private int lastCalibrate;
     private boolean calibrationMode;
     private int counter;
+    private int available_forward; //forward counter available infront
     private boolean inner_start = false;
     private boolean quad_one = false;
     private boolean quad_two = false;
@@ -131,6 +132,8 @@ public class Explorer {
         	//CommMgr.getCommMgr().revMsg();
             nextMove();
             
+            long startTime = System.currentTimeMillis();
+            
             //send map to android every move
 			String[] gmd = generateMapDescriptor(exMap);
 			//System.out.println(Arrays.toString(gmd));
@@ -142,24 +145,30 @@ public class Explorer {
 			
 			String msg_to_bt = "1" + gmd[0] +"!1" + gmd[1];
 			//System.out.println(msg_to_bt);
-			
+				
+			long startSend_Time = System.currentTimeMillis();
+
 			CommMgr.getCommMgr().sendMsg("UM,"+ msg_to_bt);
-								
+
+			long endSend_Time = System.currentTimeMillis();
+			long totalSend_Time = endSend_Time - startSend_Time;
+			System.out.println("totalTime taken for Map to be send finished: " + (totalSend_Time));
+
 			while(true) {
-				
 				String umMsg = CommMgr.getCommMgr().revMsg();
-				
-				long startTime = System.currentTimeMillis();
-				//.....your program....
-				
+				//long startTime = System.currentTimeMillis();
+
 				if (umMsg.equals("!")) //break when done 
-	            {
+				{
 					long endTime   = System.currentTimeMillis();
-					long totalTime = endTime - startTime;
-					System.out.println("totalTime taken for Map to be send finished: " + (totalTime/1000));
-	            	break;
-	            }
+					long totalTime = endTime - startSend_Time;
+					System.out.println("totalTime taken for Map to be recieve finished: " + (totalTime - totalSend_Time));
+					System.out.println("totalTime taken for Map to be send and recieve finished: " + (totalTime));
+								
+					break;
+				}
 			}
+			
 			String curAttr = (bot.getRobotPosRow() + ";" + bot.getRobotPosCol() + ";" + bot.getRobotCurDir());
 			CommMgr.getCommMgr().sendMsg("CA," + curAttr);
             
@@ -181,7 +190,7 @@ public class Explorer {
             	//System.out.println("back at starting point");
                 if (areaExplored >= 50) { // if x amount of cells coverage
                 	
-                	System.out.println("going home");
+                	//System.out.println("going home");
                 	//goHome();
                     break;
                 }
@@ -201,7 +210,7 @@ public class Explorer {
     {
     	if(areaExplored < 300) // if_outerloopcleared
     	{
-    		System.out.println("I'm in, before NextStartPoint: Explorer.java, L170");
+    		//System.out.println("I'm in, before NextStartPoint: Explorer.java, L170");
 	    	//Fastest to next possible start point
 	    	goNextStartPoint();
 	    	
@@ -245,77 +254,10 @@ public class Explorer {
             if(lookForward()) {
             	moveBot(MOVEMENT.FORWARD);
             }
-            
-            /*if(bot.front_average < 5)
-            {
-            	moveBot(MOVEMENT.FORWARD);
-            }
-            else
-            {
-            	//moveBot(MOVEMENT.FORWARD_M);
-            	moveBot(MOVEMENT.FORWARD);
-            }
-            */
-            /*
-            if (bot.front_average < 4) 
-            {
-            	//this.bot.setfwdblock_count(1);
-            	moveBot(MOVEMENT.FORWARD);
-            }           
-            else
-            {
-            	//TODO: need to change something based on the average
-            	if (bot.front_average >= 5) // move 4 steps
-            	{
-            		this.bot.setfwdblock_count(4);
-            		System.out.println("moving 4 steps");
-            		moveBot(MOVEMENT.FORWARD_M);
-            	}
-            	else if (bot.front_average > 4) // move 3 steps
-            	{
-            		this.bot.setfwdblock_count(3);
-            		System.out.println("moving 3 steps");
-            		moveBot(MOVEMENT.FORWARD_M);
-            	}
-            	else if (bot.front_average > 3) // move 2 steps
-            	{
-            		this.bot.setfwdblock_count(2);
-            		System.out.println("moving 2 steps");
-            		moveBot(MOVEMENT.FORWARD_M);
-            	}
-            	else
-            	{
-            		//this.bot.setfwdblock_count(1);
-            		System.out.println("moving 1 steps");
-            		moveBot(MOVEMENT.FORWARD);
-            	}
-            	
-            }*/
-            
-            
-        	/*if (bot.front_average > 5) 
-        	{
-        		System.out.println("moving multiple");
-        		moveBot(MOVEMENT.FORWARD_M);
-        	}
-        	else
-        	{
-        		moveBot(MOVEMENT.FORWARD);
-        	}*/
         
         } else if (lookForward()) {
         
         	moveBot(MOVEMENT.FORWARD);
-        	/*if(bot.front_average < 4)
-            {
-            	moveBot(MOVEMENT.FORWARD);
-            }
-            else
-            {
-            	//System.out.println("moving multiple");
-            	//moveBot(MOVEMENT.FORWARD_M);
-            	moveBot(MOVEMENT.FORWARD);
-            }*/
         	
         } else if (lookLeft()) {
             moveBot(MOVEMENT.LEFT);
@@ -323,16 +265,6 @@ public class Explorer {
             if (lookForward())
         	{
             	moveBot(MOVEMENT.FORWARD);
-            	/*if(bot.front_average < 4)
-                {
-                	moveBot(MOVEMENT.FORWARD);
-                }
-                else
-                {
-                	//System.out.println("moving multiple");
-                	//moveBot(MOVEMENT.FORWARD_M);
-                	moveBot(MOVEMENT.FORWARD);
-                }*/
         	}
         } else {
         	//dhaslie - testing if fully walled, u turn
@@ -435,6 +367,30 @@ public class Explorer {
         return false;
     }
 
+    //dhaslie, attempt for multiple forward if the grids are clear infront
+    // UNDER CONSTRUCTION
+    private void multipleFree()
+    {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        
+        if(northTwoFree()) // second layer free
+        {
+        	if (northThreeFree()) // third layer free
+        	{
+        		if (northFourFree()) // fourth layer free
+        		{
+        			//set count = 4
+        			available_forward = 4;
+        		}
+        		//set count = 3
+        		available_forward = 3;
+        	}
+        	//set count = 2
+        	available_forward = 2;
+        }
+    }
+    
     /**
      * Returns true if the robot can move to the north cell.
      */
@@ -471,6 +427,115 @@ public class Explorer {
         return (isExploredNotObstacle(botRow - 1, botCol - 1) && isExploredAndFree(botRow, botCol - 1) && isExploredNotObstacle(botRow + 1, botCol - 1));
     }
 
+    //dhaslie - attemping to create multiple move forward if explored and not obstacle
+	/**
+     * Returns true if the robot can move to 2 north cells.
+     */
+    private boolean northTwoFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow + 2, botCol - 1) && isExploredAndFree(botRow + 2, botCol) && isExploredNotObstacle(botRow + 2, botCol + 1));
+    }
+
+    /**
+     * Returns true if the robot can move to 2 east cells.
+     */
+    private boolean eastTwoFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow - 1, botCol + 2) && isExploredAndFree(botRow, botCol + 2) && isExploredNotObstacle(botRow + 1, botCol + 2));
+    }
+
+    /**
+     * Returns true if the robot can move to 2 south cells.
+     */
+    private boolean southTwoFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow - 2, botCol - 1) && isExploredAndFree(botRow - 2, botCol) && isExploredNotObstacle(botRow - 2, botCol + 1));
+    }
+
+    /**
+     * Returns true if the robot can move to 2 west cells.
+     */
+    private boolean westTwoFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow - 1, botCol - 2) && isExploredAndFree(botRow, botCol - 2) && isExploredNotObstacle(botRow + 1, botCol - 2));
+    }
+	
+	    /**
+     * Returns true if the robot can move to 3 north cells.
+     */
+    private boolean northThreeFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow + 3, botCol - 1) && isExploredAndFree(botRow + 3, botCol) && isExploredNotObstacle(botRow + 3, botCol + 1));
+    }
+
+    /**
+     * Returns true if the robot can move to 3 east cells.
+     */
+    private boolean eastThreeFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow - 1, botCol + 3) && isExploredAndFree(botRow, botCol + 3) && isExploredNotObstacle(botRow + 1, botCol + 3));
+    }
+
+    /**
+     * Returns true if the robot can move to 3 south cells.
+     */
+    private boolean southThreeFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow - 3, botCol - 1) && isExploredAndFree(botRow - 3, botCol) && isExploredNotObstacle(botRow - 3, botCol + 1));
+    }
+
+    /**
+     * Returns true if the robot can move to 3 west cells.
+     */
+    private boolean westThreeFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow - 1, botCol - 3) && isExploredAndFree(botRow, botCol - 3) && isExploredNotObstacle(botRow + 1, botCol - 3));
+    }
+	
+	    /**
+     * Returns true if the robot can move to 4 north cells.
+     */
+    private boolean northFourFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow + 4, botCol - 1) && isExploredAndFree(botRow + 4, botCol) && isExploredNotObstacle(botRow + 4, botCol + 1));
+    }
+
+    /**
+     * Returns true if the robot can move to 4 east cells.
+     */
+    private boolean eastFourFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow - 1, botCol + 4) && isExploredAndFree(botRow, botCol + 4) && isExploredNotObstacle(botRow + 1, botCol + 4));
+    }
+
+    /**
+     * Returns true if the robot can move to 4 south cells.
+     */
+    private boolean southFourFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow - 4, botCol - 1) && isExploredAndFree(botRow - 4, botCol) && isExploredNotObstacle(botRow - 4, botCol + 1));
+    }
+
+    /**
+     * Returns true if the robot can move to 4 west cells.
+     */
+    private boolean westFourFree() {
+        int botRow = bot.getRobotPosRow();
+        int botCol = bot.getRobotPosCol();
+        return (isExploredNotObstacle(botRow - 1, botCol - 4) && isExploredAndFree(botRow, botCol - 4) && isExploredNotObstacle(botRow + 1, botCol - 4));
+    }
+    
     /**
      * Returns the robot to START after exploration and points the bot northwards.
      */
@@ -478,13 +543,13 @@ public class Explorer {
     	
     	//finish exploring every grid, but goal not explored
         if (!bot.getTouchedGoal() && coverageLimit == 300 && timeLimit == 3600) {
-        	System.out.println("In goHome() of ExplorationAlgo first loop: Explorer.java, L345");
+        	//System.out.println("In goHome() of ExplorationAlgo first loop: Explorer.java, L345");
             Sprinter goToGoal = new Sprinter(exMap, bot, realMap);
             goToGoal.runFastestPath(RobotConstants.GOAL_ROW, RobotConstants.GOAL_COL);
         }
         
         //finish exploration, time to go home
-        System.out.println("In goHome() of ExplorationAlgo second loop: Explorer.java, L350");
+        //System.out.println("In goHome() of ExplorationAlgo second loop: Explorer.java, L350");
         
         //stuck in the runFastestPath joey- check if not at home
         if(bot.getTouchedGoal() && bot.getRobotPosCol() != RobotConstants.START_COL || bot.getRobotPosRow() != RobotConstants.START_ROW) {
@@ -492,18 +557,13 @@ public class Explorer {
             returnToStart.runFastestPath(RobotConstants.START_ROW, RobotConstants.START_COL);//run fastest path home
         }
         
-
-        System.out.println("EXPLORATION COMPLETED!\n\n");
-        
         areaExplored = calculateAreaExplored();
         //System.out.printf("%.2f%% Coverage", (areaExplored / 300.0) * 100.0);
         //System.out.println(", " + areaExplored + " Cells");
         //System.out.println((System.currentTimeMillis() - startTime) / 1000 + " Seconds");
 
-        
-        //do we need to pause awhile before doing the calibration ?
         if (bot.getRealBot()) {
-        	System.out.println("RealBot");
+        	//System.out.println("RealBot");
             turnBotDirection(DIRECTION.WEST);
             moveBot(MOVEMENT.CALIBRATE);
             turnBotDirection(DIRECTION.SOUTH);
@@ -512,22 +572,6 @@ public class Explorer {
             moveBot(MOVEMENT.CALIBRATE);
             turnBotDirection(DIRECTION.NORTH);
         }
-        /*
-        System.out.println("MyCode for goHome");
-        turnBotDirection(DIRECTION.NORTH);
-        if(bot.getRobotCurDir() == DIRECTION.SOUTH)
-        {
-        	System.out.println("Turning South to North");
-        	moveBot(MOVEMENT.RIGHT);
-        	moveBot(MOVEMENT.RIGHT);
-        }
-        else // if DIRECTION.WEST
-        {
-        	System.out.println("Turning West to North");
-        	moveBot(MOVEMENT.RIGHT);
-        }
-        */
-        System.out.println("Exiting goHome()");
     }
     
     private void goNextStartPoint()
@@ -555,9 +599,9 @@ public class Explorer {
         bot.setRobotPos(exMap.gridder.temp_row, exMap.gridder.temp_col);
         bot.setRobotDir(RobotConstants.DIRECTION.NORTH);
         
-		System.out.println("\n\nbreaker....");
-		System.out.println("breaker....");
-		System.out.println("breaker.... \n\n");
+		//System.out.println("\n\nbreaker....");
+		//System.out.println("breaker....");
+		//System.out.println("breaker.... \n\n");
     }
     
     private void setNewSP() {	
@@ -720,7 +764,7 @@ public class Explorer {
     private boolean canCalibrateOnTheSpot(DIRECTION botDir) {
         int row = bot.getRobotPosRow();
         int col = bot.getRobotPosCol();
-        System.out.println("botDir: " + botDir);
+        
         switch (botDir) {
             case NORTH:
             	//huangkai

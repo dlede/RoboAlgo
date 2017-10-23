@@ -10,6 +10,7 @@ import jframe_pkg.utils.CommMgr;
 import jframe_pkg.utils.MapDescriptor;
 import jframe_pkg.robot.Sensor;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.lang.*;
 import javax.swing.JTextArea;
@@ -55,7 +56,8 @@ public class Robot {
 	public int right_average = 0;
     public int front_min = 0;
     public int right_min = 0;
-    private int front_arr[] = null;
+    //private int front_arr[] = null;
+    ArrayList<Integer> front_arr = new ArrayList<Integer>();
     //private ListArray front_la;
     private int right_arr[] = null;
 	
@@ -416,7 +418,6 @@ public class Robot {
 			
 			if (msg.equals("!")) //break when done 
             {
-            	//System.out.println("im here2: Explorer.java, L97");
             	break;
             }
 			
@@ -424,15 +425,6 @@ public class Robot {
 		}
 
 		System.out.println("Done");
-        
-		/**
-		// commented by dhaslie
-        if (m != MOVEMENT.CALIBRATE && sendMoveToAndroid) {
-        	System.out.println("m != MOVEMENT.CALIBRATE && sendMoveToAndroid: Robot.java, L273");
-        	System.out.println(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
-        	comm.sendMsg(this.getRobotPosRow() + "," + this.getRobotPosCol() + "," + DIRECTION.print(this.getRobotCurDir()) + CommMgr.BOT_POS);
-        }
-        **/
     }
     
 
@@ -440,7 +432,6 @@ public class Robot {
      * Sets the sensors' position and direction values according to the robot's current position and direction.
      */
     public void setSensors() {
-    	//System.out.println("set Sensors, directions: " + robotDir + ": Robot.java, L284");
         switch (robotDir) {
         
         case NORTH:
@@ -519,9 +510,7 @@ public class Robot {
         
         
         else {
-        	//System.out.println("Getting sensors counter: " + counter + ": Robot.java, L360");
             this.comm.sendMsg("GET SENSOR");
-            //System.out.println("SENSOR MSG SENT: Robot.java, L362");
             System.out.println("WAITING FOR SENSOR VALUE: Robot.java, L371");
             
             String msg;
@@ -534,7 +523,6 @@ public class Robot {
 				}
 			}
 
-            //System.out.println("GOT SENSOR VALUE: Robot.java, L374");
             System.out.println("Senses Value: "+ msg);
             
             String[] msgArr = msg.split(";");
@@ -549,7 +537,6 @@ public class Robot {
             result[4] = Integer.parseInt(msgArr[4]);
             
             result[5] = Integer.parseInt(msgArr[5]) +10; // +10 offset if needed huang kai remove +12 weird
-            //result[5] = (int)(Math.floor(Double.parseDouble(msgArr[5]))+9);
             
             //Dhaslie for comparing front sensors, raw value
             sr_FrontLeft_value = result[0];    
@@ -562,14 +549,13 @@ public class Robot {
             
             for (int i = 0; i < result.length; i++)
             {
-            	//System.out.println("result: " + i);
             	result[i] = setValue(result[i]);
             }
             
             //dhaslie compute the minimum front array
             for (int i = 0; i < 3; i++)
             {
-            	front_arr[i] = result[i];
+            	front_arr.add(result[i]);
             }
             
             //Dhaslie add minValue again
@@ -587,9 +573,6 @@ public class Robot {
             counter++;
         }
         
-        //dhas test send extra sensor reading
-        //this.comm.sendMsg("G");
-        
         return result;
     }
     
@@ -602,24 +585,20 @@ public class Robot {
     	return false;
     }
     
-  //dhaslie min array function
-    public int minValue(int arr[])
-    {
-    	//System.out.println("enter minValue");
-    	int temp = arr[0]; 
-    	
-    	for(int i = 1; i < arr.length; i++) 
-    	{
-    		//System.out.println("in minValue Loop");
-    		if(arr[i] < temp)
-    		{
-    			//System.out.println("swap minValue");
-    			temp = arr[i];
-    		}
-    	}
-    	//System.out.println("exit minValue");
-    	return temp;
-    }
+	//dhaslie min array function
+	public static int minValue(ArrayList<Integer> arr)
+	{
+		int temp = arr.get(0); 
+		
+		for(int i = 0; i < arr.size(); i++) 
+		{
+			if(arr.get(i) < temp)
+			{
+				temp = arr.get(i);
+			}
+		}
+		return temp;
+	}
     
     public int setValue(int val) // set value as rounded off function
     {

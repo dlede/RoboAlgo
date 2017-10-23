@@ -83,23 +83,14 @@ public class Explorer {
              bot.move(MOVEMENT.LEFT, false);
              bot.move(MOVEMENT.CALIBRATE, false);
              bot.move(MOVEMENT.LEFT, false);
-        	 
-      	   	 //bot.move(MOVEMENT.RIGHT, false);
-     	   	 //bot.move(MOVEMENT.RIGHT, false);
-             //bot.move(MOVEMENT.CALIBRATE, false);
-             //bot.move(MOVEMENT.LEFT, false);
-             //bot.move(MOVEMENT.CALIBRATE_R, false);
           }
 	   		
             while (true) {
                 System.out.println("Waiting for EX_START...");
                 String msg = CommMgr.getCommMgr().revMsg();
                 
-                //System.out.println("msg: " + msg);
-                
                 if (msg.equals(CommMgr.EX_START)) 
                 {
-                	//System.out.println("im here2: Explorer.java, L97");
                 	break;
                 }
             }
@@ -109,16 +100,11 @@ public class Explorer {
         startTime = System.currentTimeMillis();
         endTime = startTime + (timeLimit * 1000);
 
-        //System.out.println("timer start: Explorer.java, L109");
-        
-        //dhaslie, do we need this clause?
         if (bot.getRealBot()) {
             CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
         }
         
         senseAndRepaint();
-        
-        //System.out.println("sense and repainted: Explorer.java, L120");
 
         areaExplored = calculateAreaExplored();
         // Here is moved
@@ -168,15 +154,6 @@ public class Explorer {
 	            	break;
 	            }
 			}
-			
-			
-			/*try {
-			Thread.sleep(250);
-			} catch (InterruptedException e) {
-				//Auto-generated catch block;
-				e.printStackTrace();
-			}
-			*/
 			String curAttr = (bot.getRobotPosRow() + ";" + bot.getRobotPosCol() + ";" + bot.getRobotCurDir());
 			CommMgr.getCommMgr().sendMsg("CA," + curAttr);
             
@@ -190,14 +167,6 @@ public class Explorer {
 	            }
 				
 			}
-			
-			/*try {
-				Thread.sleep(250);
-			} catch (InterruptedException e) {
-				//Auto-generated catch block;
-				e.printStackTrace();
-			}
-			*/
 			
 			areaExplored = calculateAreaExplored();
             //System.out.println("Area explored: " + areaExplored);
@@ -721,79 +690,11 @@ public class Explorer {
         {
         	if(bot.sr_FrontLeft_value > 10 && bot.sr_FrontCenter_value > 10 && bot.sr_FrontRight_value > 10)
         	{
-        		bot.moveForwardMultiple(bot.front_min);
+        		System.out.println("I can move forward " + bot.front_min + " amount f blocks");
+        		//bot.moveForwardMultiple(bot.front_min);
         	}
         	//bot.move(MOVEMENT.FORWARD_M);
         }
-        
-        //check for virtual and if there is a X amount of leeway for forward, fly forward
-        /*if(exMap.gridder.isVirtualWallCell(this.bot.getRobotPosRow(), this.bot.getRobotPosCol()+1))
-        {
-        	//if front raw values are all more than 10 (not near front walls) and right raw values are all less than 10 (near right wall)
-        	if(bot.sr_FrontLeft_value > 10 && bot.sr_FrontCenter_value > 10 && bot.sr_FrontRight_value > 10 && (bot.sr_RightTop_value < 10 && bot.sr_RightBtm_value < 10))
-        	{
-        		//bot.moveForwardMultiple(bot.front_min);
-        		//bot.move(MOVEMENT.FORWARD_M);
-        		//move forward based on the front min
-	        	//if front raw values are all more than 10 (not near front walls) and right raw values are all less than 10 (near right wall)
-	        	if (bot.rangeValue(sr_FrontLeft_value, 15, 23) && bot.rangeValue(sr_FrontCenter_value, 15, 23) && bot.rangeValue(sr_FrontRight_value, 15, 23))
-	        	{
-	        		// if all front values within raw value of 15 to 23
-	        		// move 2 steps
-	        	}
-	        	if (bot.rangeValue(sr_FrontLeft_value, 25, 33) && bot.rangeValue(sr_FrontCenter_value, 25, 33) && bot.rangeValue(sr_FrontRight_value, 25, 33))
-	        	{
-	        		// if all front values within raw value of 25 to 33
-	        		// move 3 steps
-	        	}
-	        	if (bot.angeValue(sr_FrontLeft_value, 35, 43) && bot.rangeValue(sr_FrontCenter_value, 35, 43) && bot.rangeValue(sr_FrontRight_value, 35, 43))
-	        	{
-	        		// if all front values within raw value of 35 to 43
-	        		// move 4 steps
-	        	} 
-        	}
-        }*/
-        
-        //commented by dhaslie
-	        /**
-	        // huangkai at here its calibrate
-	        if (bot.getRealBot() && !calibrationMode) {
-	        	calibrationMode = true;
-	            //only checks front
-	            if (canCalibrateOnTheSpot(bot.getRobotCurDir())) {
-	
-	                //lastCalibrate = 0;
-	                //if front sensor have near reading
-	            	//System.out.println("bot.sr_FrontLeft_value: " + bot.sr_FrontLeft_value);
-	            	//System.out.println("bot.sr_FrontCenter_value: " + bot.sr_FrontCenter_value);
-	            	//System.out.println("bot.sr_FrontRight_value: " + bot.sr_FrontRight_value);
-	            	
-	            	if(bot.sr_FrontLeft_value < 10 || bot.sr_FrontCenter_value < 10 || bot.sr_FrontRight_value < 10)
-	            	{
-	            		//front is near or corner cases where right wall hug
-	            		System.out.println("huang kai front calibrate");
-	                    moveBot(MOVEMENT.CALIBRATE);
-	                    calibrated=true;
-	                    //huangkai_turns =0;
-	                    //added this - joey
-	                    move_counter = 0;
-	                }
-	            }
-	            
-	            else if(canCalibrateOnTheRight(bot.getRobotCurDir())){
-	            	if(bot.sr_RightBtm_value < 10 || bot.sr_RightTop_value < 10)
-	            	{
-	            		if (calibrated == false) {
-	            		System.out.println("huang kai right calibrate");
-	            		moveBot(MOVEMENT.CALIBRATE_R);
-	            		calibrated = true;
-	            		move_counter =0;
-	            		}	
-	            	}
-	            }
-	        calibrationMode = false;
-	    }
-	    **/
     }
 
     /**

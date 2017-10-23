@@ -553,6 +553,7 @@ public class Robot {
             }
             
             //dhaslie compute the minimum front array
+            /**
             for (int i = 0; i < 3; i++)
             {
             	front_arr.add(result[i]);
@@ -560,6 +561,7 @@ public class Robot {
             
             //Dhaslie add minValue again
             front_min = minValue(front_arr);
+            **/
             //dhaslie compute minimum front array end
             
             SRFrontLeft.senseReal(explorationMap.gridder, result[0]);

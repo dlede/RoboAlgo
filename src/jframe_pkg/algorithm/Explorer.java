@@ -684,9 +684,10 @@ public class Explorer {
         if (m != MOVEMENT.CALIBRATE || m != MOVEMENT.CALIBRATE_R) {
             senseAndRepaint();
         } 
+
         
         //dhaslie fast_forward movements
-        if (canWallMoveMult(bot.getRobotCurDir()))
+        /**if (canWallMoveMult(bot.getRobotCurDir()))
         {
         	if(bot.sr_FrontLeft_value > 10 && bot.sr_FrontCenter_value > 10 && bot.sr_FrontRight_value > 10)
         	{
@@ -694,7 +695,7 @@ public class Explorer {
         		//bot.moveForwardMultiple(bot.front_min);
         	}
         	//bot.move(MOVEMENT.FORWARD_M);
-        }
+        }**/
     }
 
     /**

@@ -149,8 +149,14 @@ public class Explorer {
 				
 				String umMsg = CommMgr.getCommMgr().revMsg();
 				
+				long startTime = System.currentTimeMillis();
+				//.....your program....
+				
 				if (umMsg.equals("!")) //break when done 
 	            {
+					long endTime   = System.currentTimeMillis();
+					long totalTime = endTime - startTime;
+					System.out.println("totalTime taken for Map to be send finished: " + (totalTime/1000));
 	            	break;
 	            }
 			}

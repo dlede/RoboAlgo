@@ -128,6 +128,26 @@ public class CommMgr {
 	//send msg to RPI
 	public void sendMsg(String msgToRPI) {
 
+		/*
+		if(msgToRPI.length() > 9) // if the length of 3, possible a map descriptor
+		{
+		    char[] chars = msgToRPI.toCharArray();
+		    StringBuilder hex = new StringBuilder();
+		    for (char ch : chars) {
+		        hex.append(Integer.toHexString((int) ch));
+		    }
+		 
+		    //return hex.toString();
+			try {
+				toRPi.write(hex);//transmit msg to RPI
+				toRPi.flush();
+				//System.out.println("Message sent: " + msgToRPI);
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}*/
 		
 		System.out.println(msgToRPI);
 		// Scanner in = new Scanner(System.in);

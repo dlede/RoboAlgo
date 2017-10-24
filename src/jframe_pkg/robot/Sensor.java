@@ -170,7 +170,7 @@ public class Sensor {
 
             //
             if (exploredMap.getCell(row, col).getIsObstacle()) {
-                if (id.equals("SRFL") || id.equals("SRFC") || id.equals("SRFR")) {
+                if (id.equals("SRFL") || id.equals("SRFC") || id.equals("SRFR") || id.equals("SRL")) {
                     exploredMap.setObstacleCell(row, col, false);
                 } else {
                     break;

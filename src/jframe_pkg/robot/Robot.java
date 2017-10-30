@@ -407,10 +407,10 @@ public class Robot {
     	//{
 		//System.out.println("Sendingggggg");
 		
-    	System.out.println(String.valueOf(MOVEMENT.print(m)));
+    	//System.out.println(String.valueOf(MOVEMENT.print(m)));
 		comm.sendMsg(String.valueOf(MOVEMENT.print(m)));
 		
-		System.out.println("Receving");
+		//System.out.println("Receving");
 		
 		while(true) {
 		
@@ -424,7 +424,7 @@ public class Robot {
 			
 		}
 
-		System.out.println("Done");
+		//System.out.println("Done");
     }
     
 

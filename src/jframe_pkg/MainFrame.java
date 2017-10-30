@@ -443,7 +443,6 @@ public class MainFrame extends JFrame {
 	private static void addConsolePanel() {
 
 		// Monitor Screen
-
 		info = new JTextArea(25, 25);
 
 		bot.setMonitorScreen(info);
@@ -664,10 +663,10 @@ public class MainFrame extends JFrame {
 				// exploration.setMonitorScreen(info);
 				// exploration.setTimer(timer);
 
-				if (realRun) {
+				/*if (realRun) {
 					System.out.println("im in realrun");
 					// CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
-				}
+				}*/
 
 				exploration.runExploration();
 
@@ -733,16 +732,19 @@ public class MainFrame extends JFrame {
 						timer.start();// start timer
 						new Exploration().execute();
 
-						if (auto_mode == false) {
+						/*if (auto_mode == false) {
 							System.out.println("Break");
 							// break;
-						}
+						}*/
+						
 					}
 					expBtn.setText("Exploration: ON");
 
 					
+					
+					
 					//hardcode instr
-					String wpg_instr = "FFFFFFRFFFFFFLFFFFRFFFFFLFFFFFFFRF";
+					String wpg_instr = "FFFFFRFFFFLFFFFFFFFFFFRFFFFFFFFLF";
 
 					if (realRun) {
 						while (true) {

@@ -73,7 +73,7 @@ public class Explorer {
 	   		int temp_x = Integer.parseInt(items.get(0));
 	   		int temp_y = Integer.parseInt(items.get(1));
 	   		
-	   		System.out.println("my waypoint is " + temp_x + ", " + temp_y);
+	   		//System.out.println("my waypoint is " + temp_x + ", " + temp_y);
 	   		exMap.gridder.set_waypoint(temp_x, temp_y);
            
 	   	 System.out.println("Starting calibration...");
@@ -101,15 +101,15 @@ public class Explorer {
         startTime = System.currentTimeMillis();
         endTime = startTime + (timeLimit * 1000);
 
-        if (bot.getRealBot()) {
+       /* if (bot.getRealBot()) {
             CommMgr.getCommMgr().sendMsg(CommMgr.BOT_START);
-        }
+        }*/
         
         senseAndRepaint();
 
         areaExplored = calculateAreaExplored();
         // Here is moved
-        System.out.println("Explored Area: " + areaExplored);
+        //System.out.println("Explored Area: " + areaExplored);
 
         explorationLoop(bot.getRobotPosRow(), bot.getRobotPosCol());
         //condition is if coverage < 300
@@ -127,8 +127,8 @@ public class Explorer {
     	do {
         	//huangkai
         	/*System.out.println("Continue?");
-    		String msg = sc.nextLine();
-        	*/
+    		String msg = sc.nextLine();*/
+        	
         	//CommMgr.getCommMgr().revMsg();
             nextMove();
             
@@ -152,7 +152,7 @@ public class Explorer {
 
 			long endSend_Time = System.currentTimeMillis();
 			long totalSend_Time = endSend_Time - startSend_Time;
-			System.out.println("totalTime taken for Map to be send finished: " + (totalSend_Time));
+			//System.out.println("totalTime taken for Map to be send finished: " + (totalSend_Time));
 
 			while(true) {
 				String umMsg = CommMgr.getCommMgr().revMsg();
@@ -162,8 +162,8 @@ public class Explorer {
 				{
 					long endTime   = System.currentTimeMillis();
 					long totalTime = endTime - startSend_Time;
-					System.out.println("totalTime taken for Map to be recieve finished: " + (totalTime - totalSend_Time));
-					System.out.println("totalTime taken for Map to be send and recieve finished: " + (totalTime));
+					//System.out.println("totalTime taken for Map to be recieve finished: " + (totalTime - totalSend_Time));
+					//System.out.println("totalTime taken for Map to be send and recieve finished: " + (totalTime));
 								
 					break;
 				}
@@ -219,7 +219,7 @@ public class Explorer {
 	    		goNextStartPoint();
 	    		//nextMove();
 	            areaExplored = calculateAreaExplored();
-	            System.out.println("Area explored: " + areaExplored);
+	            //System.out.println("Area explored: " + areaExplored);
 	            
 	            if (bot.getRobotPosRow() == exMap.gridder.temp_row && bot.getRobotPosCol() == exMap.gridder.temp_col) { 
 	                if (areaExplored >= 300) { // if fully 300 cells coverage
@@ -270,7 +270,9 @@ public class Explorer {
         	//dhaslie - testing if fully walled, u turn
         	if (can_UTurn(bot.getRobotCurDir()))
         	{
-        		moveBot(MOVEMENT.UTURN);
+        		//moveBot(MOVEMENT.UTURN);
+        		moveBot(MOVEMENT.RIGHT);
+                moveBot(MOVEMENT.RIGHT);
         	}
         	else //dhaslie - else turn twice right...
         	{
@@ -833,7 +835,8 @@ public class Explorer {
     
     //dhaslie can u turn?
 	private boolean can_UTurn(DIRECTION botDir) {
-        switch (botDir) {
+        
+		/*switch (botDir) {
             case NORTH:
                 return !northFree() && !westFree() && !eastFree();
             case EAST:
@@ -842,7 +845,7 @@ public class Explorer {
                 return !southFree() && !westFree() && !eastFree();
             case WEST:
                 return !westFree() && !northFree() && !southFree();
-        }
+        }*/
 
         //System.out.println("U Turn");
         return false;
@@ -885,9 +888,9 @@ public class Explorer {
             }
         } else if (numOfTurn == 2) {
         	//dhaslie - added uturn
-        	moveBot(MOVEMENT.UTURN);
-            //moveBot(MOVEMENT.RIGHT);
-            //moveBot(MOVEMENT.RIGHT);
+        	//moveBot(MOVEMENT.UTURN);
+            moveBot(MOVEMENT.RIGHT);
+            moveBot(MOVEMENT.RIGHT);
             turned = true;
         }
     }

@@ -309,7 +309,7 @@ public class Sprinter {
         
         
         //jooo
-        System.out.println("bot starting in sprinter: " + bot.getRobotCurDir());
+        //System.out.println("bot starting in sprinter: " + bot.getRobotCurDir());
         tempBot.setRobotDir(bot.getRobotCurDir());
         
         
@@ -332,7 +332,7 @@ public class Sprinter {
                 m = MOVEMENT.FORWARD;
             }
 
-            System.out.println("Movement " + MOVEMENT.print(m) + " from (" + tempBot.getRobotPosRow() + ", " + tempBot.getRobotPosCol() + ") to (" + temp.get_x() + ", " + temp.get_y() + ")");
+            //System.out.println("Movement " + MOVEMENT.print(m) + " from (" + tempBot.getRobotPosRow() + ", " + tempBot.getRobotPosCol() + ") to (" + temp.get_x() + ", " + temp.get_y() + ")");
 
             tempBot.move(m);
             movements.add(m);
@@ -340,11 +340,11 @@ public class Sprinter {
         }
 
         //jooo
-        System.out.println("tempBot end cur dir: " + tempBot.getRobotCurDir());
+        //System.out.println("tempBot end cur dir: " + tempBot.getRobotCurDir());
         bot.setRobotDir(tempBot.getRobotCurDir());
         
         
-        System.out.println("\nMovements: " + outputString.toString());
+        //System.out.println("\nMovements: " + outputString.toString());
 
         //TODO: sending string of FP,FFFFFFFFFRFFFFFFFFFFFFLFFFFFFFFFFFR.....
         //CommMgr.getCommMgr().sendMsg("FP,"+outputString.toString());
@@ -445,16 +445,18 @@ public class Sprinter {
      * Prints the fastest path from the Stack object.
      */
     private void printFastestPath(Stack<Cell> path) {
-        System.out.println("\nLooped " + loopCount + " times.");
-        System.out.println("The number of steps is: " + (path.size() - 1) + "\n");
+        //System.out.println("\nLooped " + loopCount + " times.");
+        //System.out.println("The number of steps is: " + (path.size() - 1) + "\n");
 
         Stack<Cell> pathForPrint = (Stack<Cell>) path.clone();
         Cell temp;
         System.out.println("Path:");
         while (!pathForPrint.isEmpty()) {
             temp = pathForPrint.pop();
-            if (!pathForPrint.isEmpty()) System.out.print("(" + temp.get_x() + ", " + temp.get_y() + ") --> ");
-            else System.out.print("(" + temp.get_x() + ", " + temp.get_y() + ")");
+            if (!pathForPrint.isEmpty()) 
+            	System.out.print("(" + temp.get_x() + ", " + temp.get_y() + ") --> ");
+            else 
+            	System.out.print("(" + temp.get_x() + ", " + temp.get_y() + ")");
         }
 
         System.out.println("\n");

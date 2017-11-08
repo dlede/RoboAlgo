@@ -744,7 +744,7 @@ public class MainFrame extends JFrame {
 					
 					
 					//hardcode instr
-					String wpg_instr = "FFFFFRFFFFLFFFFFFFFFFFRFFFFFFFFLF";
+					String wpg_instr = "FFRFFLFFRFFLFF";
 
 					if (realRun) {
 						while (true) {

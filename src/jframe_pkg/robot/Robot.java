@@ -540,7 +540,7 @@ public class Robot {
             result[3] = Integer.parseInt(msgArr[3]);
             result[4] = Integer.parseInt(msgArr[4]);
             
-            result[5] = Integer.parseInt(msgArr[5]) +10;// +10; // +10 offset if needed huang kai remove +12 weird
+            result[5] = Integer.parseInt(msgArr[5]) +12;// +10; // +10 offset if needed huang kai remove +12 weird
             
             //Dhaslie for comparing front sensors, raw value
             sr_FrontLeft_value = result[0];    

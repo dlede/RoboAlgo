@@ -564,6 +564,14 @@ public class Explorer {
         //System.out.println(", " + areaExplored + " Cells");
         //System.out.println((System.currentTimeMillis() - startTime) / 1000 + " Seconds");
 
+		try {
+		Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			//Auto-generated catch block;
+			e.printStackTrace();
+		}
+		
+        
         if (bot.getRealBot()) {
         	//System.out.println("RealBot");
             turnBotDirection(DIRECTION.WEST);
